@@ -1,4 +1,4 @@
-package org.bearengine.core;
+package org.bearengine.graphics;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
