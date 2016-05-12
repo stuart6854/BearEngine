@@ -30,3 +30,7 @@ Window-Creation Branch #1 - 12/05/16
 - Added GLFWWindowSizeCallback
 - Added GLFWFrameBufferSizeCallback
 - Added Static Map 'displays' to keep record of all displays
+
+Window-Creation Branch #2 - 12/05/16
+------------------------------------
+- Moved Display class to org.bearengine.graphics package
