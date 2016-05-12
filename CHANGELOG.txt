@@ -10,3 +10,23 @@ master Branch #1 - 12/05/16
 - Setup Eclipse Project
 	- Added PNGDecoder.jar
 	- Added LWJGL3
+	
+Window-Creation Branch #1 - 12/05/16
+-------------------------
+- Added Display Class
+- Display -> create() successfully creates window
+- Added update() method
+- Display -> destroy() successfully destroys a window
+- Added methods for setting the window resolution
+- Added method to change window title
+- Added setHints method
+- Added setVisible method
+- Added setWindowMode method
+- Added centreOnScreen method
+- Added getter methods for all current variables
+- Added shouldClose Method
+- Added destroyed variable
+- Added isDestroyed Method
+- Added GLFWWindowSizeCallback
+- Added GLFWFrameBufferSizeCallback
+- Added Static Map 'displays' to keep record of all displays
