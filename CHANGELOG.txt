@@ -1,0 +1,12 @@
+Change Log
+===================================
+
+master Branch #1 - 12/05/16
+-------------------------
+- Added .gitignore
+- Added CHANGELOG.txt
+- Added LICENSE
+- Added README.md
+- Setup Eclipse Project
+	- Added PNGDecoder.jar
+	- Added LWJGL3
