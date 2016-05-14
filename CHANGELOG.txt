@@ -34,3 +34,72 @@ Window-Creation Branch #1 - 12/05/16
 Window-Creation Branch #2 - 12/05/16
 ------------------------------------
 - Moved Display class to org.bearengine.graphics package
+
+Engine-Core Branch #1 - 12/05/16 to 14/05/16
+--------------------------------------------
+- Updated Display class
+-- Added public static final Display mainDisplay to keep track of primary engine display
+-- Stopped a display being created more than once
+-- Added setting FrameBufferSize callback(forgot to add it before)
+-- Added setVSYNC method
+
+- Created Engine class
+-- Added two contructors
+-- Added Start method
+-- Added override run method
+-- Added init method
+--- Initialises GLFW
+--- Creates Display.mainDisplay(no vsync, centred, set as current)
+--- Creates and Adds SplashScreen(5 secs) to screenOrder
+-- Added EngineLoop method
+--- Added Main Engine loop
+---- Exits when Display.mainDisplay should exit
+---- Updates Display.mainDisplay
+---- Keeps track of FPS and UPS
+-- Added update method
+--- Runs through each 'Game' in screenOrder
+--- Engine stops when runs out of screen to run
+-- Added render method
+--- Renders current Game Screen
+-- Added sync method
+--- Limits FPS to select fps
+-- Added cleanup method
+--- Destroys all Displays in Display.displays
+-- Added Exit method
+--- Calls cleanup method and then System.exit()
+-- Added static void main(string... args) method for testing
+
+- Created Time class
+-- Added private static double lastLoopTime
+-- Added public static int FPS
+-- Added public static int UPS
+-- Added static init method
+-- Added static double getTime method
+-- Added static double getElapsedTime method
+-- Added static double getLastLoopTime method
+
+- Created Game class
+-- Added public boolean isInitalised
+-- Added public boolean isExitRequested
+-- Added abstract init method
+-- Added abstract update(float deltaTime) method
+-- Added abstract render method
+-- Added abstract cleanup method
+
+- Created SplashScreen class (extends Game)
+-- Added private double startTime
+-- Added private double duration
+-- Added private double endTime
+-- Added one Constructor
+-- Added override init method
+-- Added override update method
+-- Added override render method
+-- Added override cleanup method
+-- Added isExitRequested getter method
+
+
+
+
+
+
+

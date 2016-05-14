@@ -4,7 +4,6 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
@@ -15,6 +14,8 @@ import org.lwjgl.opengl.GL11;
 public class Display {
 	
 	public static Map<Long, Display> displays = new HashMap<>();
+	
+	public static final Display mainDisplay = new Display();
 	
 	public static final int Windowed = 0, Fullscreen = 1, Borderless = 2;
 	
@@ -47,6 +48,11 @@ public class Display {
 	};
 	
 	public void createDisplay(){
+		if(windowID != NULL) {
+			System.err.println("This Display is Already Created!");
+			return;
+		}
+		
 		setHints();
 		
 		windowID = glfwCreateWindow(width, height, title, NULL, NULL);
@@ -54,6 +60,8 @@ public class Display {
 		if(windowID == NULL){
 			throw new RuntimeException("Failed to Create the GLFW Window!");
 		}
+		
+		this.destroyed = false;
 		
 		setCallbacks();
 		
@@ -67,6 +75,7 @@ public class Display {
 	}
 	
 	public void update(){
+		if(windowID == NULL) return;
 		glfwPollEvents();
 		glfwSwapBuffers(windowID);
 	}
@@ -75,6 +84,7 @@ public class Display {
 		destroyed = true;
 		Display.displays.remove(this.windowID);
 		glfwDestroyWindow(windowID);
+		this.windowID = NULL;
 	}
 	
 	private void setHints(){
@@ -83,6 +93,7 @@ public class Display {
 	
 	private void setCallbacks(){
 		glfwSetWindowSizeCallback(this.windowID, this.windowSizeCallback);
+		glfwSetFramebufferSizeCallback(this.windowID, this.framebufferSizeCallback);
 	}
 	
 	public void setVisible(boolean visible){
@@ -133,8 +144,12 @@ public class Display {
 		this.setCurrent();
 	}
 	
-	private void setCurrent(){
+	public void setCurrent(){
 		glfwMakeContextCurrent(this.windowID);
+	}
+	
+	public void setVSYNC(int vsync){
+		glfwSwapInterval(vsync);
 	}
 	
 	public void centreOnScreen(){
