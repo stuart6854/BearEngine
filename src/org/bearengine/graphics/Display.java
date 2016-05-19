@@ -4,7 +4,6 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
@@ -16,14 +15,26 @@ public class Display {
 	
 	public static Map<Long, Display> displays = new HashMap<>();
 	
-	public static final int Windowed = 0, Fullscreen = 1, Borderless = 2;
+	public static final Display mainDisplay = new Display();
+	
+	public enum WindowMode{ 
+		Windowed(0), 
+		Fullscreen(1), 
+		Borderless(2);
+		
+		private int mode;
+		
+		WindowMode(int mode){
+			this.mode = mode;
+		}
+	}
 	
 	private long windowID;
 	
 	private String title = "BearEngine";
 	private int width = 640, height = 480;
 	
-	private int windowMode = Display.Windowed;
+	private WindowMode windowMode = WindowMode.Windowed;
 	
 	private boolean destroyed = false;
 	private boolean visible = false;
@@ -47,6 +58,11 @@ public class Display {
 	};
 	
 	public void createDisplay(){
+		if(windowID != NULL) {
+			System.err.println("This Display is Already Created!");
+			return;
+		}
+		
 		setHints();
 		
 		windowID = glfwCreateWindow(width, height, title, NULL, NULL);
@@ -54,6 +70,8 @@ public class Display {
 		if(windowID == NULL){
 			throw new RuntimeException("Failed to Create the GLFW Window!");
 		}
+		
+		this.destroyed = false;
 		
 		setCallbacks();
 		
@@ -63,10 +81,11 @@ public class Display {
 		
 		Display.displays.put(windowID, this);
 		
-		System.out.println(width + "x" + height + "(Mode:" + windowMode + ") Display Created!");
+		System.out.println(width + "x" + height + "(Mode: " + windowMode.name() + ") Display Created!");
 	}
 	
 	public void update(){
+		if(windowID == NULL) return;
 		glfwPollEvents();
 		glfwSwapBuffers(windowID);
 	}
@@ -75,6 +94,7 @@ public class Display {
 		destroyed = true;
 		Display.displays.remove(this.windowID);
 		glfwDestroyWindow(windowID);
+		this.windowID = NULL;
 	}
 	
 	private void setHints(){
@@ -83,6 +103,7 @@ public class Display {
 	
 	private void setCallbacks(){
 		glfwSetWindowSizeCallback(this.windowID, this.windowSizeCallback);
+		glfwSetFramebufferSizeCallback(this.windowID, this.framebufferSizeCallback);
 	}
 	
 	public void setVisible(boolean visible){
@@ -114,17 +135,17 @@ public class Display {
 		glfwSetWindowTitle(this.windowID, title);
 	}
 	
-	public void setWindowMode(int windowMode){
+	public void setWindowMode(WindowMode windowMode){
 		this.windowMode = windowMode;
 		
 		long tmpWindowID = -1;
 		
-		if(windowMode == Display.Windowed){
+		if(windowMode == WindowMode.Windowed){
 			tmpWindowID = glfwCreateWindow(width, height, title, NULL, windowID);
-		}else if(windowMode == Display.Fullscreen){
+		}else if(windowMode == WindowMode.Fullscreen){
 			GLFWVidMode vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 			tmpWindowID = glfwCreateWindow(vidMode.width(), vidMode.height(), title, glfwGetPrimaryMonitor(), windowID);
-		}else if (windowMode == Display.Borderless) {
+		}else if (windowMode == WindowMode.Borderless) {
 			GLFWVidMode vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 			tmpWindowID = glfwCreateWindow(vidMode.width(), vidMode.height(), title, glfwGetPrimaryMonitor(), windowID);
 		}
@@ -133,8 +154,12 @@ public class Display {
 		this.setCurrent();
 	}
 	
-	private void setCurrent(){
+	public void setCurrent(){
 		glfwMakeContextCurrent(this.windowID);
+	}
+	
+	public void setVSYNC(int vsync){
+		glfwSwapInterval(vsync);
 	}
 	
 	public void centreOnScreen(){
@@ -174,7 +199,7 @@ public class Display {
 		return height;
 	}
 
-	public int getWindowMode() {
+	public WindowMode getWindowMode() {
 		return windowMode;
 	}
 
