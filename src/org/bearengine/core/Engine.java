@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bearengine.graphics.Display;
+import org.bearengine.input.Keyboard;
+import org.bearengine.input.Mouse;
 import org.bearengine.screens.BearEngineSplashScreen;
-import org.bearengine.screens.SplashScreen;
 import org.bearengine.tests.GameTest;
 import org.bearengine.utils.Time;
 
@@ -52,7 +53,7 @@ public class Engine implements Runnable{
 	
 	private void init(){
 		GLFW.glfwInit();
-
+		
 		setupScreensOrder();
 		
 		Display.mainDisplay.createDisplay();
@@ -103,7 +104,7 @@ public class Engine implements Runnable{
 		cleanup();
 	}
 	
-	private void update(float deltaTime){
+	private void update(float deltaTime){		
 		Game screen = screenOrder.get(screenIndex);
 		if(screen.isExitRequested){
 			screen.cleanup();

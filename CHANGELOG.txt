@@ -130,9 +130,33 @@ Engine-Core Branch #2 - 17/05/16 to 19/05/16
 - Created BearEngineSplashScreen class which extends SplashScreen
 -- Added public BearEngineSplashScreen() constructor which calls super(5)
 
+Input-Handling Branch #1 - 19/05/16
+--------------------------------------------
+- Created Keyboard class extends GLFWKeyCallback
+-- Added private static byte[] KeyStates
+-- Added override void invoke method
+-- Added static boolean isKeyPressed method
+-- Added static boolean isKeyHeld method
+-- Added static boolean isKeyDown method
 
+- Created Mouse class
+-- Added private static byte[] MouseState
+-- Added private static double x & y
+-- Added private static boolean cursorOverWindow
+-- Added GLFWMouseButtonCallback
+-- Added GLFWCursorPosCallback
+-- Added GLFWCursorEnterCallback
+-- Added static boolean isButtonPressed method
+-- Added static double getMouseX method
+-- Added static double getMouseY method
+-- Added static boolean isCursorOverWindow method
+-- Added void setCallbacks(long windowID) method
 
-
+- Updated Display class
+-- Added private GLFWKeyCallback keyCallback;
+-- Updated void setCallbacks method
+--- Added setting Keyboard callback to new Keyboard instance
+--- Added creating Mouse callback and calling its setCallbacks method
 
 
 
