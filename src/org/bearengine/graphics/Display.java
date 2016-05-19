@@ -6,7 +6,10 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bearengine.input.Keyboard;
+import org.bearengine.input.Mouse;
 import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
+import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL11;
@@ -38,6 +41,8 @@ public class Display {
 	
 	private boolean destroyed = false;
 	private boolean visible = false;
+	
+	private GLFWKeyCallback keyCallback;	
 	
 	private GLFWWindowSizeCallback windowSizeCallback = new GLFWWindowSizeCallback() {
 		
@@ -102,6 +107,9 @@ public class Display {
 	}
 	
 	private void setCallbacks(){
+		glfwSetKeyCallback(this.windowID, keyCallback = new Keyboard());
+		new Mouse().setCallbacks(this.windowID);;
+		
 		glfwSetWindowSizeCallback(this.windowID, this.windowSizeCallback);
 		glfwSetFramebufferSizeCallback(this.windowID, this.framebufferSizeCallback);
 	}
