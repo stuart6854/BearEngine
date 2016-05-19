@@ -17,14 +17,24 @@ public class Display {
 	
 	public static final Display mainDisplay = new Display();
 	
-	public static final int Windowed = 0, Fullscreen = 1, Borderless = 2;
+	public enum WindowMode{ 
+		Windowed(0), 
+		Fullscreen(1), 
+		Borderless(2);
+		
+		private int mode;
+		
+		WindowMode(int mode){
+			this.mode = mode;
+		}
+	}
 	
 	private long windowID;
 	
 	private String title = "BearEngine";
 	private int width = 640, height = 480;
 	
-	private int windowMode = Display.Windowed;
+	private WindowMode windowMode = WindowMode.Windowed;
 	
 	private boolean destroyed = false;
 	private boolean visible = false;
@@ -71,7 +81,7 @@ public class Display {
 		
 		Display.displays.put(windowID, this);
 		
-		System.out.println(width + "x" + height + "(Mode:" + windowMode + ") Display Created!");
+		System.out.println(width + "x" + height + "(Mode: " + windowMode.name() + ") Display Created!");
 	}
 	
 	public void update(){
@@ -125,17 +135,17 @@ public class Display {
 		glfwSetWindowTitle(this.windowID, title);
 	}
 	
-	public void setWindowMode(int windowMode){
+	public void setWindowMode(WindowMode windowMode){
 		this.windowMode = windowMode;
 		
 		long tmpWindowID = -1;
 		
-		if(windowMode == Display.Windowed){
+		if(windowMode == WindowMode.Windowed){
 			tmpWindowID = glfwCreateWindow(width, height, title, NULL, windowID);
-		}else if(windowMode == Display.Fullscreen){
+		}else if(windowMode == WindowMode.Fullscreen){
 			GLFWVidMode vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 			tmpWindowID = glfwCreateWindow(vidMode.width(), vidMode.height(), title, glfwGetPrimaryMonitor(), windowID);
-		}else if (windowMode == Display.Borderless) {
+		}else if (windowMode == WindowMode.Borderless) {
 			GLFWVidMode vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 			tmpWindowID = glfwCreateWindow(vidMode.width(), vidMode.height(), title, glfwGetPrimaryMonitor(), windowID);
 		}
@@ -189,7 +199,7 @@ public class Display {
 		return height;
 	}
 
-	public int getWindowMode() {
+	public WindowMode getWindowMode() {
 		return windowMode;
 	}
 

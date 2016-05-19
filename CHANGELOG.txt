@@ -97,6 +97,47 @@ Engine-Core Branch #1 - 12/05/16 to 14/05/16
 -- Added override cleanup method
 -- Added isExitRequested getter method
 
+Engine-Core Branch #2 - 17/05/16 to 19/05/16
+--------------------------------------------
+- Updated Display class
+-- Changed static final ints Windowed, Fullscreen & Borderless for enum WindowMode
+-- Changed windowMode type to enum-type WindowMode
+-- When Display is created, windowMode.namne() is printed instead of int value
+-- Changed setWindowMode method to use WindowMode enum
+-- Changed getWindowMode to return enum-type WindowMode
+
+- Updated Engine class
+-- Changed private Thread mainThread to private final Thread ENGINE_THREAD
+-- Added private final Game gameScreen
+-- Added Game gameScreen parameter to first constructor
+-- Added Game gameScreen parameter to second constructor
+-- start() method - Changed mainThread.start() to ENGINE_THREAD.start()
+-- run() method - Changed call to cleanup() with call to Exit()
+-- Added private void setupScreensOrder() method
+-- init() method - Added call to setupScreensOrder()
+-- Fixed screen.isInitialised not being set to true after screen initialisation in void update() method
+-- 
+
+- Created GameTest class which extends Game
+-- Added basic constructor
+-- Added override init() method
+-- Added override update(float deltaTime) method
+-- Added override render() method
+-- Added override cleanup() method
+
+- Moved SplashScreen class to org.bearengine.screen package
+
+- Created BearEngineSplashScreen class which extends SplashScreen
+-- Added public BearEngineSplashScreen() constructor which calls super(5)
+
+
+
+
+
+
+
+
+
 
 
 

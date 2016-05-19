@@ -1,5 +1,6 @@
-package org.bearengine.core;
+package org.bearengine.screens;
 
+import org.bearengine.core.Game;
 import org.bearengine.utils.Time;
 
 public class SplashScreen extends Game {

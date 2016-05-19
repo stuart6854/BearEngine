@@ -4,31 +4,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bearengine.graphics.Display;
+import org.bearengine.screens.BearEngineSplashScreen;
+import org.bearengine.screens.SplashScreen;
+import org.bearengine.tests.GameTest;
 import org.bearengine.utils.Time;
+
 import org.lwjgl.glfw.GLFW;
 
 public class Engine implements Runnable{
 
-	private Thread mainThread;
+	private final Thread ENGINE_THREAD;
 	
 	private static int TARGET_UPS = 25;
 	private static int TARGET_FPS = 30;
 	
+	private final Game gameScreen;
 	private List<Game> screenOrder = new ArrayList<>();
 	private int screenIndex = 0;
 	
-	public Engine(){
-		this(TARGET_UPS, TARGET_FPS);
+	public Engine(Game gameScreen){
+		this(TARGET_UPS, TARGET_FPS, gameScreen);
 	}
 	
-	public Engine(int target_ups, int target_fps) {
+	public Engine(int target_ups, int target_fps, Game gameScreen) {
 		Engine.TARGET_UPS = target_ups;
 		Engine.TARGET_FPS = target_fps;
-		this.mainThread = new Thread(this, "BearEngine-Main-Thread");
+		this.gameScreen = gameScreen;
+		this.ENGINE_THREAD = new Thread(this, "BearEngine-Main-Thread");
 	}
 
 	public void start(){
-		mainThread.start();
+		ENGINE_THREAD.start();
 	}
 	
 	@Override
@@ -37,21 +43,28 @@ public class Engine implements Runnable{
 			init();
 			EngineLoop();
 		}catch(Exception e){
+			System.err.println("BearEngine has crashed: ");
 			e.printStackTrace();
 		}finally {
-			cleanup();
+			Exit();
 		}
 	}
 	
 	private void init(){
 		GLFW.glfwInit();
+
+		setupScreensOrder();
 		
 		Display.mainDisplay.createDisplay();
 		Display.mainDisplay.setVSYNC(0);
 		Display.mainDisplay.centreOnScreen();
 		Display.mainDisplay.setCurrent();
+	}
+	
+	private void setupScreensOrder(){
+		screenOrder.add(new BearEngineSplashScreen());
 		
-		screenOrder.add(new SplashScreen(5));
+		screenOrder.add(gameScreen);
 	}
 	
 	private void EngineLoop(){
@@ -73,6 +86,7 @@ public class Engine implements Runnable{
 			}
 			render();
 			Display.mainDisplay.update();
+			
 			sync();
 			
 			fpsCounter++;
@@ -82,8 +96,7 @@ public class Engine implements Runnable{
 				Time.UPS = upsCounter;
 				fpsCounter = 0;
 				upsCounter = 0;
-				Display.mainDisplay.setTitle("BearEngine - FPS: " + Time.FPS
-												+ " UPS: " + Time.UPS);
+				Display.mainDisplay.setTitle("BearEngine - FPS: " + Time.FPS + " UPS: " + Time.UPS);
 		   }
 			
 		}
@@ -100,6 +113,7 @@ public class Engine implements Runnable{
 			}
 			System.out.println("Next Screen!");
 		}else if(!screen.isInitialised){
+			screen.isInitialised = true;
 			screen.init();
 			System.out.println("Screen Initialised!");
 		}else{
@@ -134,7 +148,8 @@ public class Engine implements Runnable{
 	}
 	
 	public static void main(String... args){
-		Engine engine = new Engine(30, 120);
+		Game game = new GameTest();
+		Engine engine = new Engine(30, 120, game);
 		engine.start();
 	}
 
