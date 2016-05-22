@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component inheritJdk="true">
+	<exclude-output/>
+	<contentEntry url="file://$MODULE_DIR$"/>
+	<lib name="PNGDecoder.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/libs/PNGDecoder.jar!/"/>
+	</lib>
+	<lib name="lwjgl.jar" scope="COMPILE">
+		<srcroot url="jar://$MODULE_DIR$/libs/LWJGL 3.0.0b/src.zip!/"/>
+		<relative-module-src project-related="jar://$PROJECT_DIR$/libs/LWJGL 3.0.0b/src.zip!/"/>
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/libs/LWJGL 3.0.0b/jar/lwjgl.jar!/"/>
+	</lib>
+</component>

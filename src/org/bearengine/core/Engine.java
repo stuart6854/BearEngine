@@ -1,16 +1,18 @@
 package org.bearengine.core;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.bearengine.debug.Debug;
 import org.bearengine.graphics.Display;
-import org.bearengine.input.Keyboard;
-import org.bearengine.input.Mouse;
-import org.bearengine.screens.BearEngineSplashScreen;
+import org.bearengine.graphics.types.Image;
+import org.bearengine.graphics.types.Texture;
+import org.bearengine.screens.SplashScreen;
 import org.bearengine.tests.GameTest;
 import org.bearengine.utils.Time;
-
+import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL11;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Engine implements Runnable{
 
@@ -37,14 +39,14 @@ public class Engine implements Runnable{
 	public void start(){
 		ENGINE_THREAD.start();
 	}
-	
+
 	@Override
 	public void run() {
 		try{
 			init();
 			EngineLoop();
 		}catch(Exception e){
-			System.err.println("BearEngine has crashed: ");
+			Debug.error("BearEngine has crashed: ");
 			e.printStackTrace();
 		}finally {
 			Exit();
@@ -53,17 +55,28 @@ public class Engine implements Runnable{
 	
 	private void init(){
 		GLFW.glfwInit();
-		
-		setupScreensOrder();
-		
+
 		Display.mainDisplay.createDisplay();
+        Display.mainDisplay.setWidthHeight(1280, 720);
 		Display.mainDisplay.setVSYNC(0);
 		Display.mainDisplay.centreOnScreen();
 		Display.mainDisplay.setCurrent();
+
+		printVersions();
+
+		setupScreensOrder();
+	}
+	
+	private void printVersions(){
+		Debug.log("LWJGL Version: " + Version.getVersion());
+		Debug.log("OpenGL Version: " + GL11.glGetString(GL11.GL_VERSION));
+		Debug.log("GLFW Version: " + GLFW.glfwGetVersionString());
+		Debug.log("");
 	}
 	
 	private void setupScreensOrder(){
-		screenOrder.add(new BearEngineSplashScreen());
+        Texture texture = new Texture().UploadTexture(Image.loadImage("resources/textures/bearengine_logo.png"));
+		screenOrder.add(new SplashScreen(.1f, texture));
 		
 		screenOrder.add(gameScreen);
 	}
@@ -86,8 +99,9 @@ public class Engine implements Runnable{
 				lag -= interval;
 			}
 			render();
-			Display.mainDisplay.update();
-			
+
+            Display.mainDisplay.update();
+
 			sync();
 			
 			fpsCounter++;
@@ -112,18 +126,22 @@ public class Engine implements Runnable{
 			if(screenIndex >= screenOrder.size()){
 				Exit();
 			}
-			System.out.println("Next Screen!");
+			Debug.log("Next Screen!");
 		}else if(!screen.isInitialised){
-			screen.isInitialised = true;
 			screen.init();
-			System.out.println("Screen Initialised!");
+            screen.isInitialised = true;
+			Debug.log("Screen Initialised!");
 		}else{
 			screen.update(deltaTime);
 		}
 	}
 	
 	private void render(){
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+
 		Game screen = screenOrder.get(screenIndex);
+        if(!screen.isInitialised) return;
+
 		screen.render();
 	}
 	
@@ -138,6 +156,10 @@ public class Engine implements Runnable{
 	}
 	
 	private void cleanup(){
+        for(Game screen : screenOrder) {//Clean all Screens just incase
+            screen.cleanup();
+        }
+
 		for (Display display : Display.displays.values()) {
 			display.destroy();
 		}
