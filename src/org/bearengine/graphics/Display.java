@@ -6,12 +6,14 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bearengine.debug.Debug;
 import org.bearengine.input.Keyboard;
 import org.bearengine.input.Mouse;
 import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
+import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
 public class Display {
@@ -36,6 +38,7 @@ public class Display {
 	
 	private String title = "BearEngine";
 	private int width = 640, height = 480;
+    public float Aspect;
 	
 	private WindowMode windowMode = WindowMode.Windowed;
 	
@@ -64,7 +67,7 @@ public class Display {
 	
 	public void createDisplay(){
 		if(windowID != NULL) {
-			System.err.println("This Display is Already Created!");
+			Debug.error("This Display is Already Created!");
 			return;
 		}
 		
@@ -85,8 +88,11 @@ public class Display {
 		setVisible(true);
 		
 		Display.displays.put(windowID, this);
+
+		GL.createCapabilities();
+        setGL();
 		
-		System.out.println(width + "x" + height + "(Mode: " + windowMode.name() + ") Display Created!");
+		Debug.log(width + "x" + height + "(Mode: " + windowMode.name() + ") Display Created!\n");
 	}
 	
 	public void update(){
@@ -100,15 +106,26 @@ public class Display {
 		Display.displays.remove(this.windowID);
 		glfwDestroyWindow(windowID);
 		this.windowID = NULL;
+
+        windowSizeCallback.release();
+        framebufferSizeCallback.release();
+        keyCallback.release();
 	}
 	
 	private void setHints(){
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 	}
-	
+
+    private void setGL(){
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+    }
+
 	private void setCallbacks(){
 		glfwSetKeyCallback(this.windowID, keyCallback = new Keyboard());
-		new Mouse().setCallbacks(this.windowID);;
+		new Mouse().setCallbacks(this.windowID);
 		
 		glfwSetWindowSizeCallback(this.windowID, this.windowSizeCallback);
 		glfwSetFramebufferSizeCallback(this.windowID, this.framebufferSizeCallback);
@@ -131,6 +148,7 @@ public class Display {
 	public void setWidthHeight(int width, int height){
 		this.width = width;
 		this.height = height;
+        this.Aspect = (float)width / (float)height;
 		updateWindowSize();
 	}
 	
@@ -184,7 +202,19 @@ public class Display {
 
 		setVisible(true);
 	}
-	
+
+    public void EnableFaceCulling(){
+        GL11.glEnable(GL11.GL_CULL_FACE);
+    }
+
+    public void DisableFaceCulling(){
+        GL11.glDisable(GL11.GL_CULL_FACE);
+    }
+
+    public void SetFaceCullingMode(int mode){
+        GL11.glCullFace(mode);
+    }
+
 	public boolean shouldClose(){
 		return glfwWindowShouldClose(this.windowID) == 0 ? false : true;
 	}

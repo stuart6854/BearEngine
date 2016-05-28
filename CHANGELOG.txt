@@ -2,7 +2,7 @@ Change Log
 ===================================
 
 master Branch #1 - 12/05/16
--------------------------
+---------------------------
 - Added .gitignore
 - Added CHANGELOG.txt
 - Added LICENSE
@@ -12,7 +12,7 @@ master Branch #1 - 12/05/16
 	- Added LWJGL3
 	
 Window-Creation Branch #1 - 12/05/16
--------------------------
+------------------------------------
 - Added Display Class
 - Display -> create() successfully creates window
 - Added update() method
@@ -131,7 +131,7 @@ Engine-Core Branch #2 - 17/05/16 to 19/05/16
 -- Added public BearEngineSplashScreen() constructor which calls super(5)
 
 Input-Handling Branch #1 - 19/05/16
---------------------------------------------
+-----------------------------------
 - Created Keyboard class extends GLFWKeyCallback
 -- Added private static byte[] KeyStates
 -- Added override void invoke method
@@ -158,8 +158,9 @@ Input-Handling Branch #1 - 19/05/16
 --- Added setting Keyboard callback to new Keyboard instance
 --- Added creating Mouse callback and calling its setCallbacks method
 
-
-
+Shaders Branch #1 - 20/05/16
+--------------------------------------------
+- Moved Project to IntelliJ IDEA IDE
 
 
 

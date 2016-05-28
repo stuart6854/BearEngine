@@ -26,5 +26,5 @@ public class Keyboard extends GLFWKeyCallback{
 		byte state = KeyStates[key];
 		return state == GLFW_PRESS || state == GLFW_REPEAT;
 	}
-	
+
 }

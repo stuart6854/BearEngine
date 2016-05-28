@@ -1,12 +1,12 @@
 package org.bearengine.input;
 
-import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import static org.lwjgl.glfw.GLFW.*;
 
+import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWCursorEnterCallback;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 
-public class Mouse{
+public class Mouse {
 
 	private static byte[] MouseState = new byte[8];
 	
@@ -14,7 +14,7 @@ public class Mouse{
 	
 	private static boolean cursorOverWindow;
 	
-	private GLFWMouseButtonCallback mouseButtonCallback = new GLFWMouseButtonCallback() {
+	private static GLFWMouseButtonCallback mouseButtonCallback = new GLFWMouseButtonCallback() {
 		
 		@Override
 		public void invoke(long window, int button, int action, int mods) {
@@ -23,7 +23,7 @@ public class Mouse{
 		
 	};
 	
-	private GLFWCursorPosCallback cursorPosCallback = new GLFWCursorPosCallback() {
+	private static GLFWCursorPosCallback cursorPosCallback = new GLFWCursorPosCallback() {
 		
 		@Override
 		public void invoke(long window, double xpos, double ypos) {
@@ -33,7 +33,7 @@ public class Mouse{
 		
 	};
 	
-	private GLFWCursorEnterCallback cursorEnterCallback = new GLFWCursorEnterCallback() {
+	private static GLFWCursorEnterCallback cursorEnterCallback = new GLFWCursorEnterCallback() {
 		
 		@Override
 		public void invoke(long window, int entered) {
@@ -41,8 +41,7 @@ public class Mouse{
 		}
 		
 	};
-	
-	
+
 	public static boolean isButtonPressed(int button){
 		return MouseState[button] == GLFW_PRESS;
 	}
@@ -55,15 +54,20 @@ public class Mouse{
 		return y;
 	}
 	
-	public static boolean isCursorOverWindow(){
-		return cursorOverWindow;
-	}
-	
+	public static boolean isCursorOverWindow() {
+        return cursorOverWindow;
+    }
 	
 	public void setCallbacks(long windowID){
 		glfwSetMouseButtonCallback(windowID, mouseButtonCallback);
 		glfwSetCursorPosCallback(windowID, cursorPosCallback);
 		glfwSetCursorEnterCallback(windowID, cursorEnterCallback);
 	}
-	
+
+    public static void Cleanup(){
+        mouseButtonCallback.release();
+        cursorPosCallback.release();
+        cursorEnterCallback.release();
+    }
+
 }

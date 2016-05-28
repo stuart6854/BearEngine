@@ -1,18 +1,26 @@
 package org.bearengine.core;
 
+import org.bearengine.debug.Debug;
+import org.bearengine.graphics.Display;
+import org.bearengine.graphics.types.Image;
+import org.bearengine.graphics.types.Texture;
+import org.bearengine.input.Keyboard;
+import org.bearengine.input.Mouse;
+import org.bearengine.objects.Camera;
+import org.bearengine.screens.SplashScreen;
+import org.bearengine.tests.GameTest;
+import org.bearengine.utils.Time;
+import org.joml.Matrix4f;
+import org.lwjgl.Version;
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL11;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bearengine.graphics.Display;
-import org.bearengine.input.Keyboard;
-import org.bearengine.input.Mouse;
-import org.bearengine.screens.BearEngineSplashScreen;
-import org.bearengine.tests.GameTest;
-import org.bearengine.utils.Time;
-
-import org.lwjgl.glfw.GLFW;
-
 public class Engine implements Runnable{
+
+    //TODO: FPS isn't being capped!
 
 	private final Thread ENGINE_THREAD;
 	
@@ -37,14 +45,14 @@ public class Engine implements Runnable{
 	public void start(){
 		ENGINE_THREAD.start();
 	}
-	
+
 	@Override
 	public void run() {
 		try{
 			init();
 			EngineLoop();
 		}catch(Exception e){
-			System.err.println("BearEngine has crashed: ");
+			Debug.error("BearEngine has crashed: ");
 			e.printStackTrace();
 		}finally {
 			Exit();
@@ -52,18 +60,33 @@ public class Engine implements Runnable{
 	}
 	
 	private void init(){
+        //Configuration.DEBUG.set(true);
+
 		GLFW.glfwInit();
-		
-		setupScreensOrder();
-		
+
 		Display.mainDisplay.createDisplay();
+        Display.mainDisplay.setWidthHeight(1280, 720);
 		Display.mainDisplay.setVSYNC(0);
 		Display.mainDisplay.centreOnScreen();
 		Display.mainDisplay.setCurrent();
+
+		printVersions();
+
+		setupScreensOrder();
+
+        Camera.Main_Camera = new Camera(new Matrix4f().ortho(-1, 1, -1, 1, 1, -1));
+	}
+	
+	private void printVersions(){
+		Debug.log("LWJGL Version: " + Version.getVersion());
+		Debug.log("OpenGL Version: " + GL11.glGetString(GL11.GL_VERSION));
+		Debug.log("GLFW Version: " + GLFW.glfwGetVersionString());
+		Debug.log("");
 	}
 	
 	private void setupScreensOrder(){
-		screenOrder.add(new BearEngineSplashScreen());
+        Texture texture = new Texture().UploadTexture(Image.loadImage("resources/textures/bearengine_logo.png"));
+		screenOrder.add(new SplashScreen(.1f, texture));
 		
 		screenOrder.add(gameScreen);
 	}
@@ -86,8 +109,9 @@ public class Engine implements Runnable{
 				lag -= interval;
 			}
 			render();
-			Display.mainDisplay.update();
-			
+
+            Display.mainDisplay.update();
+
 			sync();
 			
 			fpsCounter++;
@@ -97,7 +121,7 @@ public class Engine implements Runnable{
 				Time.UPS = upsCounter;
 				fpsCounter = 0;
 				upsCounter = 0;
-				Display.mainDisplay.setTitle("BearEngine - FPS: " + Time.FPS + " UPS: " + Time.UPS);
+				Display.mainDisplay.setTitle("BearEngine -  UPS: " + Time.UPS + " || FPS: " + Time.FPS);
 		   }
 			
 		}
@@ -112,18 +136,22 @@ public class Engine implements Runnable{
 			if(screenIndex >= screenOrder.size()){
 				Exit();
 			}
-			System.out.println("Next Screen!");
+			Debug.log("Next Screen!");
 		}else if(!screen.isInitialised){
-			screen.isInitialised = true;
 			screen.init();
-			System.out.println("Screen Initialised!");
+            screen.isInitialised = true;
+			Debug.log("Screen Initialised!");
 		}else{
 			screen.update(deltaTime);
 		}
 	}
 	
 	private void render(){
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+
 		Game screen = screenOrder.get(screenIndex);
+        if(!screen.isInitialised) return;
+
 		screen.render();
 	}
 	
@@ -138,6 +166,12 @@ public class Engine implements Runnable{
 	}
 	
 	private void cleanup(){
+        Mouse.Cleanup();
+
+        for(Game screen : screenOrder) {//Clean all Screens just in-case
+            screen.cleanup();
+        }
+
 		for (Display display : Display.displays.values()) {
 			display.destroy();
 		}
@@ -150,7 +184,7 @@ public class Engine implements Runnable{
 	
 	public static void main(String... args){
 		Game game = new GameTest();
-		Engine engine = new Engine(30, 120, game);
+		Engine engine = new Engine(30, 60, game);
 		engine.start();
 	}
 
