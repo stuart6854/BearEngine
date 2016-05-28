@@ -3,21 +3,24 @@ package org.bearengine.tests;
 import org.bearengine.core.Game;
 import org.bearengine.debug.Debug;
 import org.bearengine.graphics.Display;
+import org.bearengine.graphics.importers.OBJImporter;
 import org.bearengine.graphics.rendering.BatchRenderer;
+import org.bearengine.graphics.rendering.MeshBatchRenderer;
 import org.bearengine.graphics.shaders.Shader;
 import org.bearengine.graphics.shaders.ShaderProgram;
-import org.bearengine.graphics.types.Color;
-import org.bearengine.graphics.types.Image;
-import org.bearengine.graphics.types.Texture;
-import org.bearengine.math.types.Matrix4;
-import org.bearengine.math.types.Vector2;
-import org.bearengine.math.types.Vector3;
+import org.bearengine.graphics.types.*;
+import org.bearengine.objects.Camera;
+import org.joml.*;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengles.QCOMAlphaTest;
 
 public class GameTest extends Game {
 
     BatchRenderer renderer;
-
+    MeshBatchRenderer meshRenderer;
+    Quaterniond rot = new Quaterniond().normalize();
     Texture texture;
+    Mesh mesh;
 
 	public GameTest() {
 		super();
@@ -40,37 +43,52 @@ public class GameTest extends Game {
         shaderProgram.SpecifyVertexAttribute("position", 3);
         shaderProgram.SpecifyVertexAttribute("color", 4);
         shaderProgram.SpecifyVertexAttribute("texcoord", 2);
+        shaderProgram.SpecifyVertexAttribute("normal", 3);
 
         float x = 1;
         float y = x / Display.mainDisplay.Aspect;
-		renderer = new BatchRenderer(Matrix4.orthographic(-x, x, -y, y, 1, -1), shaderProgram);
+        Matrix4f m_ortho = new Matrix4f().ortho(-x, x, -y, y, 1, -1);
+        Camera.Main_Camera.SetProjection(m_ortho);
+
+		renderer = new BatchRenderer(Camera.Main_Camera, shaderProgram);
         renderer.Init();
 
-        texture = new Texture().UploadTexture(Image.loadImage("resources/textures/placeholder_orange_64.jpg"));
+        meshRenderer = new MeshBatchRenderer(Camera.Main_Camera, shaderProgram);
+        meshRenderer.Init();
+
+        texture = new Texture().UploadTexture(Image.loadImage("resources/textures/placeholder_orange_256.jpg"));
+
+        OBJImporter importer = new OBJImporter();
+        mesh = importer.LoadMesh("resources/models/textured-cube.obj");
 
         Debug.log("GameTest -> Init");
 	}
 
 	@Override
 	public void update(float deltaTime) {
-		
+        rot.rotateY(1f * deltaTime);
+        //rot.rotateX(0.5f * deltaTime);
 	}
 
 	@Override
 	public void render() {
-		renderer.Begin();
+        meshRenderer.Begin();
 
-        texture.Bind();
+        meshRenderer.AddMesh(mesh, new Matrix4d().translate(0, 0f, 0).rotate(rot).scale(.25f));
 
-        renderer.AddVertex(new Vector3(-.2f, .2f, 0), new Color(1, 1, 1), new Vector2(0, 1));
-        renderer.AddVertex(new Vector3(-.2f, -.2f, 0), new Color(1, 1, 1), new Vector2(0, 0));
-        renderer.AddVertex(new Vector3(.2f, -.2f, 0), new Color(1, 1, 1), new Vector2(1, 0));
+        meshRenderer.End();
 
-        renderer.AddVertex(new Vector3(.2f, -.2f, 0), new Color(1, 1, 1), new Vector2(1, 0));
-        renderer.AddVertex(new Vector3(-.2f, .2f, 0), new Color(1, 1, 1), new Vector2(0, 1));
-        renderer.AddVertex(new Vector3(.2f, .2f, 0), new Color(1, 1, 1), new Vector2(1, 1));
-
-        renderer.End();
+//		renderer.Begin();
+//
+//        texture.Bind();
+//
+//        renderer.AddMesh(null, new Matrix4d().translate(-0.4f, 0.2f, 0).rotate(rot).scale(.5f));
+//
+//        renderer.AddVertex(new Vector3d(.2f, -.2f, 0), new Color(1, 1, 1), new Vector2f(1, 0));
+//        renderer.AddVertex(new Vector3d(-.2f, .2f, 0), new Color(1, 1, 1), new Vector2f(0, 1));
+//        renderer.AddVertex(new Vector3d(.2f, .2f, 0), new Color(1, 1, 1), new Vector2f(1, 1));
+//
+//        renderer.End();
 	}
 
 	@Override

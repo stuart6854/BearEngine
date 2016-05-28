@@ -74,8 +74,6 @@ public class Shader {
 			Compiled = true;
             Debug.log("Shader -> (" + type + ") Source Code Compiled.");
 		}
-
-        GLError.Check("Shader -> CompileShader() -> End");
 	}
 		
 }

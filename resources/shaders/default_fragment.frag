@@ -2,6 +2,7 @@
 
 in vec4 vertexColor;
 in vec2 textureCoord;
+in vec3 vertexNormal;
 
 out vec4 fragColor;
 

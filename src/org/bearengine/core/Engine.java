@@ -4,9 +4,13 @@ import org.bearengine.debug.Debug;
 import org.bearengine.graphics.Display;
 import org.bearengine.graphics.types.Image;
 import org.bearengine.graphics.types.Texture;
+import org.bearengine.input.Keyboard;
+import org.bearengine.input.Mouse;
+import org.bearengine.objects.Camera;
 import org.bearengine.screens.SplashScreen;
 import org.bearengine.tests.GameTest;
 import org.bearengine.utils.Time;
+import org.joml.Matrix4f;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
@@ -15,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Engine implements Runnable{
+
+    //TODO: FPS isn't being capped!
 
 	private final Thread ENGINE_THREAD;
 	
@@ -54,6 +60,8 @@ public class Engine implements Runnable{
 	}
 	
 	private void init(){
+        //Configuration.DEBUG.set(true);
+
 		GLFW.glfwInit();
 
 		Display.mainDisplay.createDisplay();
@@ -65,6 +73,8 @@ public class Engine implements Runnable{
 		printVersions();
 
 		setupScreensOrder();
+
+        Camera.Main_Camera = new Camera(new Matrix4f().ortho(-1, 1, -1, 1, 1, -1));
 	}
 	
 	private void printVersions(){
@@ -111,7 +121,7 @@ public class Engine implements Runnable{
 				Time.UPS = upsCounter;
 				fpsCounter = 0;
 				upsCounter = 0;
-				Display.mainDisplay.setTitle("BearEngine - FPS: " + Time.FPS + " UPS: " + Time.UPS);
+				Display.mainDisplay.setTitle("BearEngine -  UPS: " + Time.UPS + " || FPS: " + Time.FPS);
 		   }
 			
 		}
@@ -156,7 +166,9 @@ public class Engine implements Runnable{
 	}
 	
 	private void cleanup(){
-        for(Game screen : screenOrder) {//Clean all Screens just incase
+        Mouse.Cleanup();
+
+        for(Game screen : screenOrder) {//Clean all Screens just in-case
             screen.cleanup();
         }
 
@@ -172,7 +184,7 @@ public class Engine implements Runnable{
 	
 	public static void main(String... args){
 		Game game = new GameTest();
-		Engine engine = new Engine(30, 120, game);
+		Engine engine = new Engine(30, 60, game);
 		engine.start();
 	}
 

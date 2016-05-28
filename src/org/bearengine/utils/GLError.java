@@ -2,6 +2,7 @@ package org.bearengine.utils;
 
 import org.bearengine.debug.Debug;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL20;
 
 import java.nio.ByteBuffer;
@@ -15,6 +16,8 @@ import static org.lwjgl.opengl.GL20.GL_INFO_LOG_LENGTH;
  * Created by Stuart on 21/05/2016.
  */
 public class GLError {
+
+    public static GLFWErrorCallback glfwErrorCallback = GLFWErrorCallback.createPrint().set();
 
     public static boolean Check(String referrer){
         int error = glGetError();

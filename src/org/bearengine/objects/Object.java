@@ -1,9 +1,6 @@
 package org.bearengine.objects;
 
-import javafx.geometry.Pos;
-import org.bearengine.math.types.Matrix4;
-import org.bearengine.math.types.Quaternion;
-import org.bearengine.math.types.Vector3;
+import org.joml.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,32 +12,58 @@ public class Object {
 
     public static List<Object> Objects = new ArrayList<>();
 
-    public Vector3 Position;
-    public Quaternion Rotation;
-    public Vector3 Scale;
+    public Vector3d Position;
+    public Quaterniond Rotation;
+    public Vector3d Scale;
 
-    private Matrix4 transform;
+    private Matrix4d m_transformation;
     private boolean transformIsDirty = true;
 
     public Object(){
-        this.Position = new Vector3();
-        this.Rotation = new Quaternion();
-        this.Scale = new Vector3();
+        this.Position = new Vector3d();
+        this.Rotation = new Quaterniond();
+        this.Scale = new Vector3d();
 
         Objects.add(this);
     }
 
-    public Matrix4 GetTransform(){
-        if(transformIsDirty){
-            UpdateTransform();
-        }
-        return transform;
+    public void SetPosition(float x, float y, float z){
+        Position.set(x, y, z);
     }
 
-    private void UpdateTransform(){
-        transform = Matrix4.translate(Position.x, Position.y, Position.z)
-                    .multiply(Matrix4.rotation(Rotation))
-                    .multiply(Matrix4.scale(Scale.x, Scale.y, Scale.z));
+    public void TranslatePosition(Vector3f translation){
+        this.TranslatePosition(translation.x, translation.y, translation.z);
+    }
+
+    public void TranslatePosition(float x, float y, float z){
+        Position.add(x, y, z);
+    }
+
+    public void SetRotation(float x, float y, float z){
+        Rotation.set(x, y, z);
+    }
+
+    public void Rotate(Vector3f rotation){
+        Rotation.rotate(rotation.x, rotation.y, rotation.z);
+    }
+
+    public void Rotate(float x, float y, float z){
+        Rotation.rotate(x, y, z);
+    }
+
+    public void SetScale(float x, float y, float z){
+        Scale.set(x, y, z);
+    }
+
+    public Matrix4d GetTransformMatrix(){
+        if(transformIsDirty){
+            UpdateTransformMatrix();
+        }
+        return m_transformation;
+    }
+
+    private void UpdateTransformMatrix(){
+        m_transformation.identity().translate(Position).rotate(Rotation).scale(Scale);
 
         transformIsDirty = false;
     }
@@ -50,7 +73,7 @@ public class Object {
         Position = null;
         Rotation = null;
         Scale = null;
-        transform = null;
+        m_transformation = null;
     }
 
 }

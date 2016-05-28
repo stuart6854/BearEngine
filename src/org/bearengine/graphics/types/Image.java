@@ -42,6 +42,9 @@ public class Image {
             case ".jpg":
                 image = loadJPGImage(imagePath);
                 break;
+            default:
+                Debug.error("Image -> loadImage() -> File Extension(" + imageExtension + ") Not Supported: " + imagePath);
+                break;
         }
 
         return image;

@@ -38,16 +38,12 @@ public class Texture {
 
         glGenerateMipmap(GL_TEXTURE_2D);
 
-        GLError.Check("Texture -> UploadTexture()");
-
         return this;
     }
 
     public void Bind(){
         if(Disposed) return;
         glBindTexture(GL_TEXTURE_2D, ID);
-
-        GLError.Check("Texture -> Bind()");
     }
 
     public void Cleanup(){

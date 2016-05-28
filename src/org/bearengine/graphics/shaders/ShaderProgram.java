@@ -2,9 +2,12 @@ package org.bearengine.graphics.shaders;
 
 import org.bearengine.debug.Debug;
 import org.bearengine.graphics.types.VertexAttribute;
-import org.bearengine.math.types.Matrix4;
 import org.bearengine.utils.GLError;
+import org.joml.Matrix4d;
+import org.joml.Matrix4f;
+import org.lwjgl.BufferUtils;
 
+import java.nio.FloatBuffer;
 import java.util.*;
 
 import static org.lwjgl.opengl.GL20.*;
@@ -50,8 +53,6 @@ public class ShaderProgram {
 		
 		if(shader.Compiled)
 			glAttachShader(ProgramID, shader.ShaderID);
-
-        GLError.Check("ShaderProgram -> AttachShader() -> PrgID: " + ProgramID + ", ShaderID: " + shader.ShaderID);
 	}
 	
 	public void Link(){
@@ -80,8 +81,6 @@ public class ShaderProgram {
 		
 		glUseProgram(ProgramID);
 		CURRENT = this;
-
-        GLError.Check("ShaderProgram -> Bind()");
 	}
 
     public void EnableAttributes(){
@@ -89,9 +88,6 @@ public class ShaderProgram {
             if(vertexAttribute.Location == -1) continue;
 
             glEnableVertexAttribArray(vertexAttribute.Location);
-
-            if(GLError.Check("ShaderProgram -> EnableAttributes() -> Enable " + vertexAttribute.Name))
-                Debug.error("ShaderProgram -> EnableAttributes() -> Loc: " + vertexAttribute.Location);
         }
     }
 
@@ -102,9 +98,6 @@ public class ShaderProgram {
             Attributes.put(name, new VertexAttribute(location, name, numOfDataComponents));
 
         TotalAttributeComponentNum += numOfDataComponents;
-
-        if(GLError.Check("ShaderProgram -> SpecifyVertexAttribute() -> " + name))
-            Debug.error("ShaderProgram -> SpecifyVertexAttribute() -> Loc: " + location);
     }
 
     public int getAttribute(String name){
@@ -187,10 +180,18 @@ public class ShaderProgram {
         setUniform(getUniform(location), values);
     }
 
-    public void setUniforms(String name, Matrix4 value){
+    public void setUniforms(String name, Matrix4d value){
         Bind();
 
-        glUniformMatrix4fv(getUniform(name), false, value.getBuffer());
+        FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
+        glUniformMatrix4fv(getUniform(name), false, value.get(buffer));
+    }
+
+    public void setUniforms(String name, Matrix4f value){
+        Bind();
+
+        FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
+        glUniformMatrix4fv(getUniform(name), false, value.get(buffer));
     }
 
     //TODO: Add Setting Vectors, Matrices, Colours, etc. Uniforms

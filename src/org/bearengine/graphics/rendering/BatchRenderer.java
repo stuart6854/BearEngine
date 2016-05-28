@@ -1,13 +1,13 @@
 package org.bearengine.graphics.rendering;
 
-import org.bearengine.graphics.Display;
+import jdk.nashorn.internal.ir.IfNode;
+import org.bearengine.debug.Debug;
 import org.bearengine.graphics.shaders.ShaderProgram;
 import org.bearengine.graphics.types.Color;
 import org.bearengine.graphics.types.VertexAttribute;
-import org.bearengine.math.types.Matrix4;
-import org.bearengine.math.types.Vector2;
-import org.bearengine.math.types.Vector3;
+import org.bearengine.objects.Camera;
 import org.bearengine.utils.GLError;
+import org.joml.*;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
@@ -22,18 +22,21 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class BatchRenderer {
 
-    private int VAO_ID;
-    private int VBO_ID;
+    protected int VAO_ID;
+    protected int VBO_ID;
 
-    private FloatBuffer Vertices;
-    private int NumOfVertices;
-    private boolean isDrawing;
+    protected FloatBuffer Vertices;
+    protected int NumOfVertices;
+    protected boolean isDrawing;
 
-    private ShaderProgram shaderProgram;
-    private final Matrix4 projection;
+    private int Batch_Size = 4096;
+    private static int MAX_BATCH_SIZE = 1024 * 1024;
 
-    public BatchRenderer(Matrix4 projection, ShaderProgram shaderProgram){
-        this.projection = projection;
+    protected final Camera camera;
+    protected final ShaderProgram shaderProgram;
+
+    public BatchRenderer(Camera camera, ShaderProgram shaderProgram){
+        this.camera = camera;
         this.shaderProgram = shaderProgram;
     }
 
@@ -47,7 +50,7 @@ public class BatchRenderer {
         glBindBuffer(GL_ARRAY_BUFFER, VBO_ID);
 
         //Create FloatBuffer
-        Vertices = BufferUtils.createFloatBuffer(4096);
+        Vertices = BufferUtils.createFloatBuffer(Batch_Size * 12);
 
         //Upload null data to allocate storage for the VBO
         long size = Vertices.capacity() * Float.BYTES;
@@ -72,15 +75,15 @@ public class BatchRenderer {
 
     private void Flush(){
         if(!isDrawing) return; //Cant render if we haven't drawn anything
-        if(NumOfVertices == 0) return;
+        if(NumOfVertices == 0) return; // No point in rendering if we haven't got anything to render
 
         Vertices.flip();
 
         shaderProgram.Bind();
 
-        shaderProgram.setUniforms("projection", projection);
-        shaderProgram.setUniforms("view", Matrix4.translate(0, 0, 0));
-        shaderProgram.setUniforms("model", Matrix4.translate(0, 0, 0));
+        shaderProgram.setUniforms("projection", camera.GetProjection());
+        shaderProgram.setUniforms("view", camera.GetViewMatrix());
+        shaderProgram.setUniforms("model", new Matrix4f().translate(0, 0, 0));
 
         glBindVertexArray(VAO_ID);
         shaderProgram.EnableAttributes();
@@ -95,16 +98,37 @@ public class BatchRenderer {
         //Clear Vertex data for next batch
         Vertices.clear();
         NumOfVertices = 0;
-
-        GLError.Check("BatchRenderer -> Flush()");
-
-        //Debug.log("BatchRenderer -> Flush.");
     }
 
-    public void AddVertex(Vector3 pos, Color vertexColor, Vector2 textureCoords){
-        if(Vertices.remaining() < 9){
-            //We need for space in buffer, so flush it
-            Flush();
+    public void AddVertex(Vector3d pos){
+        AddVertex(pos, Color.WHITE);
+    }
+
+    public void AddVertex(Vector3d pos, Color vertexColor){
+        AddVertex(pos, vertexColor, new Vector2f());
+    }
+
+    public void AddVertex(Vector3d pos, Vector2f textureCoords){
+        AddVertex(pos, Color.WHITE, textureCoords, new Vector3d());
+    }
+
+    public void AddVertex(Vector3d pos, Color vertexColor, Vector2f textureCoords){
+        AddVertex(pos, vertexColor, textureCoords, new Vector3d());
+    }
+
+    public void AddVertex(Vector3d pos, Vector2f textureCoords, Vector3d normal){
+        AddVertex(pos, Color.WHITE, textureCoords, normal);
+    }
+
+    public void AddVertex(Vector3d pos, Color vertexColor, Vector2f textureCoords, Vector3d normal){
+        if(NumOfVertices >= Batch_Size){
+            if(Batch_Size >= MAX_BATCH_SIZE){
+                //Dont resize more than max batch size
+                Flush();
+            }else{
+                //Resize batch by adding block of vertices at the end
+                SetBatchSize(Batch_Size + Math.min(4096, MAX_BATCH_SIZE - Batch_Size));
+            }
         }
 
         float r = vertexColor.r;
@@ -115,11 +139,27 @@ public class BatchRenderer {
         float texX = textureCoords.x;
         float texY = textureCoords.y;
 
-        Vertices.put(pos.x).put(pos.y).put(pos.z)//Vertex Position
+        float normX = (float)normal.x;
+        float normY = (float)normal.x;
+        float normZ = (float)normal.x;
+
+        Vertices.put((float)pos.x).put((float)pos.y).put((float)pos.z)//Vertex Position
                 .put(r).put(g).put(b).put(a)//Vertex Color
-                .put(texX).put(texY);//Vertex Texture Coord
+                .put(texX).put(texY)//Vertex Texture Coord
+                .put(normX).put(normY).put(normZ);//Vertex Normal
 
         NumOfVertices += 1;
+    }
+
+    private void SetBatchSize(int size){
+        if(size == Batch_Size) return;
+        Batch_Size = size;
+
+        FloatBuffer newBuffer = BufferUtils.createFloatBuffer(Batch_Size * 12);
+        newBuffer.put(Vertices);
+        Vertices = newBuffer;
+
+        glBufferData(GL_ARRAY_BUFFER, newBuffer.capacity() * Float.BYTES, GL_DYNAMIC_DRAW);
     }
 
     private void SpecifyVertexAttributes(){
@@ -134,8 +174,6 @@ public class BatchRenderer {
 
             pointerOffset += vertexAttribute.NumOfDataComponents;
         }
-
-        GLError.Check("BatchRenderer -> SpecifyVertexAttributes()");
     }
 
     public void Cleanup(){

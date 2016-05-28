@@ -7,6 +7,13 @@ import org.bearengine.math.MathUtils;
  */
 public class Color {
 
+    public static Color BLACK = new Color(0, 0, 0);
+    public static Color WHITE = new Color(1, 1, 1);
+
+    public static Color RED = new Color(1, 0, 0);
+    public static Color GREEN = new Color(0, 1, 0);
+    public static Color BLUE = new Color(0, 0, 1);
+
     public float r, g, b, a;
 
     public Color(){

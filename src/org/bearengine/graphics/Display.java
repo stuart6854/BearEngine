@@ -106,6 +106,10 @@ public class Display {
 		Display.displays.remove(this.windowID);
 		glfwDestroyWindow(windowID);
 		this.windowID = NULL;
+
+        windowSizeCallback.release();
+        framebufferSizeCallback.release();
+        keyCallback.release();
 	}
 	
 	private void setHints(){
@@ -115,12 +119,13 @@ public class Display {
     private void setGL(){
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glEnable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
     }
 
 	private void setCallbacks(){
 		glfwSetKeyCallback(this.windowID, keyCallback = new Keyboard());
-		new Mouse().setCallbacks(this.windowID);;
+		new Mouse().setCallbacks(this.windowID);
 		
 		glfwSetWindowSizeCallback(this.windowID, this.windowSizeCallback);
 		glfwSetFramebufferSizeCallback(this.windowID, this.framebufferSizeCallback);
@@ -197,7 +202,19 @@ public class Display {
 
 		setVisible(true);
 	}
-	
+
+    public void EnableFaceCulling(){
+        GL11.glEnable(GL11.GL_CULL_FACE);
+    }
+
+    public void DisableFaceCulling(){
+        GL11.glDisable(GL11.GL_CULL_FACE);
+    }
+
+    public void SetFaceCullingMode(int mode){
+        GL11.glCullFace(mode);
+    }
+
 	public boolean shouldClose(){
 		return glfwWindowShouldClose(this.windowID) == 0 ? false : true;
 	}
