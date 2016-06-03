@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="BearEngine">
+    <output-path>$PROJECT_DIR$/Builds</output-path>
+    <root id="archive" name="BearEngine.jar">
+      <element id="module-output" name="BearEngine" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/PNGDecoder.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/LWJGL 3.0.0b/jar/lwjgl.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/LWJGL 3.0.0b/native/lwjgl3-natives.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

@@ -9,9 +9,11 @@
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/bin" />
+    <output-test url="file://$MODULE_DIR$/out/test/BearEngine" />
     <exclude-output />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/resources" type="java-resource" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="inheritedJdk" />
@@ -25,7 +27,7 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="lwjgl.jar">
+      <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/libs/LWJGL 3.0.0b/jar/lwjgl.jar!/" />
         </CLASSES>
