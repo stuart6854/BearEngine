@@ -46,7 +46,7 @@ public class Camera extends Object {
     }
 
     private void UpdateViewMatrix() {
-        m_view.identity().translate(Position.negate()).rotate(Rotation);
+        m_view.identity().translate(-Position.x, -Position.y, -Position.z).rotate(Rotation);
     }
 
 }

@@ -15,12 +15,12 @@ public class Object {
 
     public static List<Object> Objects = new ArrayList<>();
 
-    public Vector3d Position;
-    public Quaterniond Rotation;
-    public Vector3d Scale;
+    protected Vector3d Position;
+    protected Quaterniond Rotation;
+    protected Vector3d Scale;
 
-    private Matrix4d m_transformation;
-    private boolean transformIsDirty = true;
+    protected final Matrix4d m_transformation;
+    protected boolean transformIsDirty = true;
 
     public Object(){
         this.Position = new Vector3d(0, 0, 0);
@@ -32,17 +32,20 @@ public class Object {
         Objects.add(this);
     }
 
-    public void SetPosition(float x, float y, float z){
+    public void setPosition(Vector3d position){
+        SetPosition(position.x, position.y, position.z);
+    }
+
+    public void SetPosition(double x, double y, double z){
         Position.set(x, y, z);
         transformIsDirty = true;
     }
 
-    public void TranslatePosition(Vector3f translation){
-        this.TranslatePosition(translation.x, translation.y, translation.z);
-        transformIsDirty = true;
+    public void MovePosition(Vector3f translation){
+        this.MovePosition(translation.x, translation.y, translation.z);
     }
 
-    public void TranslatePosition(float x, float y, float z){
+    public void MovePosition(float x, float y, float z){
         Position.add(x, y, z);
         transformIsDirty = true;
     }
@@ -53,8 +56,7 @@ public class Object {
     }
 
     public void Rotate(Vector3f rotation){
-        Rotation.rotate(rotation.x, rotation.y, rotation.z);
-        transformIsDirty = true;
+        this.Rotate(rotation.x, rotation.y, rotation.z);
     }
 
     public void Rotate(float x, float y, float z){
@@ -79,12 +81,24 @@ public class Object {
         transformIsDirty = false;
     }
 
+    public Vector3d getPosition() {
+        return Position;
+    }
+
+    public Quaterniond getRotation() {
+        return Rotation;
+    }
+
+    public Vector3d getScale() {
+        return Scale;
+    }
+
     public void Destroy(){
         Objects.remove(this);
         Position = null;
         Rotation = null;
         Scale = null;
-        m_transformation = null;
+        m_transformation.zero();
     }
 
 }

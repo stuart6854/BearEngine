@@ -22,11 +22,11 @@ public class RenderModel {
 
     public static List<RenderModel> Models = new ArrayList<>();
 
-    private int VAO_ID;
-    private int INDEX_VBO_ID;
-    private int[] VBO_IDs;
+    private final int VAO_ID;
+    private final int INDEX_VBO_ID;
+    private final int[] VBO_IDs;
 
-    private ArrayList<Object> Transforms;
+    private final ArrayList<Object> Transforms;
 
     public RenderModel(int vao_id, int index_vbo_id, int[] vbos){
         this.VAO_ID = vao_id;
@@ -62,6 +62,8 @@ public class RenderModel {
             glDeleteBuffers(vbo);
 
         glDeleteBuffers(INDEX_VBO_ID);
+
+        Transforms.clear();
     }
 
     ///RENDER-MODEL FACTORY///
