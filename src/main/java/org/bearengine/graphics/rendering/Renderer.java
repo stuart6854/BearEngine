@@ -8,6 +8,7 @@ import main.java.org.bearengine.objects.Camera;
 import main.java.org.bearengine.objects.Object;
 import main.java.org.bearengine.utils.GLError;
 import main.java.org.joml.Matrix4d;
+import main.java.org.joml.Matrix4f;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +36,6 @@ public class Renderer {
 
             for(Object obj : mesh.renderModel.GetTransforms()) {
                 Matrix4d transform = obj.GetTransformMatrix();
-                transform.rotateY(0.0001f);
                 mesh.material.shaderProgram.setUniform("model", transform);
 
                 glDrawElements(GL_TRIANGLES, mesh.IndicesCount, GL_UNSIGNED_INT, 0);

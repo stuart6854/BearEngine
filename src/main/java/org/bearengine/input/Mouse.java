@@ -32,15 +32,16 @@ public class Mouse {
 		}
 		
 	};
-	
+
 	private static GLFWCursorEnterCallback cursorEnterCallback = new GLFWCursorEnterCallback() {
-		
+
 		@Override
-		public void invoke(long window, int entered) {
-			cursorOverWindow = (entered == 1);
+		public void invoke(long window, boolean entered) {
+			cursorOverWindow = entered;
 		}
-		
+
 	};
+
 
 	public static boolean isButtonPressed(int button){
 		return MouseState[button] == GLFW_PRESS;

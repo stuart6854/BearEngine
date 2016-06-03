@@ -109,9 +109,9 @@ public class Display {
 		glfwDestroyWindow(windowID);
 		this.windowID = NULL;
 
-        windowSizeCallback.release();
-        framebufferSizeCallback.release();
-        keyCallback.release();
+        windowSizeCallback.free();
+        framebufferSizeCallback.free();
+        keyCallback.free();
 	}
 	
 	private void setHints(){
@@ -222,7 +222,7 @@ public class Display {
     }
 
 	public boolean shouldClose(){
-		return glfwWindowShouldClose(this.windowID) == 0 ? false : true;
+		return glfwWindowShouldClose(this.windowID);
 	}
 	
 	///Getters///

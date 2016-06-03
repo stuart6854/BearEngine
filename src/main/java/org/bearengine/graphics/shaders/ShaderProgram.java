@@ -6,6 +6,7 @@ import main.java.org.joml.Matrix4d;
 import main.java.org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 
+import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.util.*;
 
@@ -20,17 +21,14 @@ public class ShaderProgram {
 	
 	public Shader VertexShader;
 	public Shader FragmentShader;
-	
+
 	private final Map<String, Integer> Uniforms;
-	public final Map<String, VertexAttribute> Attributes;
-    public int TotalAttributeComponentNum;
 
     public boolean Initialised = false;
 	public boolean Disposed = false;
 	
 	public ShaderProgram(){
 		this.Uniforms = new HashMap<>();
-		this.Attributes = new LinkedHashMap<>();
 	}
 	
 	public void Initialise(){
@@ -90,36 +88,6 @@ public class ShaderProgram {
 		glUseProgram(ProgramID);
 		CURRENT = this;
 	}
-
-    public void EnableAttributes(){
-        for(VertexAttribute vertexAttribute : Attributes.values()){
-            if(vertexAttribute.Location == -1) continue;
-
-            glEnableVertexAttribArray(vertexAttribute.Location);
-        }
-    }
-
-    public void SpecifyVertexAttribute(String name, int numOfDataComponents){
-        int location = getAttribute(name);
-
-        if(location != -1)
-            Attributes.put(name, new VertexAttribute(location, name, numOfDataComponents));
-
-        TotalAttributeComponentNum += numOfDataComponents;
-    }
-
-    public int getAttribute(String name){
-        Bind();
-
-        if(Attributes.containsKey(name))
-            return Attributes.get(name).Location;
-
-        int location = glGetAttribLocation(ProgramID, name);
-        if(location == -1)
-            Debug.error("ShaderProgram -> getAttribute() -> Could not find Attribute: " + name);
-
-        return location;
-    }
 
 	public int getUniform(String name){
         Bind();
@@ -193,7 +161,6 @@ public class ShaderProgram {
 
         FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
         glUniformMatrix4fv(getUniform(name), false, value.get(buffer));
-        //Debug.log("glUniformMatrix4fv(" + name + "): " + getUniform(name));
     }
 
     public void setUniform(String name, Matrix4f value){
@@ -205,19 +172,11 @@ public class ShaderProgram {
 
     //TODO: Add Setting Vectors, Matrices, Colours, etc. Uniforms
 
-    private void DisableAttributes(){
-        for(VertexAttribute attribute : Attributes.values()){
-            glDisableVertexAttribArray(attribute.Location);
-        }
-    }
-
 	public void Cleanup(){
         Debug.log("ShaderProgram -> Cleaning Up.");
 
 		Disposed = true;
 		if(ProgramID != 0){
-            DisableAttributes();
-
 			if(VertexShader.ShaderID != 0)
 				glDetachShader(ProgramID, VertexShader.ShaderID);
 			
@@ -226,6 +185,7 @@ public class ShaderProgram {
 			
 			glDeleteProgram(ProgramID);
 		}
+        Uniforms.clear();
 	}
 
 }
