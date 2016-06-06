@@ -16,6 +16,8 @@ public class Texture {
 
     public boolean Disposed = false;
 
+    public int Width, Height;
+
     public Texture(){
         this.ID = GenTextureID();
     }
@@ -28,6 +30,9 @@ public class Texture {
         if(Disposed) return null; //On the off-chance Cleanup() was called
 
         Debug.log("Texture -> Creating Texture from: " + image.Name);
+
+        this.Width = image.Width;
+        this.Height = image.Height;
 
         Bind();
 

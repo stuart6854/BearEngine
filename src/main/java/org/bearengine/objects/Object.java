@@ -13,6 +13,8 @@ import java.util.List;
  */
 public class Object {
 
+    public String Name = "UN-NAMED";
+
     public static List<Object> Objects = new ArrayList<>();
 
     protected Vector3d Position;

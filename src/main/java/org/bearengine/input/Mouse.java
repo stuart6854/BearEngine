@@ -10,8 +10,10 @@ public class Mouse {
 
 	private static byte[] MouseState = new byte[8];
 	
-	private static double x, y;
-	
+	private static float x, y;
+	private static float prevx, prevy;
+	private static float dx, dy;
+
 	private static boolean cursorOverWindow;
 	
 	private static GLFWMouseButtonCallback mouseButtonCallback = new GLFWMouseButtonCallback() {
@@ -26,9 +28,15 @@ public class Mouse {
 	private static GLFWCursorPosCallback cursorPosCallback = new GLFWCursorPosCallback() {
 		
 		@Override
-		public void invoke(long window, double xpos, double ypos) {
-			x = xpos;
-			y = ypos;
+		public void invoke(long window, double x, double y) {
+            prevx = Mouse.x;
+            prevy = Mouse.y;
+
+			Mouse.x = (float)x;
+			Mouse.y = (float)y;
+
+            dx = Mouse.x - Mouse.prevx;
+            dy = Mouse.y - Mouse.prevy;
 		}
 		
 	};
@@ -54,7 +62,19 @@ public class Mouse {
 	public static double getMouseY(){
 		return y;
 	}
-	
+
+    public static double getDX(){
+        float dx = Mouse.dx;
+        Mouse.dx = 0;
+        return dx;
+    }
+
+    public static double getDY(){
+        float dy = Mouse.dy;
+        Mouse.dy = 0;
+        return dy;
+    }
+
 	public static boolean isCursorOverWindow() {
         return cursorOverWindow;
     }

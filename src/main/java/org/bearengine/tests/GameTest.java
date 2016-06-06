@@ -2,22 +2,27 @@ package main.java.org.bearengine.tests;
 
 import main.java.org.bearengine.core.Game;
 import main.java.org.bearengine.debug.Debug;
+import main.java.org.bearengine.font.Font;
 import main.java.org.bearengine.graphics.Display;
 import main.java.org.bearengine.graphics.importers.OBJImporter;
 import main.java.org.bearengine.graphics.rendering.Renderer;
+import main.java.org.bearengine.graphics.shaders.Shader;
 import main.java.org.bearengine.graphics.shaders.ShaderProgram;
-import main.java.org.bearengine.graphics.types.*;
+import main.java.org.bearengine.graphics.types.Color;
+import main.java.org.bearengine.graphics.types.Image;
+import main.java.org.bearengine.graphics.types.Mesh;
+import main.java.org.bearengine.graphics.types.Texture;
 import main.java.org.bearengine.objects.Camera;
 import main.java.org.bearengine.objects.GameObject;
 import main.java.org.bearengine.utils.ResourceLoader;
 import main.java.org.joml.Matrix4f;
-import main.java.org.bearengine.graphics.shaders.Shader;
 
 public class GameTest extends Game {
 
     Texture texture;
     Mesh mesh;
     GameObject object;
+    GameObject textObj;
 
 	public GameTest() {
 		super();
@@ -43,13 +48,13 @@ public class GameTest extends Game {
         float x = 2;
         float y = x / Display.mainDisplay.Aspect;
         //Camera.Main_Camera.SetProjection(new Matrix4f().ortho(-x, x, -y, y, 1, -1));
-        Camera.Main_Camera.SetProjection(new Matrix4f().perspective((float)Math.toRadians(60.0f), Display.mainDisplay.Aspect, 0.01f, 1000.0f));
+        Camera.Main_Camera.SetProjection(new Matrix4f().perspective((float)Math.toRadians(60.0f), Display.mainDisplay.Aspect, 0.1f, 1000.0f));
         Camera.Main_Camera.SetPosition(0, 0, 1);
 
         texture = new Texture().UploadTexture(Image.GetImage("textures/placeholder_orange_256.jpg", ResourceLoader.FileType.Internal));
 
         OBJImporter importer = new OBJImporter();
-        mesh = importer.LoadMesh("models/square.obj");
+        mesh = importer.LoadMesh("models/textured-cube.obj");
         mesh.material.shaderProgram = shaderProgram;
         mesh.material.SetTexture(texture);
 
@@ -60,16 +65,26 @@ public class GameTest extends Game {
         Display.mainDisplay.SetClearColor(new Color(1, 0, 1));
 
         Debug.log("GameTest -> Init End.");
+
+        textObj = new GameObject();
+
+        Font.test();
+        textObj.setMesh(Font.CreateMesh("A", 0, 0, Color.BLACK));
+        textObj.getMesh().material.shaderProgram = shaderProgram;
+        textObj.SetPosition(0, 0, -10);
+        textObj.SetScale(.5f, .5f, 1);
 	}
 
 	@Override
 	public void update(float deltaTime) {
-        object.Rotate(0, .75f * deltaTime, 0);
+        object.Rotate(0, 1f * deltaTime, 0);
 	}
 
 	@Override
 	public void render() {
         Renderer.Render();
+
+        //Font.DrawString("Test", 0, 0, Color.BLACK);
 	}
 
 	@Override

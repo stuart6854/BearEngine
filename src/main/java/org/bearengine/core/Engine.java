@@ -3,8 +3,10 @@ package main.java.org.bearengine.core;
 import main.java.org.bearengine.debug.Debug;
 import main.java.org.bearengine.graphics.Display;
 import main.java.org.bearengine.graphics.types.Image;
+import main.java.org.bearengine.input.Keyboard;
 import main.java.org.bearengine.input.Mouse;
 import main.java.org.bearengine.objects.Camera;
+import main.java.org.bearengine.objects.DevCamera;
 import main.java.org.bearengine.tests.GameTest;
 import main.java.org.bearengine.utils.ResourceLoader;
 import main.java.org.bearengine.graphics.types.Texture;
@@ -16,7 +18,6 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.Configuration;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +73,7 @@ public class Engine implements Runnable{
 
 		Display.mainDisplay.createDisplay();
         Display.mainDisplay.setWidthHeight(1280, 720);
-		Display.mainDisplay.setVSYNC(0);
+		Display.mainDisplay.setVSYNC(1);
 		Display.mainDisplay.centreOnScreen();
 		Display.mainDisplay.setCurrent();
 
@@ -97,50 +98,41 @@ public class Engine implements Runnable{
 		
 		screenOrder.add(gameScreen);
 	}
-	
-	private void EngineLoop(){
+
+    private void EngineLoop(){
         Debug.log("Engine -> Starting Game-Loop.");
+
+        long lastSec = System.currentTimeMillis();
+        int millis, frames = 0;
+
+        long lastTime = System.nanoTime();
+
         Time.init();
 
-        double lag = 0.0f;
-		double interval = 1.0f / TARGET_UPS;
-		
-		int fpsCounter = 0, upsCounter = 0;
-	    long lastSec = System.currentTimeMillis();
-	    
-		while(!Display.mainDisplay.shouldClose()){
-			double elapsedTime = Time.getElapsedTime();
-			lag += elapsedTime;
+        while(!Display.mainDisplay.shouldClose()){
+            double delta = Time.NanToSec(System.nanoTime() - lastTime);
+            lastTime = System.nanoTime();
+            Keyboard.BeginFrame();
 
-			while(lag >= interval){
-				update((float)interval);
-				
-				upsCounter++;
-				lag -= interval;
-			}
+            update((float)delta);
+            render();
+            frames++;
 
-			render();
+            Keyboard.EndFrame();
 
-            Display.mainDisplay.update();
+            if(System.currentTimeMillis() - lastSec > 1000) {
+                millis = (int)(delta * 1000);
+                Display.mainDisplay.setTitle("BearEngine -  MS: " + millis + " || FPS: " + frames);
+                frames = 0;
+                lastSec += 1000;
+            }
+        }
 
-			sync();
-			
-			fpsCounter++;
-			if(System.currentTimeMillis() - lastSec > 1000) {
-				lastSec += 1000;
-				Time.FPS = fpsCounter;
-				Time.UPS = upsCounter;
-				fpsCounter = 0;
-				upsCounter = 0;
-				Display.mainDisplay.setTitle("BearEngine -  UPS: " + Time.UPS + " || FPS: " + Time.FPS);
-		   }
-			
-		}
         Debug.log("Engine -> Exited Loop.");
-		Exit();
-	}
-	
-	private void update(float deltaTime){		
+        Exit();
+    }
+
+	private void update(float deltaTime){
 		Game screen = screenOrder.get(screenIndex);
 		if(screen.isExitRequested){
 			screen.cleanup();
@@ -158,6 +150,8 @@ public class Engine implements Runnable{
 			screen.update(deltaTime);
             //Debug.log("Engine -> Screen Update END!");
 		}
+
+        DevCamera.ProcessInput(deltaTime);
 	}
 	
 	private void render(){
@@ -167,18 +161,10 @@ public class Engine implements Runnable{
         if(!screen.isInitialised) return;
 
 		screen.render();
+
+        Display.mainDisplay.update();
 	}
-	
-	private void sync(){
-		float loopSlot = 1f / TARGET_FPS;
-		float endTime = (float) (Time.getLastLoopTime() + loopSlot);
-		while(Time.getTime() < endTime){
-			try{
-				Thread.sleep(1);
-			}catch (InterruptedException e){}
-		}
-	}
-	
+
 	private void cleanup(){
         Debug.log("Engine -> Cleaning Up.");
 
@@ -201,7 +187,7 @@ public class Engine implements Runnable{
 	
 	public static void main(String... args)throws IOException{
         Game game = new GameTest();
-		Engine engine = new Engine(30, 60, game);
+		Engine engine = new Engine(120, 120, game);
 		engine.start();
 
 //        ClassLoaderDummy.searchResource("/main/java/resources/textures/bearengine_logo.png");

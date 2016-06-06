@@ -2,20 +2,16 @@ package main.java.org.bearengine.graphics.types;
 
 import main.java.org.bearengine.debug.Debug;
 import main.java.org.bearengine.utils.ResourceLoader;
-import main.java.org.bearengine.utils.FileUtils;
-import org.lwjgl.BufferUtils;
 
 import javax.imageio.ImageIO;
-import java.awt.image.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.IntBuffer;
-
-import static org.lwjgl.stb.STBImage.*;
 
 /**
  * Created by Stuart on 21/05/2016.
@@ -29,19 +25,26 @@ public class Image {
     public int Width, Height;
     public int Components;
 
+    private static Image Current;
+
     public static Image GetImage(String imagePath, ResourceLoader.FileType fileType){
         imagePath = imagePath.replace("\\", "/");
         Debug.log("Image -> Loading Image: " + imagePath);
 
-        return loadImage(imagePath, fileType);
+        Current = new Image();
+        Current.Name = imagePath.substring(imagePath.lastIndexOf("/") + 1);
+
+        BufferedImage bufferedImage = GetBufferedImage(imagePath, fileType);
+
+        return FromBufferedImage(bufferedImage);
     }
 
-    private static Image loadImage(String imagePath, ResourceLoader.FileType fileType){
-        BufferedImage bufferedImage = GetBufferedImage(imagePath, fileType);
+    public static Image FromBufferedImage(BufferedImage bufferedImage){
         ByteBuffer imageBuffer = GetImageData(bufferedImage);
 
-        Image image = new Image();
-        image.Name = imagePath.substring(imagePath.lastIndexOf("/") + 1);
+        Image image = Current;
+        if(image == null) image = new Image();
+
         image.ImageData = imageBuffer;
         image.Width = bufferedImage.getWidth();
         image.Height = bufferedImage.getHeight();
@@ -50,7 +53,9 @@ public class Image {
         Debug.log("Image -> Width: " + image.Width);
         Debug.log("Image -> Height: " + image.Height);
         Debug.log("Image -> Components: " + image.Components);
-        Debug.log("Image -> PNG Image Loaded: " + imagePath);
+        Debug.log("Image -> Image Loaded.");
+
+        Current = null;
 
         return image;
     }

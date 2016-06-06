@@ -8,8 +8,7 @@ import org.lwjgl.opengl.GL20;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
-import static org.lwjgl.opengl.GL11.GL_NO_ERROR;
-import static org.lwjgl.opengl.GL11.glGetError;
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.GL_INFO_LOG_LENGTH;
 
 /**
@@ -22,7 +21,7 @@ public class GLError {
     public static boolean Check(String referrer){
         int error = glGetError();
         if(error != GL_NO_ERROR) {
-            Debug.error(referrer + " -> OpenGL Error: " + error);
+            Debug.error(referrer + " -> OpenGL Error(" + error + "): " + DecodeErrorCode(error));
             return  true;
         }
         return false;
@@ -47,6 +46,36 @@ public class GLError {
         byte[] logBytes = new byte[actualLength];
         log.get(logBytes);
         Debug.error(new String(logBytes));
+    }
+
+    public static String DecodeErrorCode(int code){
+        String error = "";
+
+        switch(code){
+            case GL_INVALID_ENUM:
+                error = "ILLEGAL ENUM PARAMETER!";
+                break;
+            case GL_INVALID_VALUE:
+                error = "ILLEGAL VALUE PARAMETER!";
+                break;
+            case GL_INVALID_OPERATION:
+                error = "INVALID OPERATION!";
+                break;
+            case GL_STACK_OVERFLOW:
+                error = "STACK OVERFLOW!";
+                break;
+            case GL_STACK_UNDERFLOW:
+                error = "STACK UNDERFLOW!";
+                break;
+            case GL_OUT_OF_MEMORY:
+                error = "OUT OF MEMORY!";
+                break;
+            default:
+                error = "UNKNOWN ERROR CODE!";
+                break;
+        }
+
+        return error;
     }
 
 }

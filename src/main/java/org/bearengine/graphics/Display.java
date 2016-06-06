@@ -87,6 +87,7 @@ public class Display {
 		
 		setCurrent();
 		centreOnScreen();
+        setVSYNC(0);
 		setVisible(true);
 		
 		Display.displays.put(windowID, this);
@@ -204,6 +205,13 @@ public class Display {
 
 		setVisible(true);
 	}
+
+    public void LockMouse(boolean lock){
+        if(!lock)
+            glfwSetInputMode(windowID, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        else
+            glfwSetInputMode(windowID, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    }
 
     public void EnableFaceCulling(){
         GL11.glEnable(GL11.GL_CULL_FACE);

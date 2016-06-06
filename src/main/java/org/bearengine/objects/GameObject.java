@@ -10,12 +10,11 @@ import java.lang.*;
  */
 public class GameObject extends Object {
 
-    public String Name = "GameObject";
-
     private Mesh mesh;
 
     public GameObject(){
         super();
+        this.Name = "GameObject";
     }
 
     private void RegisterRender(){

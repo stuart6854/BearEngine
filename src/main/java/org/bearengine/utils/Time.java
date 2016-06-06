@@ -5,8 +5,7 @@ public class Time {
 	private static double lastLoopTime;
     
     public static int FPS, UPS;
-    
-    
+
     public static void init() {
         lastLoopTime = getTime();
     }
@@ -15,9 +14,9 @@ public class Time {
         return System.nanoTime() / 1_000_000_000f; //Nano to Sec
     }
 
-    public static double getElapsedTime() {
+    public static float getElapsedTime() {
     	double time = getTime();
-    	double elapsedTime = (float) (time - lastLoopTime);
+    	float elapsedTime = (float) (time - lastLoopTime);
         lastLoopTime = time;
         return elapsedTime;
     }
@@ -25,5 +24,9 @@ public class Time {
     public static double getLastLoopTime() {
         return lastLoopTime;
     }
-	
+
+    public static double NanToSec(long nano){
+        return nano / 1_000_000_000f;
+    }
+
 }
