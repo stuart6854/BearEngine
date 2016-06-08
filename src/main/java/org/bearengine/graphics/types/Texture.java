@@ -46,6 +46,8 @@ public class Texture {
 
         glGenerateMipmap(GL_TEXTURE_2D);
 
+        Debug.log("Texture -> Texture Created.");
+
         return this;
     }
 

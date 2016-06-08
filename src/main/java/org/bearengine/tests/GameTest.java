@@ -31,6 +31,7 @@ public class GameTest extends Game {
 	@Override
 	public void init() {
         Debug.log("GameTest -> Init.");
+        Display.mainDisplay.SetClearColor(new Color(1, 0, 1));
 
         Shader vertShader = new Shader("shaders/default_vertex.vert", Shader.VERTEX_SHADER);
         vertShader.LoadSourceCode();
@@ -45,9 +46,19 @@ public class GameTest extends Game {
         shaderProgram.AttachShader(fragShader);
         shaderProgram.Link();
 
-        float x = 2;
-        float y = x / Display.mainDisplay.Aspect;
-        //Camera.Main_Camera.SetProjection(new Matrix4f().ortho(-x, x, -y, y, 1, -1));
+        Shader guiVertShader = new Shader("shaders/gui_vertex.vert", Shader.VERTEX_SHADER);
+        guiVertShader.LoadSourceCode();
+        guiVertShader.CompileShader();
+        Shader guiFragShader = new Shader("shaders/gui_fragment.frag", Shader.FRAGMENT_SHADER);
+        guiFragShader.LoadSourceCode();
+        guiFragShader.CompileShader();
+
+        ShaderProgram guiShaderProgram = new ShaderProgram();
+        guiShaderProgram.Initialise();
+        guiShaderProgram.AttachShader(guiVertShader);
+        guiShaderProgram.AttachShader(guiFragShader);
+        guiShaderProgram.Link();
+
         Camera.Main_Camera.SetProjection(new Matrix4f().perspective((float)Math.toRadians(60.0f), Display.mainDisplay.Aspect, 0.1f, 1000.0f));
         Camera.Main_Camera.SetPosition(0, 0, 1);
 
@@ -55,29 +66,31 @@ public class GameTest extends Game {
 
         OBJImporter importer = new OBJImporter();
         mesh = importer.LoadMesh("models/textured-cube.obj");
-        mesh.material.shaderProgram = shaderProgram;
         mesh.material.SetTexture(texture);
+        mesh.material.shaderProgram = shaderProgram;
+        mesh.material.RenderCamera = Camera.Main_Camera;
 
         object = new GameObject();
         object.setMesh(mesh);
-        object.SetPosition(0, 0, -5);
+        object.SetPosition(0, -1, -5);
 
-        Display.mainDisplay.SetClearColor(new Color(1, 0, 1));
+
+        Font.CreateFont();
+        Camera guiCamera = new Camera(new Matrix4f().ortho2D(0, Display.mainDisplay.getWidth()/2, Display.mainDisplay.getHeight()/2, 0));
+        textObj = new GameObject();
+        textObj.Name = "TextObj";
+        textObj.setMesh(Font.CreateMesh("Hello World!\nHow are you today?\n1234567890", 0, 0, Color.BLACK));
+        textObj.getMesh().material.shaderProgram = guiShaderProgram;
+        textObj.getMesh().material.RenderCamera = guiCamera;
+        textObj.SetPosition(0, 0, 0);
+        textObj.SetScale(1f, 1f, 0f);
 
         Debug.log("GameTest -> Init End.");
-
-        textObj = new GameObject();
-
-        Font.test();
-        textObj.setMesh(Font.CreateMesh("A", 0, 0, Color.BLACK));
-        textObj.getMesh().material.shaderProgram = shaderProgram;
-        textObj.SetPosition(0, 0, -10);
-        textObj.SetScale(.5f, .5f, 1);
 	}
 
 	@Override
 	public void update(float deltaTime) {
-        object.Rotate(0, 1f * deltaTime, 0);
+//        object.Rotate(0, 1f * deltaTime, 0);
 	}
 
 	@Override

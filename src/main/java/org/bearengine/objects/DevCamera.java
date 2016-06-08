@@ -57,6 +57,12 @@ public class DevCamera extends Camera {
         if(Keyboard.isPressed(Keyboard.KEY_D)){
             cameraInc.x += speed;
         }
+        if(Keyboard.isPressed(Keyboard.KEY_SPACE)){
+            cameraInc.y += speed;
+        }
+        if(Keyboard.isPressed(Keyboard.KEY_LEFT_ALT)){
+            cameraInc.y -= speed;
+        }
 
         MoveCamPosition(cameraInc.x, cameraInc.y, cameraInc.z);
     }

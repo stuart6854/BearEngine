@@ -173,7 +173,7 @@ public class FrustumCuller {
      * defined by <code>this</code> frustum culler.
      * 
      * @param point
-     *          the point to test
+     *          the point to CreateFont
      * @return <code>true</code> if the given point is inside the clipping frustum; <code>false</code> otherwise
      */
     public boolean isPointInsideFrustum(Vector3f point) {
@@ -301,8 +301,8 @@ public class FrustumCuller {
      */
     public int isAabInsideFrustum(float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {
         /*
-         * This is an implementation of the "2.4 Basic intersection test" of the mentioned site.
-         * It does not distinguish between partially inside and fully inside, though, so the test with the 'p' vertex is omitted.
+         * This is an implementation of the "2.4 Basic intersection CreateFont" of the mentioned site.
+         * It does not distinguish between partially inside and fully inside, though, so the CreateFont with the 'p' vertex is omitted.
          * 
          * In addition to the algorithm in the paper, this method also returns the index of the first plane that culled the box
          * or -1 if the box intersects the frustum.
@@ -324,8 +324,8 @@ public class FrustumCuller {
      * The box is specified via its <code>min</code> and <code>max</code> corner coordinates.
      * <p>
      * This method differs from {@link #isAabInsideFrustum(Vector3f, Vector3f) isAabInsideFrustum()} in that
-     * it allows to mask-off planes that should not be calculated. For example, in order to only test a box against the
-     * left frustum plane, use a mask of {@link #PLANE_MASK_NX}. Or in order to test all planes <i>except</i> the left plane, use 
+     * it allows to mask-off planes that should not be calculated. For example, in order to only CreateFont a box against the
+     * left frustum plane, use a mask of {@link #PLANE_MASK_NX}. Or in order to CreateFont all planes <i>except</i> the left plane, use
      * a mask of <tt>(~0 ^ PLANE_MASK_NX)</tt>.
      * <p>
      * The algorithm implemented by this method is conservative. This means that in certain circumstances a <i>false positive</i>
@@ -359,8 +359,8 @@ public class FrustumCuller {
      * The box is specified via its min and max corner coordinates.
      * <p>
      * This method differs from {@link #isAabInsideFrustum(float, float, float, float, float, float) isAabInsideFrustum()} in that
-     * it allows to mask-off planes that should not be calculated. For example, in order to only test a box against the
-     * left frustum plane, use a mask of {@link #PLANE_MASK_NX}. Or in order to test all planes <i>except</i> the left plane, use 
+     * it allows to mask-off planes that should not be calculated. For example, in order to only CreateFont a box against the
+     * left frustum plane, use a mask of {@link #PLANE_MASK_NX}. Or in order to CreateFont all planes <i>except</i> the left plane, use
      * a mask of <tt>(~0 ^ PLANE_MASK_NX)</tt>.
      * <p>
      * The algorithm implemented by this method is conservative. This means that in certain circumstances a <i>false positive</i>
@@ -397,7 +397,7 @@ public class FrustumCuller {
     public int isAabInsideFrustumMasked(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, int mask) {
         /*
          * This is an implementation of the "2.5 Plane masking and coherency" of the mentioned site.
-         * It does not distinguish between partially inside and fully inside, though, so the test with the 'p' vertex is omitted.
+         * It does not distinguish between partially inside and fully inside, though, so the CreateFont with the 'p' vertex is omitted.
          * 
          * In addition to the algorithm in the paper, this method also returns the index of the first plane that culled the box
          * or -1 if the box intersects the frustum.

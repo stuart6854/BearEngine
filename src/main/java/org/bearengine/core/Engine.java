@@ -94,7 +94,7 @@ public class Engine implements Runnable{
 	
 	private void setupScreensOrder(){
         Texture texture = new Texture().UploadTexture(Image.GetImage("textures/bearengine_logo.png", ResourceLoader.FileType.Internal));
-		screenOrder.add(new SplashScreen(0, texture));
+		screenOrder.add(new SplashScreen(0.1f, texture));
 		
 		screenOrder.add(gameScreen);
 	}

@@ -1,17 +1,17 @@
 package main.java.org.bearengine.graphics.types;
 
 import main.java.org.bearengine.debug.Debug;
+import main.java.org.bearengine.utils.FileUtils;
 import main.java.org.bearengine.utils.ResourceLoader;
+import org.lwjgl.BufferUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 
 /**
  * Created by Stuart on 21/05/2016.
@@ -36,10 +36,13 @@ public class Image {
 
         BufferedImage bufferedImage = GetBufferedImage(imagePath, fileType);
 
+        String extension = FileUtils.getFileExtension(imagePath);
+
         return FromBufferedImage(bufferedImage);
     }
 
     public static Image FromBufferedImage(BufferedImage bufferedImage){
+        Debug.log("Image -> Creating from BufferedImage.");
         ByteBuffer imageBuffer = GetImageData(bufferedImage);
 
         Image image = Current;
@@ -78,10 +81,27 @@ public class Image {
     }
 
     private static ByteBuffer GetImageData(BufferedImage bufferedImage){
-        byte[] data = ((DataBufferByte)bufferedImage.getRaster().getDataBuffer()).getData();
-        ByteBuffer buffer = ByteBuffer.allocateDirect(data.length);
-        buffer.order(ByteOrder.nativeOrder());
-        buffer.put(data);
+        int width = bufferedImage.getWidth();
+        int height = bufferedImage.getHeight();
+        int[] pixels = new int[width * height];
+        bufferedImage.getRGB(0, 0, width, height, pixels, 0, width);
+
+        int bytesPerPixel = bufferedImage.getColorModel().hasAlpha() ? 4 : 3;
+
+        ByteBuffer buffer = BufferUtils.createByteBuffer(width * height * bytesPerPixel);
+
+        for(int y = 0; y < height; y++){
+            int actualY = height - 1 - y;
+            for(int x = 0; x < width; x++){
+                int pixel = pixels[actualY * width + x];
+                buffer.put((byte)((pixel >> 16) & 0xFF));//Red
+                buffer.put((byte)((pixel >> 8) & 0xFF));//Green
+                buffer.put((byte)((pixel) & 0xFF));//Blue
+                if(bytesPerPixel == 4)
+                    buffer.put((byte)((pixel >> 24) & 0xFF));//Alpha
+            }
+        }
+
         buffer.flip();
 
         return buffer;

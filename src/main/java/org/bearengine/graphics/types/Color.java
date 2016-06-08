@@ -37,4 +37,8 @@ public class Color {
         return this;
     }
 
+    @Override
+    public String toString() {
+        return r + ", " + g + ", " + b + ", " + a;
+    }
 }

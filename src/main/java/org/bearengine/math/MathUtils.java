@@ -17,4 +17,14 @@ public class MathUtils {
         return Math.max(min, Math.min(max, val));
     }
 
+    public static float Normalise(float value, float min, float max){
+        float normalisedVal = (value - min) / (max - min);
+        return normalisedVal;
+    }
+
+    public static float DeNormalise(float normalisedVal, float min, float max){
+        float val = (normalisedVal * (max - min) + min);
+        return val;
+    }
+
 }

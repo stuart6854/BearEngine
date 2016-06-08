@@ -121,9 +121,10 @@ public class Display {
 
     private void setGL(){
         GL11.glEnable(GL11.GL_TEXTURE_2D);
-        GL11.glEnable(GL11.GL_BLEND);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GL11.glDepthFunc(GL11.GL_LESS);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GL11.glEnable(GL11.GL_BLEND);
     }
 
 	private void setCallbacks(){
@@ -227,6 +228,7 @@ public class Display {
 
     public void SetClearColor(Color color){
         glClearColor(color.r, color.g, color.b, color.a);
+        Debug.log("Display -> Clear Color Set to " + color + ".");
     }
 
 	public boolean shouldClose(){

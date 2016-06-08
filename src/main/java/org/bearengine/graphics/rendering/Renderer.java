@@ -24,18 +24,19 @@ public class Renderer {
     private static Map<String, Mesh> RenderList = new HashMap<>();
 
     public static void Render(){
-        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+//        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         for(Mesh mesh : RenderList.values()){
             mesh.material.shaderProgram.Bind();
-            mesh.material.GetTexture().Bind();
+            if(mesh.material.GetTexture() != null)
+                mesh.material.GetTexture().Bind();
 
             if(DevCamera.ENABLED) {
                 mesh.material.shaderProgram.setUniform("projection", DevCamera.DEV_CAMERA.GetProjection());
                 mesh.material.shaderProgram.setUniform("view", DevCamera.DEV_CAMERA.GetViewMatrix());
             } else {
-                mesh.material.shaderProgram.setUniform("projection", Camera.Main_Camera.GetProjection());
-                mesh.material.shaderProgram.setUniform("view", Camera.Main_Camera.GetViewMatrix());
+                mesh.material.shaderProgram.setUniform("projection", mesh.material.RenderCamera.GetProjection());
+                mesh.material.shaderProgram.setUniform("view", mesh.material.RenderCamera.GetViewMatrix());
             }
 
             mesh.renderModel.PrepareRender();
@@ -45,29 +46,30 @@ public class Renderer {
                 mesh.material.shaderProgram.setUniform("model", transform);
 
                 glDrawElements(GL_TRIANGLES, mesh.IndicesCount, GL_UNSIGNED_INT, 0);
-                GLError.Check("Renderer");
             }
         }
     }
 
     public static void RegisterGameObject(GameObject obj){
-        Debug.log("Renderer -> Registering GameObject.");
+        Debug.log("Renderer -> Registering GameObject: " + obj.Name);
         if(RenderList.containsKey(obj.getMesh().Mesh_Name)){
             RenderModel model = RenderList.get(obj.getMesh().Mesh_Name).renderModel;
             model.AddTransform(obj);
-            Debug.log("Renderer -> Mesh already registered. Adding transform.");
+            Debug.log("Renderer -> Mesh '" + obj.getMesh().Mesh_Name + "' already registered. Adding transform.");
         }else{
             obj.getMesh().renderModel.AddTransform(obj);
             RenderList.put(obj.getMesh().Mesh_Name, obj.getMesh());
-            Debug.log("Renderer -> New Mesh. Adding to RenderList.");
+            Debug.log("Renderer -> New Mesh. Adding '" + obj.getMesh().Mesh_Name + "' Mesh to RenderList.");
         }
     }
 
     public static void UnRegisterGameObject(GameObject obj){
         if(obj.getMesh() == null) return;
         if(RenderList.containsKey(obj.getMesh().Mesh_Name)){
+            Debug.log("Renderer -> UnRegistering GameObject: " + obj.Name);
             RenderModel model = RenderList.get(obj.getMesh().Mesh_Name).renderModel;
             model.RemoveTransform(obj);
+            if(model.GetTransforms().size() == 0) RenderList.remove(obj.getMesh().Mesh_Name);
         }
     }
 

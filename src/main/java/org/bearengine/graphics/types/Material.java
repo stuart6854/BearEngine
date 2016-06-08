@@ -1,6 +1,7 @@
 package main.java.org.bearengine.graphics.types;
 
 import main.java.org.bearengine.graphics.shaders.ShaderProgram;
+import main.java.org.bearengine.objects.Camera;
 
 /**
  * Created by Stuart on 22/05/2016.
@@ -8,6 +9,8 @@ import main.java.org.bearengine.graphics.shaders.ShaderProgram;
 public class Material {
 
     public ShaderProgram shaderProgram; //TODO: Make ShaderPrograms-Per-Material Based
+
+    public Camera RenderCamera; //Camera used for projection and view matrices
 
     public Color Diffuse;
     public Color Specular;

@@ -51,7 +51,7 @@ public class GeometryUtils {
     }
 
     /**
-     * Calculate the surface tangent for the three supplied vertices and UV
+     * Calculate the surface tangent for the three supplied Vertices and UV
      * coordinates and store the result in <code>dest</code>.
      *
      * @param v1 XYZ of first vertex
@@ -76,7 +76,7 @@ public class GeometryUtils {
     }
 
     /**
-     * Calculate the surface bitangent for the three supplied vertices and UV
+     * Calculate the surface bitangent for the three supplied Vertices and UV
      * coordinates and store the result in <code>dest</code>.
      *
      * @param v1 XYZ of first vertex
@@ -101,7 +101,7 @@ public class GeometryUtils {
     }
 
     /**
-     * Calculate the surface tangent and bitangent for the three supplied vertices
+     * Calculate the surface tangent and bitangent for the three supplied Vertices
      * and UV coordinates and store the result in <code>dest</code>.
      *
      * @param v1 XYZ of first vertex

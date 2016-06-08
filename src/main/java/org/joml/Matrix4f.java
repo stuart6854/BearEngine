@@ -6950,7 +6950,7 @@ public class Matrix4f implements Externalizable {
      * hold the <tt>(a, b, c, d)</tt> values of the equation.
      * <p>
      * The plane normal, which is <tt>(a, b, c)</tt>, is directed "inwards" of the frustum.
-     * Any plane/point test using <tt>a*x + b*y + c*z + d</tt> therefore will yield a result greater than zero
+     * Any plane/point CreateFont using <tt>a*x + b*y + c*z + d</tt> therefore will yield a result greater than zero
      * if the point is within the frustum (i.e. at the <i>positive</i> side of the frustum plane).
      * <p>
      * Reference: <a href="http://gamedevs.org/uploads/fast-extraction-viewing-frustum-planes-from-world-view-projection-matrix.pdf">
@@ -7147,7 +7147,7 @@ public class Matrix4f implements Externalizable {
      */
     public float perspectiveFov() {
         /*
-         * Compute the angle between the bottom and top frustum plane normals.
+         * Compute the angle between the bottom and top frustum plane Normals.
          */
         float n1x, n1y, n1z, n2x, n2y, n2z;
         n1x = m03 + m01; n1y = m13 + m11; n1z = m23 + m21; // bottom
@@ -7187,7 +7187,7 @@ public class Matrix4f implements Externalizable {
      */
     public Vector3f frustumRayDir(float x, float y, Vector3f dir) {
         /*
-         * This method works by first obtaining the frustum plane normals,
+         * This method works by first obtaining the frustum plane Normals,
          * then building the cross product to obtain the corner rays,
          * and finally bilinearly interpolating to obtain the desired direction.
          * The code below uses a condense form of doing all this making use 

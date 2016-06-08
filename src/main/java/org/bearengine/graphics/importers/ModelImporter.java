@@ -10,10 +10,10 @@ import java.util.List;
  */
 public abstract class ModelImporter {
 
-    protected List<Integer> indices = new ArrayList<>();
-    protected List<Float> vertices = new ArrayList<>();
-    protected List<Float> uvs = new ArrayList<>();
-    protected List<Float> normals = new ArrayList<>();
+    protected List<Integer> Indices = new ArrayList<>();
+    protected List<Float> Vertices = new ArrayList<>();
+    protected List<Float> UVs = new ArrayList<>();
+    protected List<Float> Normals = new ArrayList<>();
 
     public abstract Mesh LoadMesh(String path);
 
