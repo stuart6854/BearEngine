@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class Object {
 
-    public String Name = "UN-NAMED";
+    public String Name = "Object";
 
     public static List<Object> Objects = new ArrayList<>();
 
@@ -21,7 +21,7 @@ public class Object {
     protected Quaterniond Rotation;
     protected Vector3d Scale;
 
-    protected final Matrix4d m_transformation;
+    protected final Matrix4d m_transform;
     protected boolean transformIsDirty = true;
 
     public Object(){
@@ -29,7 +29,7 @@ public class Object {
         this.Rotation = new Quaterniond();
         this.Scale = new Vector3d(1, 1, 1);
 
-        this.m_transformation = new Matrix4d();
+        this.m_transform = new Matrix4d();
 
         Objects.add(this);
     }
@@ -75,11 +75,11 @@ public class Object {
         if(transformIsDirty){
             UpdateTransformMatrix();
         }
-        return m_transformation;
+        return m_transform;
     }
 
     private void UpdateTransformMatrix(){
-        m_transformation.identity().translate(Position).rotate(Rotation).scale(Scale);
+        m_transform.identity().translate(Position).rotate(Rotation).scale(Scale);
         transformIsDirty = false;
     }
 
@@ -100,7 +100,7 @@ public class Object {
         Position = null;
         Rotation = null;
         Scale = null;
-        m_transformation.zero();
+        m_transform.zero();
     }
 
 }

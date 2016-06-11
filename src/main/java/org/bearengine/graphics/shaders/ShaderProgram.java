@@ -1,12 +1,10 @@
 package main.java.org.bearengine.graphics.shaders;
 
 import main.java.org.bearengine.debug.Debug;
-import main.java.org.bearengine.graphics.types.VertexAttribute;
 import main.java.org.joml.Matrix4d;
 import main.java.org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 
-import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.util.*;
 
@@ -16,7 +14,8 @@ public class ShaderProgram {
 	
 	public static ShaderProgram CURRENT;
 	public static ShaderProgram DEFAULT;
-	
+	public static ShaderProgram DEFAULT_UI;
+
 	public int ProgramID;
 	
 	public Shader VertexShader;
@@ -187,6 +186,34 @@ public class ShaderProgram {
 		}
         Uniforms.clear();
 	}
+
+    static{
+        Shader vertShader = new Shader("shaders/default_vertex.vert", Shader.VERTEX_SHADER);
+        vertShader.LoadSourceCode();
+        vertShader.CompileShader();
+        Shader fragShader = new Shader("shaders/default_fragment.frag", Shader.FRAGMENT_SHADER);
+        fragShader.LoadSourceCode();
+        fragShader.CompileShader();
+
+        DEFAULT = new ShaderProgram();
+        DEFAULT.Initialise();
+        DEFAULT.AttachShader(vertShader);
+        DEFAULT.AttachShader(fragShader);
+        DEFAULT.Link();
+
+        Shader guiVertShader = new Shader("shaders/gui_vertex.vert", Shader.VERTEX_SHADER);
+        guiVertShader.LoadSourceCode();
+        guiVertShader.CompileShader();
+        Shader guiFragShader = new Shader("shaders/gui_fragment.frag", Shader.FRAGMENT_SHADER);
+        guiFragShader.LoadSourceCode();
+        guiFragShader.CompileShader();
+
+        DEFAULT_UI = new ShaderProgram();
+        DEFAULT_UI.Initialise();
+        DEFAULT_UI.AttachShader(guiVertShader);
+        DEFAULT_UI.AttachShader(guiFragShader);
+        DEFAULT_UI.Link();
+    }
 
 }
 

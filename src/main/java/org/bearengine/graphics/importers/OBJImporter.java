@@ -82,6 +82,7 @@ public class OBJImporter extends ModelImporter{
             mesh.CreateRenderModel();
             mesh.material = (material != null) ? material : new Material();
 
+            reader.close();
             Debug.log("OBJImporter -> Mesh Loaded!");
         } catch(IOException e) {
             Debug.exception("OBJImporter -> Failed to Parse OBJ: " + path);

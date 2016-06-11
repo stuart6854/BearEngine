@@ -184,19 +184,5 @@ public class Engine implements Runnable{
         Debug.log("Engine -> Exiting.");
 		System.exit(0);
 	}
-	
-	public static void main(String... args)throws IOException{
-        Game game = new GameTest();
-		Engine engine = new Engine(120, 120, game);
-		engine.start();
-
-//        ClassLoaderDummy.searchResource("/main/java/resources/textures/bearengine_logo.png");
-//        Image image = Image.GetImage("textures/bearengine_logo.png", ResourceLoader.FileType.Internal);
-//        InputStream stream = Image.class.getResourceAsStream("/main/java/resources/textures/bearengine_logo.png");
-//        Debug.log("Jar Texture: " + (image == null ? "NULL" : "FOUND"));
-//        File file = new File("G:\\UserStorage\\Pictures\\photo.jpg");
-//        BufferedImage image = ImageIO.read(file);
-//        Debug.log("External Texture: " + (image == null ? "NULL" : "FOUND"));
-	}
 
 }

@@ -84,4 +84,8 @@ public class Mesh {
         return normals;
     }
 
+    public void Cleanup(){
+        renderModel.ReleaseModel();
+    }
+
 }

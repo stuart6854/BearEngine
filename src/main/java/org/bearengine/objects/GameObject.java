@@ -3,8 +3,6 @@ package main.java.org.bearengine.objects;
 import main.java.org.bearengine.graphics.rendering.Renderer;
 import main.java.org.bearengine.graphics.types.Mesh;
 
-import java.lang.*;
-
 /**
  * Created by Stuart on 28/05/2016.
  */
@@ -22,15 +20,18 @@ public class GameObject extends Object {
     }
 
     private void UnRegisterRender(){
-        Renderer.UnRegisterGameObject(this);
+        Renderer.UnregisterGameObject(this);
     }
 
-    public Mesh getMesh() {
+    public Mesh GetMesh() {
         return mesh;
     }
 
     public void setMesh(Mesh mesh) {
         UnRegisterRender();
+        if(this.mesh != null)
+            this.mesh.Cleanup();
+
         this.mesh = mesh;
         RegisterRender();
     }

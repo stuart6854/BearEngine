@@ -28,10 +28,10 @@ public class Shader {
 	
 	public void LoadSourceCode(){
         Compiled = false;
-		StringBuilder source = new StringBuilder();
 
         String type = (ShaderType == VERTEX_SHADER) ? "VERTEX" : "FRAGMENT";
 
+        StringBuilder source = new StringBuilder();
 		try {
             InputStream stream = getClass().getResourceAsStream(ShaderSourcePath);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
