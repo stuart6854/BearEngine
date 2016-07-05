@@ -65,10 +65,10 @@ public class Mesh {
     public void CreateRenderModel(){
         if(normals != null && normals.length > 0) {
             renderModel = RenderModel.Create3DModel(vertices, uvs, normals, indices);
-            Debug.log("Mesh -> Creating 3D RenderModel(has Normals).");
+//            Debug.log("Mesh -> Creating 3D RenderModel(has Normals).");
         } else{
             renderModel = RenderModel.Create2DModel(vertices, uvs, indices);
-            Debug.log("Mesh -> Creating 2D RenderModel(no Normals).");
+//            Debug.log("Mesh -> Creating 2D RenderModel(no Normals).");
         }
     }
 

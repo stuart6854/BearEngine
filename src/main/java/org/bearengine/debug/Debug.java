@@ -17,8 +17,13 @@ public class Debug {
 		System.out.println("[ERROR] " + output);
 	}
 
-	public static void exception(Object output){
-		System.out.println("[EXCEPTION] " + output);
+    public static void exception(String msg){
+        System.out.println("[EXCEPTION] " + msg);
+    }
+
+	public static void exception(String src, Exception e){
+		System.out.println("[EXCEPTION] " + src + " - " + e.toString());
+        e.printStackTrace();
 	}
 
 }

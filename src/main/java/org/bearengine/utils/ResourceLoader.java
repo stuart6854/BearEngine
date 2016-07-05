@@ -1,39 +1,47 @@
 package main.java.org.bearengine.utils;
 
 import main.java.org.bearengine.debug.Debug;
+import main.java.org.bearengine.graphics.types.Image;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Stuart on 03/06/2016.
  */
 public class ResourceLoader {
 
+    private static final Map<Class, IResourceLoader> ResourceLoaders = new HashMap<>();
+
     public enum FileType{
-        Internal, External
+        Internal, External, ClassPath
     }
 
-    public static BufferedImage LoadImage(String path, FileType fileType){
-        try{
-            if(fileType == FileType.Internal){
-                InputStream stream = ResourceLoader.class.getResourceAsStream("main/java/resources/textures/" + path);
-                //InputStream stream = Image.class.getResourceAsStream("/" + path);
-                BufferedInputStream inputStream = new BufferedInputStream(stream);
-                return ImageIO.read(inputStream);
-            }else if(fileType == FileType.External){
-                File file = new File(path);
-                return ImageIO.read(file);
-            }
-        } catch(IOException e) {
-            Debug.exception("Image -> Could not Load Image: ");
-            e.printStackTrace();
-        }
-        return null;
+    public static < T > T Load(String resourcePath, Class<T> type){
+        return type.cast(ResourceLoaders.get(type).Load(resourcePath));
     }
-    
+
+    private static Object FileLoader(String path){
+        return new File(path);
+    }
+
+    private static Object ImageLoader(String path){
+        return new Image(path);
+    }
+
+    @FunctionalInterface
+    public interface IResourceLoader{
+        Object Load(String path);
+    }
+
+    static{
+        ResourceLoaders.put(Image.class, ResourceLoader::ImageLoader);
+        ResourceLoaders.put(File.class, ResourceLoader::FileLoader);
+    }
+
 }

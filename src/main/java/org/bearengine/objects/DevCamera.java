@@ -1,12 +1,26 @@
 package main.java.org.bearengine.objects;
 
 import main.java.org.bearengine.debug.Debug;
+import main.java.org.bearengine.font.Font;
 import main.java.org.bearengine.graphics.Display;
+import main.java.org.bearengine.graphics.types.Image;
+import main.java.org.bearengine.graphics.types.Texture;
 import main.java.org.bearengine.input.Keyboard;
 import main.java.org.bearengine.input.Mouse;
 import main.java.org.bearengine.math.MathUtils;
+import main.java.org.bearengine.ui.Canvas;
+import main.java.org.bearengine.ui.Label;
+import main.java.org.bearengine.ui.Panel;
+import main.java.org.bearengine.ui.UIObject;
+import main.java.org.bearengine.utils.File;
+import main.java.org.bearengine.utils.FileUtils;
+import main.java.org.bearengine.utils.ResourceLoader;
 import main.java.org.joml.Matrix4f;
+import main.java.org.joml.Vector2f;
+import main.java.org.joml.Vector3d;
 import main.java.org.joml.Vector3f;
+
+import java.text.DecimalFormat;
 
 /**
  * Created by Stuart on 05/06/2016.
@@ -20,9 +34,27 @@ public class DevCamera extends Camera {
     private static float Velocity = 5.0f;
     private static float MouseSensitivity = 7.5f;
 
+    Image fontImage = new Image("/main/java/resources/fonts/OpenSans_DF.png");
+    Texture texture = new Texture().UploadTexture(fontImage);
+    Font font = new Font(6, texture, ResourceLoader.Load("/main/java/resources/fonts/OpenSans_DF.fnt", File.class));
+
+    private Canvas canvas = new Canvas();
+    private Panel panel = new Panel(128, 128);
+    private Label label = new Label("X,Y,Z: NULL", font);
+
+    private Vector3d lastPos = new Vector3d();
+
     public DevCamera() {
         super(new Matrix4f().perspective((float)Math.toRadians(60f), Display.mainDisplay.Aspect, 0.1f, 1000.0f));
         super.Name = "DevCamera";
+
+        label.Name = "DevCam_Pos_Label";
+        label.SetAnchor(UIObject.Anchor.TR);
+        panel.Name = "DevCam_Panel";
+        panel.AddChild(label);
+        panel.SetAnchor(UIObject.Anchor.TR);
+        panel.IsVisible = ENABLED;
+        canvas.AddChild(panel);
     }
 
     public static void ProcessInput(float deltaTime){
@@ -31,6 +63,8 @@ public class DevCamera extends Camera {
 
             Display.mainDisplay.LockMouse(ENABLED);
 
+            DEV_CAMERA.panel.IsVisible = ENABLED;
+
             Debug.log("DevCamera -> Enabled=" + ENABLED);
         }
 
@@ -38,6 +72,13 @@ public class DevCamera extends Camera {
             ProcessMovement(deltaTime);
             ProcessView(deltaTime);
             DEV_CAMERA.viewIsDirty = true;
+
+            if(!DEV_CAMERA.lastPos.equals(DEV_CAMERA.Position)){
+                DEV_CAMERA.lastPos.set(DEV_CAMERA.Position);
+                DecimalFormat df = new DecimalFormat("#.###");
+                DEV_CAMERA.label.SetText("X,Y,Z: " + df.format(DEV_CAMERA.Position.x) + ", " + df.format(DEV_CAMERA.Position.y) + ", " + df.format(DEV_CAMERA.Position.z));
+            }
+
         }
     }
 

@@ -1,15 +1,20 @@
 package main.java.org.bearengine.input;
 
+import main.java.org.bearengine.debug.Debug;
 import main.java.org.bearengine.graphics.Display;
+import org.lwjgl.glfw.GLFWCharCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Keyboard extends GLFWKeyCallback{
 
+    //region Printable Key Static Variables
     /* Printable keys */
     public static final int KEY_SPACE         = GLFW_KEY_SPACE;
     public static final int KEY_APOSTROPHE    = GLFW_KEY_APOSTROPHE;
@@ -61,7 +66,9 @@ public class Keyboard extends GLFWKeyCallback{
     public static final int KEY_GRAVE_ACCENT  = GLFW_KEY_GRAVE_ACCENT;
     public static final int KEY_WORLD_1       = GLFW_KEY_WORLD_1;
     public static final int KEY_WORLD_2       = GLFW_KEY_WORLD_2;
+    //endregion
 
+    //region Function Key Static Variables
     /* Function keys. */
     public static final int KEY_ESCAPE        = GLFW_KEY_ESCAPE;
     public static final int KEY_ENTER         = GLFW_KEY_ENTER;
@@ -134,10 +141,13 @@ public class Keyboard extends GLFWKeyCallback{
     public static final int KEY_RIGHT_SUPER   = GLFW_KEY_RIGHT_SUPER;
     public static final int KEY_MENU          = GLFW_KEY_MENU;
     public static final int KEY_LAST          = GLFW_KEY_LAST;
+    //endregion
 
     private static List<Integer> KeyStates = new ArrayList<>();
     private static List<Integer> KeyStates_ThisFrame = new ArrayList<>();
     private static List<Integer> KeyStates_LastFrame = new ArrayList<>();
+
+    private static List<ICharacterListener> CharacterListeners = new ArrayList<>();
 
 	@Override
 	public void invoke(long window, int key, int scancode, int action, int mods) {
@@ -177,5 +187,18 @@ public class Keyboard extends GLFWKeyCallback{
         KeyStates_LastFrame.clear();
         KeyStates_LastFrame.addAll(KeyStates_ThisFrame);
     }
+
+    public static void RegisterCharacterListener(ICharacterListener listener){
+        CharacterListeners.add(listener);
+    }
+
+    public static GLFWCharCallback CharacterCallback = new GLFWCharCallback() {
+        @Override
+        public void invoke(long window, int codepoint) {
+            for(ICharacterListener listener : CharacterListeners){
+                listener.CharacterListener(codepoint);
+            }
+        }
+    };
 
 }

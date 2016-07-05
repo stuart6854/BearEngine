@@ -19,7 +19,6 @@ public class OBJImporter extends ModelImporter{
 
     @Override
     public Mesh LoadMesh(String path) {
-        path = "/main/java/resources/" + path;
         Debug.log("OBJImporter -> Loading Mesh: " + path);
 
         Mesh mesh = null;
@@ -85,7 +84,6 @@ public class OBJImporter extends ModelImporter{
             reader.close();
             Debug.log("OBJImporter -> Mesh Loaded!");
         } catch(IOException e) {
-            Debug.exception("OBJImporter -> Failed to Parse OBJ: " + path);
             e.printStackTrace();
         }
 
@@ -226,7 +224,7 @@ public class OBJImporter extends ModelImporter{
                     case "map_Kd":
                         String imagePath = path.substring(0, path.lastIndexOf("/") + 1) + tokens[1];
                         Texture texture = new Texture();
-                        texture.UploadTexture(Image.GetImage(imagePath.replace("/main/java/resources/", ""), ResourceLoader.FileType.Internal));
+                        texture.UploadTexture(new Image(imagePath));
                         material.SetTexture(texture);
                         break;
                     default:
@@ -235,8 +233,7 @@ public class OBJImporter extends ModelImporter{
             }
             Debug.log("OBJImporter -> Parsed MTL.");
         }catch(IOException e){
-            Debug.exception("OBJImporter -> Failed to Parse MTL: " + path);
-            e.printStackTrace();
+            Debug.exception("OBJImporter -> Failed to Parse MTL " + path, e);
         }
 
         return material;

@@ -1,7 +1,10 @@
 package main.java.org.bearengine.ui;
 
+import main.java.org.bearengine.debug.Debug;
 import main.java.org.bearengine.graphics.types.Mesh;
+import main.java.org.bearengine.input.Mouse;
 import main.java.org.joml.Matrix4d;
+import main.java.org.joml.Vector2f;
 import main.java.org.joml.Vector3f;
 
 import java.util.ArrayList;
@@ -14,12 +17,16 @@ public abstract class UIObject {
 
     public String Name = "UIObject";
 
-    public enum Anchor{ TL, TR, BL, BR }
+    public boolean IsActive = true;
+    public boolean IsVisible = true;
+
+    public enum Anchor{ TL, TR, CL, CENTRE, CR, BL, BR }
     protected Anchor PositionAnchor = Anchor.TL;
 
-    protected int PosX, PosY, PosZ;
-    protected int Width, Height;
+    protected float PosX, PosY, PosZ;
+    protected float Width, Height;
 
+    protected Canvas ParentCanvas;
     protected UIObject Parent;
     protected List<UIObject> Children;
 
@@ -32,7 +39,7 @@ public abstract class UIObject {
         this(0, 0, 0, 0);
     }
 
-    public UIObject(int x, int y, int width, int height){
+    public UIObject(float x, float y, float width, float height){
         this.PosX = x;
         this.PosY = y;
         this.Width = width;
@@ -41,7 +48,13 @@ public abstract class UIObject {
         this.Children = new ArrayList<>();
     }
 
-    public void SetPosition(int x, int y, int z){
+    protected void update(){
+        for(UIObject child : Children) {
+            if(child.IsActive) child.update();
+        }
+    }
+
+    public void SetPosition(float x, float y, float z){
         this.PosX = x;
         this.PosY = y;
         this.PosZ = z;
@@ -59,6 +72,7 @@ public abstract class UIObject {
     public void AddChild(UIObject child){
         if(!Children.contains(child)) {
             child.Parent = this;
+            child.ParentCanvas = this.ParentCanvas;
             Children.add(child);
         }
     }
@@ -67,6 +81,7 @@ public abstract class UIObject {
         if(Children.contains(child)) {
             Children.remove(child);
             child.Parent = null;
+            child.ParentCanvas = null;
         }
     }
 
@@ -90,13 +105,46 @@ public abstract class UIObject {
     public Matrix4d GetTransformMatrix(){
         if(transformMatrixDirty){
             UpdateTransformMatrix();
+            for(UIObject object : Children)
+                object.transformMatrixDirty = true;
         }
         return m_transform;
     }
 
-    private void UpdateTransformMatrix(){
-        int x = Parent.PosX + PosX;
-        int y = Parent.PosY + PosY;
+    protected void UpdateTransformMatrix(){
+        Vector3f pos = GetRenderPosition();
+
+        m_transform.identity();
+        m_transform.translate(pos.x, pos.y, pos.z);
+
+        transformMatrixDirty = false;
+    }
+
+    protected boolean IsMouseOver(){
+        int X = Mouse.getMouseX();
+        int Y = Mouse.getMouseY();
+
+        Vector3f pos = GetRenderPosition();
+
+        if(ParentCanvas.renderMode == Canvas.RenderMode.ScreenSpace) {
+            if(X < pos.x || X > pos.x + Width)
+                return false;
+            if(Y < pos.y || Y > pos.y + Height)
+                return false;
+        }else{
+            //TODO: Handle 3D(Ray Casting/Ray Picking)
+        }
+
+        return true;
+    }
+
+    protected Vector3f GetRenderPosition(){
+        if(this instanceof Canvas) return new Vector3f(PosX, PosY, PosZ); //Because Canvas's dont have parents
+
+        Vector3f parentRenderPos = Parent.GetRenderPosition();
+        float x = parentRenderPos.x + PosX;
+        float y = parentRenderPos.y + PosY;
+        float z = parentRenderPos.z + PosZ;
 
         switch(PositionAnchor) {
             case TL:
@@ -111,12 +159,16 @@ public abstract class UIObject {
                 x = Parent.Width - x - Width;
                 y = Parent.Height - y - Height;
                 break;
+            case CL:
+                y += (Parent.Height / 2) - (this.Height / 2);
+                break;
+            case CENTRE:
+                x += (Parent.Width / 2) - (this.Width / 2);
+                y += (Parent.Height / 2) - (this.Height / 2);
+                break;
         }
 
-        m_transform.identity();
-        m_transform.translate(x, y, PosZ);
-
-        transformMatrixDirty = false;
+        return new Vector3f(x, y, z);
     }
 
     @Override

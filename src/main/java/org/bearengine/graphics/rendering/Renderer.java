@@ -13,6 +13,7 @@ import main.java.org.bearengine.objects.Object;
 import main.java.org.bearengine.ui.Canvas;
 import main.java.org.bearengine.ui.UIObject;
 import main.java.org.joml.Matrix4d;
+import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +32,7 @@ public class Renderer {
 
     public static void RenderObjects(){
 //        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
 
         for(Mesh mesh : MeshRenderList.values()){
             mesh.material.shaderProgram.Bind();
@@ -57,6 +59,7 @@ public class Renderer {
     }
 
     public static void RenderUI(){
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
         for(Canvas canvas : UIRenderList){
             RenderUIObjectChildren(canvas, canvas);
         }
@@ -64,6 +67,8 @@ public class Renderer {
 
     private static void RenderUIObjectChildren(UIObject uiObject, Canvas canvas){
         for(UIObject child : uiObject.GetChildren()) {
+            if(!child.IsVisible) continue;
+
             Mesh mesh = child.GetMesh();
             Material material = mesh.material;
             ShaderProgram shaderProgram = material.shaderProgram;
@@ -73,8 +78,7 @@ public class Renderer {
 
             if(canvas.renderMode == Canvas.RenderMode.ScreenSpace)
                 shaderProgram.setUniform("projection", new Matrix4d().ortho2D(0, Display.mainDisplay.getWidth(), Display.mainDisplay.getHeight(), 0));
-            else
-                shaderProgram.setUniform("projection", Camera.Main_Camera.GetProjection());
+            else shaderProgram.setUniform("projection", Camera.Main_Camera.GetProjection());
 
             shaderProgram.setUniform("view", new Matrix4d());
             shaderProgram.setUniform("model", child.GetTransformMatrix());
@@ -122,7 +126,7 @@ public class Renderer {
 
     public static void UnregisterUICanvas(Canvas canvas){
         if(UIRenderList.contains(canvas)){
-            Debug.log("Renderer -> UnRegistering UI Canvas: " + canvas.Name);
+            Debug.log("Renderer -> Unregistering UI Canvas: " + canvas.Name);
             UIRenderList.remove(canvas);
         }
     }

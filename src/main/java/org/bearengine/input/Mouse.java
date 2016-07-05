@@ -6,9 +6,27 @@ import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWCursorEnterCallback;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Mouse {
 
-	private static byte[] MouseState = new byte[8];
+    public static final int BUTTON_1 = 0;
+    public static final int BUTTON_2 = 1;
+    public static final int BUTTON_3 = 2;
+    public static final int BUTTON_4 = 3;
+    public static final int BUTTON_5 = 4;
+    public static final int BUTTON_6 = 5;
+    public static final int BUTTON_7 = 6;
+    public static final int BUTTON_8 = 7;
+
+    public static final int BUTTON_LEFT = BUTTON_1;
+    public static final int BUTTON_RIGHT = BUTTON_2;
+    public static final int BUTTON_MIDDLE = BUTTON_3;
+
+    private static List<Integer> ButtonStates = new ArrayList<>();
+    private static List<Integer> ButtonStates_ThisFrame = new ArrayList<>();
+    private static List<Integer> ButtonStates_LastFrame = new ArrayList<>();
 	
 	private static float x, y;
 	private static float prevx, prevy;
@@ -20,7 +38,7 @@ public class Mouse {
 		
 		@Override
 		public void invoke(long window, int button, int action, int mods) {
-			MouseState[button] = (byte)action;
+			SetButton(button, action != GLFW_RELEASE);
 		}
 		
 	};
@@ -50,17 +68,24 @@ public class Mouse {
 
 	};
 
+    public static boolean isButtonClicked(int button){
+        return ButtonStates_ThisFrame.contains(button) && !ButtonStates_LastFrame.contains(button);
+    }
 
 	public static boolean isButtonPressed(int button){
-		return MouseState[button] == GLFW_PRESS;
+		return ButtonStates_ThisFrame.contains(button);
+	}
+
+    public static boolean isButtonReleased(int button){
+        return !isButtonPressed(button);
+    }
+
+	public static int getMouseX(){
+		return (int)x;
 	}
 	
-	public static double getMouseX(){
-		return x;
-	}
-	
-	public static double getMouseY(){
-		return y;
+	public static int getMouseY(){
+		return (int)y;
 	}
 
     public static double getDX(){
@@ -84,6 +109,24 @@ public class Mouse {
 		glfwSetCursorPosCallback(windowID, cursorPosCallback);
 		glfwSetCursorEnterCallback(windowID, cursorEnterCallback);
 	}
+
+    private static void SetButton(int btn, boolean pressed){
+        if(pressed && !ButtonStates.contains(btn))
+            ButtonStates.add(btn);
+
+        if(!pressed && ButtonStates.contains(btn))
+            ButtonStates.remove((Integer)btn);
+    }
+
+    public static void BeginFrame(){
+        ButtonStates_ThisFrame.clear();
+        ButtonStates_ThisFrame.addAll(ButtonStates);
+    }
+
+    public static void EndFrame(){
+        ButtonStates_LastFrame.clear();
+        ButtonStates_LastFrame.addAll(ButtonStates_ThisFrame);
+    }
 
     public static void Cleanup(){
 

@@ -7,10 +7,9 @@ import main.java.org.bearengine.input.Keyboard;
 import main.java.org.bearengine.input.Mouse;
 import main.java.org.bearengine.objects.Camera;
 import main.java.org.bearengine.objects.DevCamera;
-import main.java.org.bearengine.tests.GameTest;
-import main.java.org.bearengine.utils.ResourceLoader;
 import main.java.org.bearengine.graphics.types.Texture;
 import main.java.org.bearengine.screens.SplashScreen;
+import main.java.org.bearengine.utils.ResourceLoader;
 import main.java.org.bearengine.utils.Time;
 import main.java.org.joml.Matrix4f;
 import org.lwjgl.Version;
@@ -18,7 +17,6 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.Configuration;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,10 +55,9 @@ public class Engine implements Runnable{
 			init();
 			EngineLoop();
 		}catch(Exception e){
-			Debug.error("BearEngine has crashed: ");
-			e.printStackTrace();
+			Debug.exception("BearEngine has Crashed", e);
 		}finally {
-			Exit();
+//			Exit();
 		}
 	}
 	
@@ -93,7 +90,7 @@ public class Engine implements Runnable{
 	}
 	
 	private void setupScreensOrder(){
-        Texture texture = new Texture().UploadTexture(Image.GetImage("textures/bearengine_logo.png", ResourceLoader.FileType.Internal));
+        Texture texture = new Texture().UploadTexture(ResourceLoader.Load("/main/java/resources/textures/bearengine_logo.png", Image.class));
 		screenOrder.add(new SplashScreen(0.1f, texture));
 		
 		screenOrder.add(gameScreen);
@@ -113,11 +110,13 @@ public class Engine implements Runnable{
             double delta = Time.NanToSec(System.nanoTime() - lastTime);
             lastTime = System.nanoTime();
             Keyboard.BeginFrame();
+            Mouse.BeginFrame();
 
             update((float)delta);
             render();
             frames++;
 
+            Mouse.EndFrame();
             Keyboard.EndFrame();
 
             if(System.currentTimeMillis() - lastSec > 1000) {
@@ -146,9 +145,9 @@ public class Engine implements Runnable{
             screen.isInitialised = true;
 			Debug.log("Engine -> Screen Initialised!");
 		}else{
-            //Debug.log("Engine -> Screen Update!");
+            //Debug.log("Engine -> Screen update!");
 			screen.update(deltaTime);
-            //Debug.log("Engine -> Screen Update END!");
+            //Debug.log("Engine -> Screen update END!");
 		}
 
         DevCamera.ProcessInput(deltaTime);

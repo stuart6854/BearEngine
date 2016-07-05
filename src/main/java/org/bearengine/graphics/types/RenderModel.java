@@ -75,7 +75,6 @@ public class RenderModel {
     private static int[] Current_VBOs = null;
     private static int Current_Index_VBO = -1;
 
-
     public static RenderModel Create2DModel(float[] vertices, float[] uvs, int[] indices){
         if(CREATING){
             Debug.error("RenderModel -> Already Creating RenderModel!");

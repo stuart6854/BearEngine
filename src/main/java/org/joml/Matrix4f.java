@@ -2059,7 +2059,7 @@ public class Matrix4f implements Externalizable {
     }
 
     /**
-     * Update the given {@link FrustumCuller} with <code>this</code> matrix.
+     * update the given {@link FrustumCuller} with <code>this</code> matrix.
      * <p>
      * This will result in the frustum culler recalculating <code>this</code> matrix's frustum planes.
      * 
@@ -2074,7 +2074,7 @@ public class Matrix4f implements Externalizable {
     }
 
     /**
-     * Update the given {@link FrustumRayBuilder} with <code>this</code> matrix.
+     * update the given {@link FrustumRayBuilder} with <code>this</code> matrix.
      * <p>
      * This will result in the recalculation of <code>this</code> matrix's frustum.
      * 

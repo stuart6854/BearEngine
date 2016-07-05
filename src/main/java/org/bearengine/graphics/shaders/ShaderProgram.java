@@ -15,6 +15,7 @@ public class ShaderProgram {
 	public static ShaderProgram CURRENT;
 	public static ShaderProgram DEFAULT;
 	public static ShaderProgram DEFAULT_UI;
+	public static ShaderProgram DEFAULT_UI_SDF;
 
 	public int ProgramID;
 	
@@ -201,18 +202,31 @@ public class ShaderProgram {
         DEFAULT.AttachShader(fragShader);
         DEFAULT.Link();
 
-        Shader guiVertShader = new Shader("shaders/gui_vertex.vert", Shader.VERTEX_SHADER);
-        guiVertShader.LoadSourceCode();
-        guiVertShader.CompileShader();
-        Shader guiFragShader = new Shader("shaders/gui_fragment.frag", Shader.FRAGMENT_SHADER);
-        guiFragShader.LoadSourceCode();
-        guiFragShader.CompileShader();
+        Shader uiVertShader = new Shader("shaders/ui_vertex.vert", Shader.VERTEX_SHADER);
+        uiVertShader.LoadSourceCode();
+        uiVertShader.CompileShader();
+        Shader uiFragShader = new Shader("shaders/ui_fragment.frag", Shader.FRAGMENT_SHADER);
+        uiFragShader.LoadSourceCode();
+        uiFragShader.CompileShader();
 
         DEFAULT_UI = new ShaderProgram();
         DEFAULT_UI.Initialise();
-        DEFAULT_UI.AttachShader(guiVertShader);
-        DEFAULT_UI.AttachShader(guiFragShader);
+        DEFAULT_UI.AttachShader(uiVertShader);
+        DEFAULT_UI.AttachShader(uiFragShader);
         DEFAULT_UI.Link();
+
+        Shader uiSDFVertShader = new Shader("shaders/sdf_ui_vertex.vert", Shader.VERTEX_SHADER);
+        uiSDFVertShader.LoadSourceCode();
+        uiSDFVertShader.CompileShader();
+        Shader uiSDFFragShader = new Shader("shaders/sdf_ui_fragment.frag", Shader.FRAGMENT_SHADER);
+        uiSDFFragShader.LoadSourceCode();
+        uiSDFFragShader.CompileShader();
+
+        DEFAULT_UI_SDF = new ShaderProgram();
+        DEFAULT_UI_SDF.Initialise();
+        DEFAULT_UI_SDF.AttachShader(uiSDFVertShader);
+        DEFAULT_UI_SDF.AttachShader(uiSDFFragShader);
+        DEFAULT_UI_SDF.Link();
     }
 
 }

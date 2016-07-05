@@ -17,6 +17,7 @@ public class Canvas extends UIObject{
 
     public Canvas(RenderMode renderMode){
         super();
+        this.ParentCanvas = this;
         this.renderMode = renderMode;
         if(renderMode == RenderMode.ScreenSpace){
             this.Width = Display.mainDisplay.getWidth();
@@ -24,6 +25,10 @@ public class Canvas extends UIObject{
         }
 
         Renderer.RegisterUICanvas(this);
+    }
+
+    public void Update(){
+        update();
     }
 
     @Override
