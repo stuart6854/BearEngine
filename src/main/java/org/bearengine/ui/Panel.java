@@ -11,8 +11,9 @@ public class Panel extends UIObject {
 
     private Texture texture;
 
-    public Panel(int width, int height){
-        super(0, 0, width, height);
+    public Panel(){
+        super();
+        super.Name = "UI_Panel";
         Image image = new Image("/main/java/resources/textures/ui/panel/white_flat_panel.png");
         texture = new Texture().UploadTexture(image);
         BuildMesh();
@@ -20,9 +21,10 @@ public class Panel extends UIObject {
 
     @Override
     public void BuildMesh() {
-        this.setMesh(UIMesh.Square(Width, Height));
+        this.setMesh(UIMesh.Square(PixelWidth, PixelHeight));
         this.mesh.material.shaderProgram = ShaderProgram.DEFAULT_UI;
         this.mesh.material.SetTexture(texture);
+        super.CreateDebugMesh();
     }
 
 }

@@ -8,7 +8,7 @@ import main.java.org.joml.Vector3f;
 /**
  * Created by Stuart on 22/05/2016.
  */
-public class Camera extends Object {
+public class Camera extends GameObject {
 
     public static Camera Main_Camera;
 

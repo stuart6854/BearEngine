@@ -14,6 +14,12 @@ public class Color {
     public static Color GREEN = new Color(0, 1, 0);
     public static Color BLUE = new Color(0, 0, 1);
 
+    public static Color MAGENTA = new Color(1, 0, 1);
+    public static Color CYAN = new Color(0, 1, 1);
+    public static Color YELLOW = new Color(1, 1, 0);
+
+    public static Color SKY_BLUE = new Color(135/255f, 206f/255f, 235f/255f);
+
     public float r, g, b, a;
 
     public Color(){

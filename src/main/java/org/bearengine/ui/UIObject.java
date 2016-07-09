@@ -1,11 +1,12 @@
 package main.java.org.bearengine.ui;
 
-import main.java.org.bearengine.debug.Debug;
+import main.java.org.bearengine.debug.DebugMesh;
+import main.java.org.bearengine.graphics.rendering.RenderSpace;
+import main.java.org.bearengine.graphics.rendering.Renderer;
 import main.java.org.bearengine.graphics.types.Mesh;
 import main.java.org.bearengine.input.Mouse;
-import main.java.org.joml.Matrix4d;
-import main.java.org.joml.Vector2f;
-import main.java.org.joml.Vector3f;
+import main.java.org.bearengine.objects.Object;
+import main.java.org.joml.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,39 +14,33 @@ import java.util.List;
 /**
  * Created by Stuart on 11/06/2016.
  */
-public abstract class UIObject {
-
-    public String Name = "UIObject";
+public abstract class UIObject extends Object{
 
     public boolean IsActive = true;
     public boolean IsVisible = true;
+    protected boolean ShowDebugMesh = false;
 
-    public enum Anchor{ TL, TR, CL, CENTRE, CR, BL, BR }
-    protected Anchor PositionAnchor = Anchor.TL;
+    protected Vector2f NormalisedPosition; // Relative to Parent, eg. [0,0] is Top-Left of Parent Element, [0.5, 0.5] is Centre of Parent
+    protected Vector3f PixelOffset; // Adjusts position relative to normalised position
+    protected float PixelWidth, PixelHeight;
 
-    protected float PosX, PosY, PosZ;
-    protected float Width, Height;
-
-    protected Canvas ParentCanvas;
+    protected Canvas Owner_Canvas;
     protected UIObject Parent;
     protected List<UIObject> Children;
 
     protected Mesh mesh;
-
-    protected final Matrix4d m_transform;
-    protected boolean transformMatrixDirty = true;
+    protected DebugMesh debugMesh;
 
     public UIObject(){
-        this(0, 0, 0, 0);
-    }
+        super();
+        super.Name = "UI_Object";
 
-    public UIObject(float x, float y, float width, float height){
-        this.PosX = x;
-        this.PosY = y;
-        this.Width = width;
-        this.Height = height;
-        this.m_transform = new Matrix4d();
+        this.NormalisedPosition = new Vector2f();
+        this.PixelOffset = new Vector3f();
         this.Children = new ArrayList<>();
+        this.debugMesh = new DebugMesh();
+
+        CreateDebugMesh();
     }
 
     protected void update(){
@@ -54,25 +49,31 @@ public abstract class UIObject {
         }
     }
 
-    public void SetPosition(float x, float y, float z){
-        this.PosX = x;
-        this.PosY = y;
-        this.PosZ = z;
-        transformMatrixDirty = true;
+    public void SetPixelOffset(float x, float y, float z){
+        this.PixelOffset.set(x, y, z);
+        UpdateTransformMatrix();
     }
 
-    public void SetAnchor(Anchor anchor){
-        this.PositionAnchor = anchor;
+    public void SetNormalisedPosition(float x, float y){
+        this.NormalisedPosition.set(x, y);
+        UpdateTransformMatrix();
     }
 
-    public Vector3f GetPosition(){
-        return new Vector3f(PosX, PosY, PosZ);
+    public void SetWidth(float width){
+        this.PixelWidth = width;
+        BuildMesh();
+        UpdateTransformMatrix();
+    }
+
+    public void SetHeight(float height){
+        this.PixelHeight = height;
+        BuildMesh();
+        UpdateTransformMatrix();
     }
 
     public void AddChild(UIObject child){
         if(!Children.contains(child)) {
-            child.Parent = this;
-            child.ParentCanvas = this.ParentCanvas;
+            child.SetParent(this);
             Children.add(child);
         }
     }
@@ -81,15 +82,35 @@ public abstract class UIObject {
         if(Children.contains(child)) {
             Children.remove(child);
             child.Parent = null;
-            child.ParentCanvas = null;
+            child.Owner_Canvas = null;
         }
+    }
+
+    public void SetParent(UIObject parent){
+        this.Parent = parent;
+        this.Owner_Canvas = parent.Owner_Canvas;
+        this.debugMesh.SetRenderSpace(this.Owner_Canvas.Render_Space);
+        this.UpdateTransformMatrix();
     }
 
     public List<UIObject> GetChildren(){
         return Children;
     }
 
-    public abstract void BuildMesh();
+    public void BuildMesh(){
+        CreateDebugMesh();
+    }
+
+    protected void CreateDebugMesh() {
+        debugMesh.Mesh_Name = this.Name + "_DebugMesh";
+        float[] vertices = { 0, 0, 0, 0, PixelHeight, 0, PixelWidth, PixelHeight, 0, PixelWidth, 0, 0 };
+        int[] indices = { 0, 1, 1, 2, 2, 3, 3, 0 };
+//        int[] indices = { 0, 1, 2, 2, 3, 0 };
+
+        debugMesh.SetVertices(vertices);
+        debugMesh.SetIndices(indices);
+        debugMesh.CreateRenderModel(this);
+    }
 
     public void setMesh(Mesh mesh){
         if(this.mesh != null)
@@ -103,86 +124,82 @@ public abstract class UIObject {
     }
 
     public Matrix4d GetTransformMatrix(){
-        if(transformMatrixDirty){
-            UpdateTransformMatrix();
-            for(UIObject object : Children)
-                object.transformMatrixDirty = true;
-        }
         return m_transform;
     }
 
-    protected void UpdateTransformMatrix(){
-        Vector3f pos = GetRenderPosition();
+    public void SetShowDebugMesh(boolean show){
+        ShowDebugMesh = show;
+        if(show)
+            Renderer.RegisterDebugMesh(this.debugMesh);
+        else
+            Renderer.UnregisterDebugMesh(this.debugMesh);
+    }
 
+    protected void UpdateTransformMatrix(){
+        UpdateTransformMatrix(GetRenderPosition(), new Quaterniond(), new Vector3d());
+    }
+
+    @Override
+    protected void UpdateTransformMatrix(Vector3d pos, Quaterniond rot, Vector3d scale) {
         m_transform.identity();
         m_transform.translate(pos.x, pos.y, pos.z);
 
-        transformMatrixDirty = false;
+        for(UIObject object : Children)
+            object.UpdateTransformMatrix();
     }
 
     protected boolean IsMouseOver(){
         int X = Mouse.getMouseX();
         int Y = Mouse.getMouseY();
 
-        Vector3f pos = GetRenderPosition();
+        Vector3d pos = GetRenderPosition();
 
-        if(ParentCanvas.renderMode == Canvas.RenderMode.ScreenSpace) {
-            if(X < pos.x || X > pos.x + Width)
+        if(Owner_Canvas.Render_Space == RenderSpace.SCREEN_SPACE) {
+            if(X < pos.x || X > pos.x + PixelWidth)
                 return false;
-            if(Y < pos.y || Y > pos.y + Height)
+            if(Y < pos.y || Y > pos.y + PixelHeight)
                 return false;
-        }else{
+        }else if(Owner_Canvas.Render_Space == RenderSpace.WORLD_SPACE){
             //TODO: Handle 3D(Ray Casting/Ray Picking)
         }
 
         return true;
     }
 
-    protected Vector3f GetRenderPosition(){
-        if(this instanceof Canvas) return new Vector3f(PosX, PosY, PosZ); //Because Canvas's dont have parents
+    protected Vector3d GetRenderPosition(){
+        Vector3d space = new Vector3d();
+        Vector2d point = new Vector2d();
 
-        Vector3f parentRenderPos = Parent.GetRenderPosition();
-        float x = parentRenderPos.x + PosX;
-        float y = parentRenderPos.y + PosY;
-        float z = parentRenderPos.z + PosZ;
+        space.add(PixelOffset);
+        if(this.Parent != null){
 
-        switch(PositionAnchor) {
-            case TL:
-                break;
-            case TR:
-                x = Parent.Width - x - Width;
-                break;
-            case BL:
-                y = Parent.Height - y - Height;
-                break;
-            case BR:
-                x = Parent.Width - x - Width;
-                y = Parent.Height - y - Height;
-                break;
-            case CL:
-                y += (Parent.Height / 2) - (this.Height / 2);
-                break;
-            case CENTRE:
-                x += (Parent.Width / 2) - (this.Width / 2);
-                y += (Parent.Height / 2) - (this.Height / 2);
-                break;
+            if(Owner_Canvas.Render_Space == RenderSpace.SCREEN_SPACE) {
+                point.set(Parent.PixelWidth * NormalisedPosition.x, Parent.PixelHeight * NormalisedPosition.y);
+            } else if(Owner_Canvas.Render_Space == RenderSpace.WORLD_SPACE) {
+                float flippedNormY = 1 - NormalisedPosition.y;
+                point.set(NormalisedPosition.x / Parent.PixelWidth, Parent.PixelHeight / flippedNormY);
+                point.y -= PixelHeight;
+            }
+
+            space.add(Parent.GetRenderPosition());
         }
 
-        return new Vector3f(x, y, z);
+        space.add(new Vector3d(point, 0));
+
+        return space;
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(java.lang.Object obj) {
         UIObject uiObject = (UIObject) obj;
 
         if(uiObject.Name != this.Name) return false;
 
-        if(uiObject.PosX != this.PosX) return false;
-        if(uiObject.PosY != this.PosY) return false;
-        if(uiObject.PosZ != this.PosZ) return false;
+        if(uiObject.NormalisedPosition != this.NormalisedPosition) return false;
+        if(uiObject.PixelOffset != this.PixelOffset) return false;
 
-        if(uiObject.Width != this.Width) return false;
-        if(uiObject.Height != this.Height) return false;
+        if(uiObject.PixelWidth != this.PixelWidth) return false;
+        if(uiObject.PixelHeight != this.PixelHeight) return false;
 
         return true;
     }

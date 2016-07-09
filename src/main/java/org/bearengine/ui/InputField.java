@@ -24,8 +24,9 @@ public class InputField extends UIObject implements ICharacterListener{
 
     private boolean IsActive = false;
 
-    public InputField(Font font, float width, float height){
-        super(0, 0, width, height);
+    public InputField(Font font, UIObject parent){
+        super();
+        parent.AddChild(this);
 
         LoadTextures();
         BuildMesh();
@@ -53,7 +54,7 @@ public class InputField extends UIObject implements ICharacterListener{
         }
 
         if(IsActive){
-            if(Keyboard.isClicked(Keyboard.KEY_BACKSPACE)){
+            if(Keyboard.isClicked(Keyboard.KEY_BACKSPACE) && InputText.length() > 0){
                 InputText = InputText.substring(0, InputText.length() - 1);
                 RefreshLabel();
             }
@@ -64,16 +65,19 @@ public class InputField extends UIObject implements ICharacterListener{
 
     @Override
     public void BuildMesh() {
-        this.setMesh(UIMesh.Square(Width, Height));
+        this.setMesh(UIMesh.Square(PixelWidth, PixelHeight));
         this.mesh.material.shaderProgram = ShaderProgram.DEFAULT_UI;
         this.mesh.material.SetTexture(base_texture);
+
+        super.CreateDebugMesh();
     }
 
     private void CreateLabel(String text, Font font){
         Debug.log("InputField -> Creating Label.");
         label = new Label(text, font);
-        label.SetAnchor(Anchor.CL);
-        label.SetPosition(0, 0, 0);
+        label.SetNormalisedPosition(0f, .5f);
+        label.SetPixelOffset(5, -(label.PixelHeight / 2f), 0);
+        label.SetShowDebugMesh(true);
         super.AddChild(label);
     }
 

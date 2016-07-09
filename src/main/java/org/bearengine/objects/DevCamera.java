@@ -13,10 +13,8 @@ import main.java.org.bearengine.ui.Label;
 import main.java.org.bearengine.ui.Panel;
 import main.java.org.bearengine.ui.UIObject;
 import main.java.org.bearengine.utils.File;
-import main.java.org.bearengine.utils.FileUtils;
 import main.java.org.bearengine.utils.ResourceLoader;
 import main.java.org.joml.Matrix4f;
-import main.java.org.joml.Vector2f;
 import main.java.org.joml.Vector3d;
 import main.java.org.joml.Vector3f;
 
@@ -39,8 +37,8 @@ public class DevCamera extends Camera {
     Font font = new Font(6, texture, ResourceLoader.Load("/main/java/resources/fonts/OpenSans_DF.fnt", File.class));
 
     private Canvas canvas = new Canvas();
-    private Panel panel = new Panel(128, 128);
-    private Label label = new Label("X,Y,Z: NULL", font);
+    private Panel panel = new Panel();
+    private Label label = new Label("X,Y,Z:", font);
 
     private Vector3d lastPos = new Vector3d();
 
@@ -48,13 +46,17 @@ public class DevCamera extends Camera {
         super(new Matrix4f().perspective((float)Math.toRadians(60f), Display.mainDisplay.Aspect, 0.1f, 1000.0f));
         super.Name = "DevCamera";
 
-        label.Name = "DevCam_Pos_Label";
-        label.SetAnchor(UIObject.Anchor.TR);
-        panel.Name = "DevCam_Panel";
-        panel.AddChild(label);
-        panel.SetAnchor(UIObject.Anchor.TR);
+        panel.SetNormalisedPosition(1f, 0f);
+        panel.SetWidth(128);
+        panel.SetHeight(128);
+        panel.SetPixelOffset(-128, 0, 0);
         panel.IsVisible = ENABLED;
         canvas.AddChild(panel);
+
+        label.Name = "DevCam_Pos_Label";
+        label.SetNormalisedPosition(0f, 0f);
+        panel.Name = "DevCam_Panel";
+        panel.AddChild(label);
     }
 
     public static void ProcessInput(float deltaTime){

@@ -16,6 +16,7 @@ public class ShaderProgram {
 	public static ShaderProgram DEFAULT;
 	public static ShaderProgram DEFAULT_UI;
 	public static ShaderProgram DEFAULT_UI_SDF;
+    public static ShaderProgram DEBUG_MESH_SHADER_PROGRAM;
 
 	public int ProgramID;
 	
@@ -227,6 +228,19 @@ public class ShaderProgram {
         DEFAULT_UI_SDF.AttachShader(uiSDFVertShader);
         DEFAULT_UI_SDF.AttachShader(uiSDFFragShader);
         DEFAULT_UI_SDF.Link();
+
+        Shader debugVertShader = new Shader("shaders/debugmesh_vertex.vert", Shader.VERTEX_SHADER);
+        debugVertShader.LoadSourceCode();
+        debugVertShader.CompileShader();
+        Shader debugFragShader = new Shader("shaders/debugmesh_fragment.frag", Shader.FRAGMENT_SHADER);
+        debugFragShader.LoadSourceCode();
+        debugFragShader.CompileShader();
+
+        DEBUG_MESH_SHADER_PROGRAM = new ShaderProgram();
+        DEBUG_MESH_SHADER_PROGRAM.Initialise();
+        DEBUG_MESH_SHADER_PROGRAM.AttachShader(debugVertShader);
+        DEBUG_MESH_SHADER_PROGRAM.AttachShader(debugFragShader);
+        DEBUG_MESH_SHADER_PROGRAM.Link();
     }
 
 }

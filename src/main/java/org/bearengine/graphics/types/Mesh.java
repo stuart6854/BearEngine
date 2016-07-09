@@ -31,8 +31,7 @@ public class Mesh {
         for(int i = 0; i < indicesList.size(); i++)
             indices[i] = indicesList.get(i);
 
-        this.indices = indices;
-        this.IndicesCount = indices.length;
+        SetIndices(indices);
     }
 
     public void SetVertices(List<Float> verticesList){
@@ -41,7 +40,16 @@ public class Mesh {
         for(int i = 0; i < verticesList.size(); i++)
             verts[i] = verticesList.get(i);
 
-        this.vertices = verts;
+        SetVertices(verts);
+    }
+
+    public void SetIndices(int[] indices){
+        this.indices = indices;
+        this.IndicesCount = indices.length;
+    }
+
+    public void SetVertices(float[] vertices){
+        this.vertices = vertices;
     }
 
     public void SetUVs(List<Float> uvsList){
@@ -85,7 +93,8 @@ public class Mesh {
     }
 
     public void Cleanup(){
-        renderModel.ReleaseModel();
+        if(renderModel != null)
+            renderModel.ReleaseModel();
     }
 
 }

@@ -1,9 +1,7 @@
 package main.java.org.bearengine.ui;
 
-import main.java.org.bearengine.debug.Debug;
 import main.java.org.bearengine.font.*;
 import main.java.org.bearengine.font.Character;
-import main.java.org.bearengine.graphics.shaders.Shader;
 import main.java.org.bearengine.graphics.shaders.ShaderProgram;
 import main.java.org.bearengine.graphics.types.Material;
 import main.java.org.bearengine.graphics.types.Mesh;
@@ -34,10 +32,14 @@ public class Label extends UIObject {
 
     @Override
     public void BuildMesh() {
+        if(this.Text == null || this.Text == "") return;
+
         this.lines = CreateStructure(this.Text);
         BuildMeshFromStructure(this.lines);
-        super.Width = GetLongestLineWidth();
-        super.Height = GetLinesHeight();
+        super.PixelWidth = GetLongestLineWidth();
+        super.PixelHeight = GetLinesHeight();
+
+        super.CreateDebugMesh();
     }
 
     private List<Line> CreateStructure(String text){
@@ -79,7 +81,7 @@ public class Label extends UIObject {
         List<Float> vertices = new ArrayList<>();
         List<Float> uvs = new ArrayList<>();
 
-        float x = 0, y = 0;
+        float x = 1, y = 0;
 
         int i = 0;
         for(Line line : lines){

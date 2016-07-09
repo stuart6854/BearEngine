@@ -6,6 +6,7 @@ import main.java.org.bearengine.debug.Debug;
 import main.java.org.bearengine.font.Font;
 import main.java.org.bearengine.graphics.Display;
 import main.java.org.bearengine.graphics.importers.OBJImporter;
+import main.java.org.bearengine.graphics.rendering.RenderSpace;
 import main.java.org.bearengine.graphics.rendering.Renderer;
 import main.java.org.bearengine.graphics.shaders.ShaderProgram;
 import main.java.org.bearengine.graphics.types.Color;
@@ -16,7 +17,6 @@ import main.java.org.bearengine.objects.Camera;
 import main.java.org.bearengine.objects.GameObject;
 import main.java.org.bearengine.ui.*;
 import main.java.org.bearengine.utils.File;
-import main.java.org.bearengine.utils.FileUtils;
 import main.java.org.bearengine.utils.ResourceLoader;
 import main.java.org.joml.Matrix4f;
 
@@ -39,10 +39,10 @@ public class GameTest extends Game {
 	@Override
 	public void init() {
         Debug.log("GameTest -> Init.");
-        Display.mainDisplay.SetClearColor(new Color(1, 0, 1));
+        Display.mainDisplay.SetClearColor(Color.SKY_BLUE);
 
         Camera.Main_Camera.SetProjection(new Matrix4f().perspective((float)Math.toRadians(60.0f), Display.mainDisplay.Aspect, 0.1f, 1000.0f));
-        Camera.Main_Camera.SetPosition(0, 0, 1);
+        Camera.Main_Camera.SetPosition(0, 2, 1);
 
         texture = new Texture().UploadTexture(ResourceLoader.Load("/main/java/resources/textures/placeholder_orange_256.png", Image.class));
 
@@ -54,42 +54,48 @@ public class GameTest extends Game {
 
         object = new GameObject();
         object.setMesh(mesh);
-        object.SetPosition(0, -1, -5);
-
-
-//        FontTest.CreateFont();
-//        Camera guiCamera = new Camera(new Matrix4f().ortho2D(0, Display.mainDisplay.getWidth()/2, Display.mainDisplay.getHeight()/2, 0));
-//        textObj = new GameObject();
-//        textObj.Name = "TextObj";
-//        textObj.setMesh(FontTest.CreateMesh("Hello World!\nHow are you today?\n1234567890", 0, 0, Color.BLACK));
-//        textObj.GetMesh().material.shaderProgram = guiShaderProgram;
-//        textObj.GetMesh().material.RenderCamera = guiCamera;
-//        textObj.SetPosition(0, 0, 0);
-//        textObj.SetScale(1f, 1f, 0f);
+        object.SetPosition(0, 0, -5);
 
         Image fontImage = ResourceLoader.Load("/main/java/resources/fonts/OpenSans_DF.png", Image.class);
         Texture texture = new Texture().UploadTexture(fontImage);
         Font font = new Font(8, texture, ResourceLoader.Load("/main/java/resources/fonts/OpenSans_DF.fnt", File.class));
 
-        canvas = new Canvas(Canvas.RenderMode.ScreenSpace);
-        Panel panel = new Panel(512, 256);
+        canvas = new Canvas(RenderSpace.SCREEN_SPACE);
+//        canvas.SetPixelOffset(0, 0, -5);//Next 3 lines used for World-Space Canvas
+//        canvas.SetWidth(4);
+//        canvas.SetHeight(4);
+        canvas.SetShowDebugMesh(true);
+
+        Panel panel = new Panel();
+        panel.SetNormalisedPosition(0, 0);
+        panel.SetPixelOffset(10, 10, 0);
+        panel.SetWidth(512);
+        panel.SetHeight(400);
+        panel.SetShowDebugMesh(true);
         canvas.AddChild(panel);
-        panel.SetPosition(10, 10, 0);
-        button = new Button("Click Me!", font, 256, 64);
-        button.SetPosition(10, 10, 0);
-        panel.AddChild(button);
+
+        button = new Button("Click Me!", font, panel);
+        button.SetPixelOffset(10, 10, 0);
+        button.SetWidth(256);
+        button.SetHeight(64);
+        button.SetShowDebugMesh(true);
 
         label = new Label("Hello World!\nNew Line Test", font);
-        label.SetPosition(32, 300, 1);
+        label.SetPixelOffset(10, 300, 0);
+        label.SetShowDebugMesh(true);
         panel.AddChild(label);
 
         Label label2 = new Label("Lorem ipsum dolor sit amet, consectetur adipiscing elit.\nMauris nisl diam, feugiat at mollis eget, tincidunt et est. Integer ex.", font);
-        label2.SetPosition(32, 500, 1);
+        label2.SetPixelOffset(32, 500, 0);
+        label2.SetShowDebugMesh(true);
         panel.AddChild(label2);
 
-        inputField = new InputField(font, 256, 64);
-        inputField.SetPosition(10, 128, 0);
-        panel.AddChild(inputField);
+        inputField = new InputField(font, panel);
+        inputField.SetPixelOffset(10, 128, 0);
+        inputField.SetWidth(256);
+        inputField.SetHeight(64);
+        inputField.SetShowDebugMesh(true);
+
 
         Debug.log("GameTest -> Init End.");
 	}
@@ -98,9 +104,9 @@ public class GameTest extends Game {
 	public void update(float deltaTime) {
 //        object.Rotate(0, 1f * deltaTime, 0);
 
-        if(button.IsClicked()){
-            Debug.log("Clicked:" + System.currentTimeMillis());
-        }
+//        if(button.IsClicked()){
+//            Debug.log("Clicked:" + System.currentTimeMillis());
+//        }
 
         canvas.Update();
 	}

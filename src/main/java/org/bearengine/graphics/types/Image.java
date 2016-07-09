@@ -92,12 +92,12 @@ public class Image {
 //        if(image == null) image = new Image();
 //
 //        image.ImageData = imageBuffer;
-//        image.Width = bufferedImage.getWidth();
-//        image.Height = bufferedImage.getHeight();
+//        image.PixelWidth = bufferedImage.getWidth();
+//        image.PixelHeight = bufferedImage.getHeight();
 //        image.Components = (bufferedImage.getColorModel().hasAlpha()) ? 4 : 3;
 //
-//        Debug.log("Image -> Width: " + image.Width);
-//        Debug.log("Image -> Height: " + image.Height);
+//        Debug.log("Image -> PixelWidth: " + image.PixelWidth);
+//        Debug.log("Image -> PixelHeight: " + image.PixelHeight);
 //        Debug.log("Image -> Components: " + image.Components);
 //        Debug.log("Image -> Image Loaded.");
 //

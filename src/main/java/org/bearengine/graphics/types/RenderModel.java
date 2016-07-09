@@ -1,5 +1,6 @@
 package main.java.org.bearengine.graphics.types;
 
+import javafx.beans.property.FloatProperty;
 import main.java.org.bearengine.debug.Debug;
 import main.java.org.bearengine.objects.Object;
 import org.lwjgl.BufferUtils;
@@ -81,6 +82,8 @@ public class RenderModel {
             return null;
         }
 
+        if(indices == null || vertices == null || uvs == null) return null;
+
         CreateModel(2);
         SetupAttributeBuffer(0, 3, vertices);
         SetupAttributeBuffer(1, 2, uvs);
@@ -95,10 +98,25 @@ public class RenderModel {
             return null;
         }
 
+        if(indices == null || vertices == null || uvs == null || normals == null) return null;
+
         CreateModel(3);
         SetupAttributeBuffer(0, 3, vertices);
         SetupAttributeBuffer(1, 2, uvs);
         SetupAttributeBuffer(2, 3, normals);
+        SetupIndexBuffer(indices);
+        FinaliseModel();
+        return StoreModel();
+    }
+
+    public static RenderModel CreateDebugRenderModel(float[] vertices, int[] indices){
+        if(CREATING){
+            Debug.error("RenderModel -> Already Creating RenderModel!");
+            return null;
+        }
+
+        CreateModel(1);
+        SetupAttributeBuffer(0, 3, vertices);
         SetupIndexBuffer(indices);
         FinaliseModel();
         return StoreModel();

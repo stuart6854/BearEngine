@@ -17,8 +17,10 @@ public class Button extends UIObject{
 
     private Label label;
 
-    public Button(String text, Font font, float width, float height){
-        super(0, 0, width, height);
+    public Button(String text, Font font, UIObject parent){
+        super();
+        parent.AddChild(this);
+
         LoadTextures();
         BuildMesh();
         CreateLabel(text, font);
@@ -61,16 +63,19 @@ public class Button extends UIObject{
 
     @Override
     public void BuildMesh() {
-        this.setMesh(UIMesh.Square(Width, Height));
+        this.setMesh(UIMesh.Square(PixelWidth, PixelHeight));
         this.mesh.material.shaderProgram = ShaderProgram.DEFAULT_UI;
         this.mesh.material.SetTexture(base_texture);
+
+        super.CreateDebugMesh();
     }
 
     private void CreateLabel(String text, Font font){
         Debug.log("Button -> Creating Label.");
         label = new Label(text, font);
-        label.SetAnchor(Anchor.CENTRE);
-        label.SetPosition(0, 0, 0);
+        label.SetNormalisedPosition(0.5f, 0.5f);
+        label.SetPixelOffset(-(label.PixelWidth / 2f), -(label.PixelHeight / 2f), 0);
+        label.SetShowDebugMesh(true);
         super.AddChild(label);
     }
 

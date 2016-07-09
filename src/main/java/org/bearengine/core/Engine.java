@@ -2,6 +2,7 @@ package main.java.org.bearengine.core;
 
 import main.java.org.bearengine.debug.Debug;
 import main.java.org.bearengine.graphics.Display;
+import main.java.org.bearengine.graphics.rendering.Renderer;
 import main.java.org.bearengine.graphics.types.Image;
 import main.java.org.bearengine.input.Keyboard;
 import main.java.org.bearengine.input.Mouse;
@@ -159,7 +160,10 @@ public class Engine implements Runnable{
 		Game screen = screenOrder.get(screenIndex);
         if(!screen.isInitialised) return;
 
-		screen.render();
+//		screen.render();
+        Renderer.RenderObjects();
+        Renderer.RenderUI();
+        Renderer.RenderDebugMeshes();
 
         Display.mainDisplay.update();
 	}

@@ -1,7 +1,9 @@
 package main.java.org.bearengine.debug;
 
 public class Debug {
-	
+
+    public static DebugDraw DEBUGDRAW = new DebugDraw();
+
 	public static void log(Object output){ //TODO: Allow switching printing debug messages off
 		if(output.toString() != "")
 			System.out.println("[DEBUG] " + output);

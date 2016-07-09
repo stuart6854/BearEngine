@@ -1,6 +1,7 @@
 package main.java.org.bearengine.graphics.rendering;
 
 import main.java.org.bearengine.debug.Debug;
+import main.java.org.bearengine.debug.DebugMesh;
 import main.java.org.bearengine.graphics.Display;
 import main.java.org.bearengine.graphics.shaders.ShaderProgram;
 import main.java.org.bearengine.graphics.types.Material;
@@ -27,8 +28,11 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Renderer {
 
+    //TODO: Stop Objects, UI, Debug Meshes from Multiple Screens being rendered/put together (possible solution: make class non-static)
+
     private static Map<String, Mesh> MeshRenderList = new HashMap<>();
     private static List<Canvas> UIRenderList = new ArrayList<>();
+    private static List<DebugMesh> DebugMeshes = new ArrayList<>();
 
     public static void RenderObjects(){
 //        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -70,17 +74,27 @@ public class Renderer {
             if(!child.IsVisible) continue;
 
             Mesh mesh = child.GetMesh();
+            if(mesh.renderModel == null) continue;
+
             Material material = mesh.material;
             ShaderProgram shaderProgram = material.shaderProgram;
             shaderProgram.Bind();
             if(material.GetTexture() != null)
                 material.GetTexture().Bind();
 
-            if(canvas.renderMode == Canvas.RenderMode.ScreenSpace)
+            if(canvas.Render_Space == RenderSpace.SCREEN_SPACE) {
                 shaderProgram.setUniform("projection", new Matrix4d().ortho2D(0, Display.mainDisplay.getWidth(), Display.mainDisplay.getHeight(), 0));
-            else shaderProgram.setUniform("projection", Camera.Main_Camera.GetProjection());
+                shaderProgram.setUniform("view", new Matrix4d());
+            } else {
+                shaderProgram.setUniform("projection", Camera.Main_Camera.GetProjection());
 
-            shaderProgram.setUniform("view", new Matrix4d());
+                if(DevCamera.ENABLED) {
+                    mesh.material.shaderProgram.setUniform("view", DevCamera.DEV_CAMERA.GetViewMatrix());
+                } else {
+                    mesh.material.shaderProgram.setUniform("view", Camera.Main_Camera.GetViewMatrix());
+                }
+            }
+
             shaderProgram.setUniform("model", child.GetTransformMatrix());
 
             mesh.renderModel.PrepareRender();
@@ -89,6 +103,44 @@ public class Renderer {
 
             RenderUIObjectChildren(child, canvas);
         }
+    }
+
+    public static void RenderDebugMeshes(){
+        glEnable(GL11.GL_DEPTH_TEST);
+        glEnable(GL_LINE_SMOOTH);
+        glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+
+        glLineWidth(2);
+
+        for(DebugMesh mesh : DebugMeshes){
+            mesh.material.shaderProgram.Bind();
+
+            ShaderProgram shaderProgram = mesh.material.shaderProgram;
+
+            if(mesh.GetRenderSpace() == RenderSpace.SCREEN_SPACE) {
+                shaderProgram.setUniform("projection", new Matrix4d().ortho2D(0, Display.mainDisplay.getWidth(), Display.mainDisplay.getHeight(), 0));
+                shaderProgram.setUniform("view", new Matrix4d());
+            } else {
+                shaderProgram.setUniform("projection", Camera.Main_Camera.GetProjection());
+
+                if(DevCamera.ENABLED) {
+                    mesh.material.shaderProgram.setUniform("view", DevCamera.DEV_CAMERA.GetViewMatrix());
+                } else {
+                    mesh.material.shaderProgram.setUniform("view", Camera.Main_Camera.GetViewMatrix());
+                }
+            }
+
+            mesh.renderModel.PrepareRender();
+
+            for(Object obj : mesh.renderModel.GetTransforms()) {
+                Matrix4d transform = obj.GetTransformMatrix();
+                mesh.material.shaderProgram.setUniform("model", transform);
+
+                glDrawElements(GL_LINES, mesh.IndicesCount, GL_UNSIGNED_INT, 0);
+            }
+        }
+
+        glLineWidth(1);
     }
 
     public static void RegisterGameObject(GameObject obj){
@@ -128,6 +180,20 @@ public class Renderer {
         if(UIRenderList.contains(canvas)){
             Debug.log("Renderer -> Unregistering UI Canvas: " + canvas.Name);
             UIRenderList.remove(canvas);
+        }
+    }
+
+    public static void RegisterDebugMesh(DebugMesh mesh){
+        Debug.log("Renderer -> Registering DebugMesh: " + mesh.Mesh_Name);
+        if(!DebugMeshes.contains(mesh.Mesh_Name)){
+            DebugMeshes.add(mesh);
+        }
+    }
+
+    public static void UnregisterDebugMesh(DebugMesh mesh){
+        if(DebugMeshes.contains(mesh)){
+            Debug.log("Renderer -> UnRegistering DebugMesh: " + mesh.Mesh_Name);
+            DebugMeshes.remove(mesh);
         }
     }
 
