@@ -23,6 +23,9 @@ public class FontMetaData {
 
     public float SpaceWidth = 0;
 
+    public float HorizontalPerPixelSize;
+    public float VerticalPerPixelSize;
+
     //Info
     public String TypeFace;
     public int FontSize;

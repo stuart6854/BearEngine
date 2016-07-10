@@ -19,22 +19,18 @@ public class Font {
     private boolean Bold = false;
     private boolean Italic = false;
 
-    public Font(int fontSize, Texture fontAtlas, File fontFile){
+    public Font(float fontSize, Texture fontAtlas, File fontFile){
         this.FontAtlas = fontAtlas;
         this.FontFile = new FontMetaData(fontFile);
         SetFontSize(fontSize);
     }
 
-    public void SetFontSize(int fontSize){
-        this.FontSize = (float)fontSize / (float)FontFile.FontSize;
+    public void SetFontSize(float fontSize){
+        this.FontSize = fontSize;
     }
 
-    public float GetRelativeFontSize(){
+    public float GetFontSize(){
         return this.FontSize;
-    }
-
-    public int GetActualFontSize(){
-        return (int)(this.FontSize * FontFile.FontSize);
     }
 
 }

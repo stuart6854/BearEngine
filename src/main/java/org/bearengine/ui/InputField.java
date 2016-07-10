@@ -21,6 +21,7 @@ public class InputField extends UIObject implements ICharacterListener{
     private String InputText = "";
 
     private Label label;
+    private Caret caret;
 
     private boolean IsActive = false;
 
@@ -31,6 +32,7 @@ public class InputField extends UIObject implements ICharacterListener{
         LoadTextures();
         BuildMesh();
         CreateLabel(PlaceholderText, font);
+        CreateCaret();
 
         Keyboard.RegisterCharacterListener(this);
     }
@@ -46,17 +48,30 @@ public class InputField extends UIObject implements ICharacterListener{
         if(IsMouseOver()){
             if(Mouse.isButtonPressed(Mouse.BUTTON_LEFT)){
                 IsActive = true;
+                caret.IsVisible = true;
+
+                if(InputText.isEmpty()){
+                    label.SetText("");
+                }
             }
         }else{
             if(Mouse.isButtonPressed(Mouse.BUTTON_LEFT)) {
                 IsActive = false;
+                caret.IsVisible = false;
+
+                if(InputText.isEmpty()){
+                    label.SetText(PlaceholderText);
+                }
             }
         }
 
         if(IsActive){
             if(Keyboard.isClicked(Keyboard.KEY_BACKSPACE) && InputText.length() > 0){
                 InputText = InputText.substring(0, InputText.length() - 1);
+                InputText = InputText.replace("\\s+", "");
+                Debug.log("Text:" + InputText + ";");
                 RefreshLabel();
+                UpdateCaretPosition();
             }
         }
 
@@ -77,8 +92,20 @@ public class InputField extends UIObject implements ICharacterListener{
         label = new Label(text, font);
         label.SetNormalisedPosition(0f, .5f);
         label.SetPixelOffset(5, -(label.PixelHeight / 2f), 0);
-        label.SetShowDebugMesh(true);
+//        label.SetShowDebugMesh(true);
         super.AddChild(label);
+    }
+
+    private void CreateCaret(){
+        Debug.log("InputField -> Creating Caret.");
+        Font font = label.GetFont();
+        caret = new Caret();
+        caret.SetHeight(font.FontFile.LineHeight * font.GetFontSize() + font.FontFile.PaddingHeight);
+        caret.SetNormalisedPosition(0f, .5f);
+        caret.SetPixelOffset(label.PixelOffset.x, -(caret.PixelHeight / 2f), 0);
+//        caret.SetShowDebugMesh(true);
+        caret.IsVisible = IsActive;
+        super.AddChild(caret);
     }
 
     private void RefreshLabel(){
@@ -96,11 +123,20 @@ public class InputField extends UIObject implements ICharacterListener{
     @Override
     public void CharacterListener(int codepoint) {
         if(IsActive){
-            Debug.log("InputField -> Character Typed: " + (char)codepoint);
+//            Debug.log("InputField -> Character Typed: " + (char)codepoint);
             char chr = (char)codepoint;
             InputText += chr;
             RefreshLabel();
+            UpdateCaretPosition();
         }
+    }
+
+    private void UpdateCaretPosition(){
+        float x = label.PixelOffset.x + label.PixelWidth;
+        if(InputText.endsWith(" "))
+            x += label.SpaceWidth;
+
+        caret.SetPixelOffset(x, caret.PixelOffset.y, 0);
     }
 
 }

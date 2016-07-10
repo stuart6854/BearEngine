@@ -7,7 +7,6 @@ import main.java.org.bearengine.font.Font;
 import main.java.org.bearengine.graphics.Display;
 import main.java.org.bearengine.graphics.importers.OBJImporter;
 import main.java.org.bearengine.graphics.rendering.RenderSpace;
-import main.java.org.bearengine.graphics.rendering.Renderer;
 import main.java.org.bearengine.graphics.shaders.ShaderProgram;
 import main.java.org.bearengine.graphics.types.Color;
 import main.java.org.bearengine.graphics.types.Image;
@@ -56,11 +55,12 @@ public class GameTest extends Game {
         object.setMesh(mesh);
         object.SetPosition(0, 0, -5);
 
-        Image fontImage = ResourceLoader.Load("/main/java/resources/fonts/OpenSans_DF.png", Image.class);
+        Image fontImage = ResourceLoader.Load("/main/java/resources/fonts/OpenSans_61_DF.png", Image.class);
         Texture texture = new Texture().UploadTexture(fontImage);
-        Font font = new Font(8, texture, ResourceLoader.Load("/main/java/resources/fonts/OpenSans_DF.fnt", File.class));
+        Font font = new Font(0.2f, texture, ResourceLoader.Load("/main/java/resources/fonts/OpenSans_61_DF.fnt", File.class));
 
         canvas = new Canvas(RenderSpace.SCREEN_SPACE);
+//        canvas = new Canvas(RenderSpace.WORLD_SPACE);
 //        canvas.SetPixelOffset(0, 0, -5);//Next 3 lines used for World-Space Canvas
 //        canvas.SetWidth(4);
 //        canvas.SetHeight(4);
@@ -85,6 +85,11 @@ public class GameTest extends Game {
         label.SetShowDebugMesh(true);
         panel.AddChild(label);
 
+//        label = new Label("ABCDEFG", font);
+//        label.SetPixelOffset(10, 10, 0);
+//        label.SetShowDebugMesh(true);
+//        canvas.AddChild(label);
+//
         Label label2 = new Label("Lorem ipsum dolor sit amet, consectetur adipiscing elit.\nMauris nisl diam, feugiat at mollis eget, tincidunt et est. Integer ex.", font);
         label2.SetPixelOffset(32, 500, 0);
         label2.SetShowDebugMesh(true);
@@ -113,10 +118,7 @@ public class GameTest extends Game {
 
 	@Override
 	public void render() {
-        Renderer.RenderObjects();
-        Renderer.RenderUI();
 
-        //FontTest.DrawString("Test", 0, 0, Color.BLACK);
 	}
 
 	@Override

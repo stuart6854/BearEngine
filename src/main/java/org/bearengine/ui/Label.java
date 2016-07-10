@@ -21,6 +21,8 @@ public class Label extends UIObject {
     private List<Line> lines;
 
     private Font font;
+    public float LineHeight;
+    public float SpaceWidth;
 
     public Label(String text, Font font){
         super();
@@ -32,12 +34,10 @@ public class Label extends UIObject {
 
     @Override
     public void BuildMesh() {
-        if(this.Text == null || this.Text == "") return;
-
+        this.PixelWidth = 0;
+        this.PixelHeight = 0;
         this.lines = CreateStructure(this.Text);
         BuildMeshFromStructure(this.lines);
-        super.PixelWidth = GetLongestLineWidth();
-        super.PixelHeight = GetLinesHeight();
 
         super.CreateDebugMesh();
     }
@@ -45,29 +45,32 @@ public class Label extends UIObject {
     private List<Line> CreateStructure(String text){
         List<Line> lines = new ArrayList<>();
 
-        float lineHeight = font.FontFile.LineHeight * font.GetRelativeFontSize();
-        float spaceWidth = font.FontFile.SpaceWidth * font.GetRelativeFontSize();
+        LineHeight = font.FontFile.LineHeight * font.GetFontSize();
+        SpaceWidth = font.FontFile.SpaceWidth * font.GetFontSize();
 
         char[] chars = text.toCharArray();
-        Line currentLine = new Line(lineHeight, spaceWidth);
-        Word currentWord = new Word(font.GetRelativeFontSize());
+        Line currentLine = new Line(LineHeight, SpaceWidth);
+        Word currentWord = new Word(font.GetFontSize());
         for(char chr : chars){
             int ascii = (int)chr;
 
             if(ascii == ASCII_SPACE){ //32 = SPACE_ASCII
                 currentLine.AddWord(currentWord);
-                currentWord = new Word(font.GetRelativeFontSize());
+                currentWord = new Word(font.GetFontSize());
             }else if(ascii == ASCII_NEWLINE){
                 currentLine.AddWord(currentWord);
-                currentWord = new Word(font.GetRelativeFontSize());
+                currentWord = new Word(font.GetFontSize());
                 lines.add(currentLine);
-                currentLine = new Line(lineHeight, spaceWidth);
+                currentLine = new Line(LineHeight, SpaceWidth);
             }else{
                 currentWord.AddCharacter(font.FontFile.characters[ascii]);
             }
         }
-        currentLine.AddWord(currentWord);
-        lines.add(currentLine);
+        if(currentWord.GetCharacters().size() > 0)
+            currentLine.AddWord(currentWord);
+
+        if(currentLine.GetWords().size() > 0)
+            lines.add(currentLine);
 
         return lines;
     }
@@ -81,7 +84,7 @@ public class Label extends UIObject {
         List<Float> vertices = new ArrayList<>();
         List<Float> uvs = new ArrayList<>();
 
-        float x = 1, y = 0;
+        float x = 0, y = 0;
 
         int i = 0;
         for(Line line : lines){
@@ -90,7 +93,7 @@ public class Label extends UIObject {
                     AddCharacterVertices(x, y, character, vertices);
                     AddCharacterUVs(character, uvs);
                     AddCharacterIndices(i, indices);
-                    x += (character.xAdvance - paddingX) * font.GetRelativeFontSize();
+                    x += (character.xAdvance - paddingX) * font.GetFontSize();
                     i++;
                 }
 
@@ -113,10 +116,10 @@ public class Label extends UIObject {
     }
 
     private void AddCharacterVertices(float cursorX, float cursorY, Character character, List<Float> vertices){
-        float x = cursorX + (character.xOffset * font.GetRelativeFontSize());
-        float y = cursorY - (character.yOffset * font.GetRelativeFontSize());
-        float maxX = x + (character.sizeX * font.GetRelativeFontSize());
-        float maxY = y - (character.sizeY * font.GetRelativeFontSize());
+        float x = cursorX;// + (character.xOffset * font.GetFontSize());
+        float y = cursorY - (character.yOffset * font.GetFontSize());
+        float maxX = x + (character.sizeX * font.GetFontSize());
+        float maxY = y - (character.sizeY * font.GetFontSize());
 
         float properX = (2 * x) - 1;
         float properY = (-2 * y) + 1;
@@ -144,6 +147,9 @@ public class Label extends UIObject {
         vertices.add(maxX);
         vertices.add(y);
         vertices.add(0f);
+
+        if(maxX > PixelWidth) PixelWidth = maxX;
+        if(maxY > PixelHeight) PixelHeight = maxY;
     }
 
     private void AddCharacterUVs(Character character, List<Float> uvs){
@@ -177,21 +183,8 @@ public class Label extends UIObject {
         BuildMesh();
     }
 
-    private float GetLongestLineWidth(){
-        float width = 0;
-        for(Line line : lines){
-            if(line.GetLineWidth() > width)
-                width = line.GetLineWidth();
-        }
-        return width + font.FontFile.PaddingWidth;
-    }
-
-    private float GetLinesHeight(){
-        float height = 0;
-        for(Line line : lines){
-            height += line.GetLineHeight() + font.FontFile.PaddingHeight;
-        }
-        return height;
+    public Font GetFont(){
+        return font;
     }
 
 }
