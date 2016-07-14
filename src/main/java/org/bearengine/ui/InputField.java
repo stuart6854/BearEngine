@@ -139,4 +139,29 @@ public class InputField extends UIObject implements ICharacterListener{
         caret.SetPixelOffset(x, caret.PixelOffset.y, 0);
     }
 
+    @Override
+    protected void OnUpdate() {
+
+    }
+
+    @Override
+    protected void OnMouseOver() {
+
+    }
+
+    @Override
+    protected void OnMouseOverEnd() {
+
+    }
+
+    @Override
+    protected void OnMouseClick() {
+        IsActive = true;
+        caret.IsVisible = true;
+
+        if(InputText.isEmpty()){
+            label.SetText("");
+        }
+    }
+
 }

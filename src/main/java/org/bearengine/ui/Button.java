@@ -5,7 +5,6 @@ import main.java.org.bearengine.font.Font;
 import main.java.org.bearengine.graphics.shaders.ShaderProgram;
 import main.java.org.bearengine.graphics.types.Image;
 import main.java.org.bearengine.graphics.types.Texture;
-import main.java.org.bearengine.input.Mouse;
 import main.java.org.bearengine.utils.ResourceLoader;
 
 /**
@@ -13,9 +12,13 @@ import main.java.org.bearengine.utils.ResourceLoader;
  */
 public class Button extends UIObject{
 
+    private enum ButtonStates{ INACTIVE, HOVERED, CLICKED}
+
     private Texture base_texture, hovered_texture, clicked_texture;
 
     private Label label;
+
+    private ButtonStates ButtonState = ButtonStates.INACTIVE;
 
     public Button(String text, Font font, UIObject parent){
         super();
@@ -26,27 +29,8 @@ public class Button extends UIObject{
         CreateLabel(text, font);
     }
 
-    @Override
-    protected void update() {
-        if(IsMouseOver()){
-            if(Mouse.isButtonPressed(Mouse.BUTTON_LEFT)){
-                this.mesh.material.SetTexture(clicked_texture);
-            }else{
-                this.mesh.material.SetTexture(hovered_texture);
-            }
-        }else{
-            this.mesh.material.SetTexture(base_texture);
-        }
-
-        super.update();
-    }
-
     public boolean IsClicked(){
-        return IsClicked(Mouse.BUTTON_LEFT);
-    }
-
-    public boolean IsClicked(int mouseButton){
-        return (IsMouseOver() && Mouse.isButtonClicked(mouseButton));
+        return ButtonState == ButtonStates.CLICKED;
     }
 
     private void LoadTextures(){
@@ -79,4 +63,26 @@ public class Button extends UIObject{
         super.AddChild(label);
     }
 
+    @Override
+    protected void OnUpdate() {
+
+    }
+
+    @Override
+    protected void OnMouseOver() {
+        ButtonState = ButtonStates.HOVERED;
+        this.mesh.material.SetTexture(hovered_texture);
+    }
+
+    @Override
+    protected void OnMouseOverEnd() {
+        ButtonState = ButtonStates.INACTIVE;
+        this.mesh.material.SetTexture(base_texture);
+    }
+
+    @Override
+    protected void OnMouseClick() {
+        ButtonState = ButtonStates.CLICKED;
+        this.mesh.material.SetTexture(clicked_texture);
+    }
 }

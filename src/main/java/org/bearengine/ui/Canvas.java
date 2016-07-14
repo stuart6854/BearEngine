@@ -91,4 +91,24 @@ public class Canvas extends UIObject{
         return true;
     }
 
+    @Override
+    protected void OnUpdate() {
+
+    }
+
+    @Override
+    protected void OnMouseOver() {
+
+    }
+
+    @Override
+    protected void OnMouseOverEnd() {
+
+    }
+
+    @Override
+    protected void OnMouseClick() {
+
+    }
+
 }

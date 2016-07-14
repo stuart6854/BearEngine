@@ -13,4 +13,25 @@ public class Slider extends UIObject{
     public void BuildMesh() {
 
     }
+
+    @Override
+    protected void OnUpdate() {
+
+    }
+
+    @Override
+    protected void OnMouseOver() {
+
+    }
+
+    @Override
+    protected void OnMouseOverEnd() {
+
+    }
+
+    @Override
+    protected void OnMouseClick() {
+
+    }
+
 }

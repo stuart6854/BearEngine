@@ -31,6 +31,10 @@ public abstract class UIObject extends Object{
     protected Mesh mesh;
     protected DebugMesh debugMesh;
 
+    private boolean MouseOver = false;
+    private int MouseStateLastFrame = -1;
+
+
     public UIObject(){
         super();
         super.Name = "UI_Object";
@@ -44,6 +48,20 @@ public abstract class UIObject extends Object{
     }
 
     protected void update(){
+        OnUpdate();
+
+        if(IsMouseOver()){
+            MouseOver = true;
+            if(!Mouse.isButtonClicked(Mouse.BUTTON_LEFT)) {
+                OnMouseOver();
+            } else {
+                OnMouseClick();
+            }
+        }else if(MouseOver == true){
+            MouseOver = false;
+            OnMouseOverEnd();
+        }
+
         for(UIObject child : Children) {
             if(child.IsActive) child.update();
         }
@@ -188,6 +206,11 @@ public abstract class UIObject extends Object{
 
         return space;
     }
+
+    protected abstract void OnUpdate(); //Allows controls to have custom update logic while still calling this classes update method
+    protected abstract void OnMouseOver();
+    protected abstract void OnMouseOverEnd();
+    protected abstract void OnMouseClick();
 
     @Override
     public boolean equals(java.lang.Object obj) {

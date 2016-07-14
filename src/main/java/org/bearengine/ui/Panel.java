@@ -27,4 +27,24 @@ public class Panel extends UIObject {
         super.CreateDebugMesh();
     }
 
+    @Override
+    protected void OnUpdate() {
+
+    }
+
+    @Override
+    protected void OnMouseOver() {
+
+    }
+
+    @Override
+    protected void OnMouseOverEnd() {
+
+    }
+
+    @Override
+    protected void OnMouseClick() {
+
+    }
+
 }
