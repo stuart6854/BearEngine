@@ -128,7 +128,7 @@ public class GameTest extends Game {
 
 	@Override
 	public void update(float deltaTime) {
-//        object.Rotate(0, 1f * deltaTime, 0);
+        object.Rotate(0, 1f * deltaTime, 0);
 
         if(button.IsClicked()){
             Debug.log("Clicked:" + System.currentTimeMillis());
