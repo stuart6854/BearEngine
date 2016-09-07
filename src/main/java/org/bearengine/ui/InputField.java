@@ -1,5 +1,6 @@
 package main.java.org.bearengine.ui;
 
+import com.sun.xml.internal.bind.v2.TODO;
 import main.java.org.bearengine.debug.Debug;
 import main.java.org.bearengine.font.Font;
 import main.java.org.bearengine.graphics.shaders.ShaderProgram;
@@ -15,6 +16,8 @@ import main.java.org.bearengine.utils.ResourceLoader;
  */
 public class InputField extends UIObject implements ICharacterListener{
 
+    //TODO: Allow user to change current input location using arrow keys or by clicking on position in input(change cursor to show this)
+    
     public Texture base_texture;
 
     private String PlaceholderText = "Placeholder Text";
@@ -24,10 +27,15 @@ public class InputField extends UIObject implements ICharacterListener{
     private Caret caret;
 
     private boolean IsActive = false;
-
+    private boolean Clicked = false;
+    
+    
+    public InputField(Font font){
+        this(font, null);
+    }
+    
     public InputField(Font font, UIObject parent){
-        super();
-        parent.AddChild(this);
+        super(parent);
 
         LoadTextures();
         BuildMesh();
@@ -44,41 +52,6 @@ public class InputField extends UIObject implements ICharacterListener{
     }
 
     @Override
-    protected void update() {
-        if(IsMouseOver()){
-            if(Mouse.isButtonPressed(Mouse.BUTTON_LEFT)){
-                IsActive = true;
-                caret.IsVisible = true;
-
-                if(InputText.isEmpty()){
-                    label.SetText("");
-                }
-            }
-        }else{
-            if(Mouse.isButtonPressed(Mouse.BUTTON_LEFT)) {
-                IsActive = false;
-                caret.IsVisible = false;
-
-                if(InputText.isEmpty()){
-                    label.SetText(PlaceholderText);
-                }
-            }
-        }
-
-        if(IsActive){
-            if(Keyboard.isClicked(Keyboard.KEY_BACKSPACE) && InputText.length() > 0){
-                InputText = InputText.substring(0, InputText.length() - 1);
-                InputText = InputText.replace("\\s+", "");
-                Debug.log("Text:" + InputText + ";");
-                RefreshLabel();
-                UpdateCaretPosition();
-            }
-        }
-
-        super.update();
-    }
-
-    @Override
     public void BuildMesh() {
         this.setMesh(UIMesh.Square(PixelWidth, PixelHeight));
         this.mesh.material.shaderProgram = ShaderProgram.DEFAULT_UI;
@@ -89,23 +62,21 @@ public class InputField extends UIObject implements ICharacterListener{
 
     private void CreateLabel(String text, Font font){
         Debug.log("InputField -> Creating Label.");
-        label = new Label(text, font);
+        label = new Label(text, font, this);
         label.SetNormalisedPosition(0f, .5f);
         label.SetPixelOffset(5, -(label.PixelHeight / 2f), 0);
 //        label.SetShowDebugMesh(true);
-        super.AddChild(label);
     }
 
     private void CreateCaret(){
         Debug.log("InputField -> Creating Caret.");
         Font font = label.GetFont();
-        caret = new Caret();
+        caret = new Caret(this);
         caret.SetHeight(font.FontFile.LineHeight * font.GetFontSize() + font.FontFile.PaddingHeight);
         caret.SetNormalisedPosition(0f, .5f);
         caret.SetPixelOffset(label.PixelOffset.x, -(caret.PixelHeight / 2f), 0);
 //        caret.SetShowDebugMesh(true);
         caret.IsVisible = IsActive;
-        super.AddChild(caret);
     }
 
     private void RefreshLabel(){
@@ -141,27 +112,77 @@ public class InputField extends UIObject implements ICharacterListener{
 
     @Override
     protected void OnUpdate() {
-
+        if(IsActive){
+            if(Keyboard.isClicked(Keyboard.KEY_BACKSPACE) && InputText.length() > 0){
+                InputText = InputText.substring(0, InputText.length() - 1);
+                InputText = InputText.replace("\\s+", "");
+//                Debug.log("Text:" + InputText);
+                RefreshLabel();
+                UpdateCaretPosition();
+            }
+            
+            if(Keyboard.isClicked(Keyboard.KEY_ENTER)){
+                StopEditing();
+            }
+        }
     }
-
-    @Override
-    protected void OnMouseOver() {
-
-    }
-
-    @Override
-    protected void OnMouseOverEnd() {
-
-    }
-
-    @Override
-    protected void OnMouseClick() {
+    
+    private void StartEditing(){
         IsActive = true;
         caret.IsVisible = true;
-
+    
         if(InputText.isEmpty()){
             label.SetText("");
         }
     }
+    
+    private void StopEditing(){
+        IsActive = false;
+        caret.IsVisible = false;
+    
+        if(InputText.isEmpty()){
+            label.SetText(PlaceholderText);
+        }
+    }
 
+    @Override
+    protected void MouseOver() {
+
+    }
+
+    @Override
+    protected void MouseOverEnd() {
+
+    }
+
+    @Override
+    protected void MouseClick() {
+        StartEditing();
+    }
+    
+    @Override
+    protected void MouseHeld() {
+        
+    }
+    
+    @Override
+    protected void MouseDown() {
+        
+    }
+    
+    @Override
+    protected void MouseUp() {
+        
+    }
+    
+    
+    
+    @Override
+    public void OnMouseClick() {
+        if(IsMouseOver()) {
+            this.MouseClick();
+        }else{
+            StopEditing();
+        }
+    }
 }

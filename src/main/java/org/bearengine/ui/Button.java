@@ -12,18 +12,22 @@ import main.java.org.bearengine.utils.ResourceLoader;
  */
 public class Button extends UIObject{
 
-    private enum ButtonStates{ INACTIVE, HOVERED, CLICKED}
+    private enum ButtonStates{ INACTIVE, HOVERED, ACTIVE, CLICKED}
 
-    private Texture base_texture, hovered_texture, clicked_texture;
+    private Texture inactive_texture, hovered_texture, active_texture;
 
     private Label label;
 
     private ButtonStates ButtonState = ButtonStates.INACTIVE;
-
+    
+    public Button(String text, Font font){
+        this(text, font, null);
+    }
+    
     public Button(String text, Font font, UIObject parent){
-        super();
-        parent.AddChild(this);
-
+        super(parent);
+        super.Name = "UIButton";
+        
         LoadTextures();
         BuildMesh();
         CreateLabel(text, font);
@@ -36,53 +40,93 @@ public class Button extends UIObject{
     private void LoadTextures(){
         //Base
         Image image = ResourceLoader.Load("/main/java/resources/textures/ui/button/flat_red/flat_red_base.png", Image.class);
-        base_texture = new Texture().UploadTexture(image);
+        inactive_texture = new Texture().UploadTexture(image);
         //Hovered
         image = ResourceLoader.Load("/main/java/resources/textures/ui/button/flat_red/flat_red_hovered.png", Image.class);
         hovered_texture = new Texture().UploadTexture(image);
         //Clicked
         image = ResourceLoader.Load("/main/java/resources/textures/ui/button/flat_red/flat_red_clicked.png", Image.class);
-        clicked_texture = new Texture().UploadTexture(image);
+        active_texture = new Texture().UploadTexture(image);
     }
 
     @Override
     public void BuildMesh() {
         this.setMesh(UIMesh.Square(PixelWidth, PixelHeight));
         this.mesh.material.shaderProgram = ShaderProgram.DEFAULT_UI;
-        this.mesh.material.SetTexture(base_texture);
+        this.mesh.material.SetTexture(inactive_texture);
 
         super.CreateDebugMesh();
     }
 
     private void CreateLabel(String text, Font font){
         Debug.log("Button -> Creating Label.");
-        label = new Label(text, font);
+        label = new Label(text, font, this);
         label.SetNormalisedPosition(0.5f, 0.5f);
         label.SetPixelOffset(-(label.PixelWidth / 2f), -(label.PixelHeight / 2f), 0);
         label.SetShowDebugMesh(true);
-        super.AddChild(label);
     }
 
     @Override
     protected void OnUpdate() {
-
+        if(ButtonState == ButtonStates.CLICKED)
+            MouseUp();
     }
 
     @Override
-    protected void OnMouseOver() {
+    protected void MouseOver() {
         ButtonState = ButtonStates.HOVERED;
         this.mesh.material.SetTexture(hovered_texture);
     }
 
     @Override
-    protected void OnMouseOverEnd() {
+    protected void MouseOverEnd() {
         ButtonState = ButtonStates.INACTIVE;
-        this.mesh.material.SetTexture(base_texture);
+        this.mesh.material.SetTexture(inactive_texture);
     }
 
     @Override
-    protected void OnMouseClick() {
+    protected void MouseClick() {
         ButtonState = ButtonStates.CLICKED;
-        this.mesh.material.SetTexture(clicked_texture);
     }
+    
+    @Override
+    protected void MouseHeld() {
+        
+    }
+    
+    @Override
+    protected void MouseDown() {
+        ButtonState = ButtonStates.ACTIVE;
+        this.mesh.material.SetTexture(active_texture);
+    }
+    
+    @Override
+    protected void MouseUp() {
+        if(IsMouseOver() && !IsMouseOverChild()) {
+            ButtonState = ButtonStates.HOVERED;
+            this.mesh.material.SetTexture(hovered_texture);
+        }else{
+            ButtonState = ButtonStates.INACTIVE;
+            this.mesh.material.SetTexture(inactive_texture);
+        }
+    }
+    
+    @Override
+    public void OnMouseDown() {
+        if(IsMouseOver())
+            this.MouseDown();
+    }
+    
+    @Override
+    public void OnMouseUp() {
+        if(IsMouseOver())
+            MouseUp();
+    }
+    
+    @Override
+    public void OnMouseClick() {
+        if(IsMouseOver())
+            this.MouseClick();
+    }
+    
 }

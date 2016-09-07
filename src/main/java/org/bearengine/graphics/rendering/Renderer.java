@@ -12,6 +12,8 @@ import main.java.org.bearengine.graphics.types.Mesh;
 import main.java.org.bearengine.graphics.types.RenderModel;
 import main.java.org.bearengine.objects.Object;
 import main.java.org.bearengine.ui.Canvas;
+import main.java.org.bearengine.ui.Panel;
+import main.java.org.bearengine.ui.ScrollPane;
 import main.java.org.bearengine.ui.UIObject;
 import main.java.org.joml.Matrix4d;
 import org.lwjgl.opengl.GL11;
@@ -98,10 +100,24 @@ public class Renderer {
             shaderProgram.setUniform("model", child.GetTransformMatrix());
 
             mesh.renderModel.PrepareRender();
-
+    
+            if(child instanceof ScrollPane){
+                int x = 10;
+                int y = 720 - 400 - 10;
+                int width = 512;
+                int height = 400;
+                glEnable(GL_SCISSOR_TEST);
+                glScissor(x, y, width, height);
+            }
+            
             glDrawElements(GL_TRIANGLES, mesh.IndicesCount, GL_UNSIGNED_INT, 0);
-
+            
             RenderUIObjectChildren(child, canvas);
+            
+            if(child instanceof ScrollPane){
+                glDisable(GL_SCISSOR_TEST);
+            }
+            
         }
     }
 

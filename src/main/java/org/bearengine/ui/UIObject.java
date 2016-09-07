@@ -1,9 +1,12 @@
 package main.java.org.bearengine.ui;
 
+import com.sun.javafx.geom.Vec3d;
+import main.java.org.bearengine.debug.Debug;
 import main.java.org.bearengine.debug.DebugMesh;
 import main.java.org.bearengine.graphics.rendering.RenderSpace;
 import main.java.org.bearengine.graphics.rendering.Renderer;
 import main.java.org.bearengine.graphics.types.Mesh;
+import main.java.org.bearengine.input.IMouseCallbacks;
 import main.java.org.bearengine.input.Mouse;
 import main.java.org.bearengine.objects.Object;
 import main.java.org.joml.*;
@@ -14,7 +17,7 @@ import java.util.List;
 /**
  * Created by Stuart on 11/06/2016.
  */
-public abstract class UIObject extends Object{
+public abstract class UIObject extends Object implements IMouseCallbacks {
 
     public boolean IsActive = true;
     public boolean IsVisible = true;
@@ -32,34 +35,34 @@ public abstract class UIObject extends Object{
     protected DebugMesh debugMesh;
 
     private boolean MouseOver = false;
-    private int MouseStateLastFrame = -1;
-
-
+    private int MouseStateLastFrame = 0; // 0 - Normal, 1 - Down, 2 - Up, 3 - Held
+    
     public UIObject(){
+        this(null);
+    }
+
+    public UIObject(UIObject parent){
         super();
         super.Name = "UI_Object";
-
+        
         this.NormalisedPosition = new Vector2f();
         this.PixelOffset = new Vector3f();
         this.Children = new ArrayList<>();
         this.debugMesh = new DebugMesh();
-
+        this.SetParent(parent);
+        
         CreateDebugMesh();
     }
 
     protected void update(){
         OnUpdate();
 
-        if(IsMouseOver()){
+        if(IsMouseOver() && !IsMouseOverChild() && MouseOver == false){
             MouseOver = true;
-            if(!Mouse.isButtonClicked(Mouse.BUTTON_LEFT)) {
-                OnMouseOver();
-            } else {
-                OnMouseClick();
-            }
-        }else if(MouseOver == true){
+            MouseOver();
+        }else if(MouseOver == true && !IsMouseOver()){
             MouseOver = false;
-            OnMouseOverEnd();
+            MouseOverEnd();
         }
 
         for(UIObject child : Children) {
@@ -67,8 +70,17 @@ public abstract class UIObject extends Object{
         }
     }
 
+    public void SetPixelOffset(Vector3f pos){
+        SetPixelOffset((float)pos.x, (float)pos.y, (float)pos.z);
+    }
+    
     public void SetPixelOffset(float x, float y, float z){
         this.PixelOffset.set(x, y, z);
+        UpdateTransformMatrix();
+    }
+    
+    public void MovePixelOffset(float x, float y, float z){
+        this.PixelOffset.add(x, y, z);
         UpdateTransformMatrix();
     }
 
@@ -88,10 +100,34 @@ public abstract class UIObject extends Object{
         BuildMesh();
         UpdateTransformMatrix();
     }
-
-    public void AddChild(UIObject child){
+    
+    public Vector3f GetPixelOffset() {
+        return PixelOffset;
+    }
+    
+    public float GetPixelWidth() {
+        return PixelWidth;
+    }
+    
+    public float GetPixelHeight() {
+        return PixelHeight;
+    }
+    
+    public void SetParent(UIObject parent){
+        if(parent == null) return;
+        
+        this.Parent = parent;
+        parent.AddChild(this);
+        this.Owner_Canvas = parent.Owner_Canvas;
+        this.debugMesh.SetRenderSpace(this.Owner_Canvas.Render_Space);
+        this.UpdateTransformMatrix();
+        
+        if(parent != null)
+            Mouse.RegisterMouseListner(this);
+    }
+    
+    protected void AddChild(UIObject child){
         if(!Children.contains(child)) {
-            child.SetParent(this);
             Children.add(child);
         }
     }
@@ -102,13 +138,6 @@ public abstract class UIObject extends Object{
             child.Parent = null;
             child.Owner_Canvas = null;
         }
-    }
-
-    public void SetParent(UIObject parent){
-        this.Parent = parent;
-        this.Owner_Canvas = parent.Owner_Canvas;
-        this.debugMesh.SetRenderSpace(this.Owner_Canvas.Render_Space);
-        this.UpdateTransformMatrix();
     }
 
     public List<UIObject> GetChildren(){
@@ -180,10 +209,18 @@ public abstract class UIObject extends Object{
         }else if(Owner_Canvas.Render_Space == RenderSpace.WORLD_SPACE){
             //TODO: Handle 3D(Ray Casting/Ray Picking)
         }
-
+        
         return true;
     }
-
+    
+    protected boolean IsMouseOverChild(){
+        for(UIObject child : Children)
+            if(child.IsMouseOver())
+                return true;
+        
+        return false;
+    }
+    
     protected Vector3d GetRenderPosition(){
         Vector3d space = new Vector3d();
         Vector2d point = new Vector2d();
@@ -208,9 +245,12 @@ public abstract class UIObject extends Object{
     }
 
     protected abstract void OnUpdate(); //Allows controls to have custom update logic while still calling this classes update method
-    protected abstract void OnMouseOver();
-    protected abstract void OnMouseOverEnd();
-    protected abstract void OnMouseClick();
+    protected abstract void MouseOver();
+    protected abstract void MouseOverEnd();
+    protected abstract void MouseClick();
+    protected abstract void MouseHeld();
+    protected abstract void MouseDown();
+    protected abstract void MouseUp();
 
     @Override
     public boolean equals(java.lang.Object obj) {
@@ -226,5 +266,29 @@ public abstract class UIObject extends Object{
 
         return true;
     }
-
+    
+    @Override
+    public void OnMouseClick() {
+        if(IsMouseOver() && !IsMouseOverChild()) {
+            this.MouseClick();
+        }
+    }
+    
+    @Override
+    public void OnMouseHeld() {
+        if(IsMouseOver() && !IsMouseOverChild())
+            this.MouseHeld();
+    }
+    
+    @Override
+    public void OnMouseDown() {
+        if(IsMouseOver() && !IsMouseOverChild())
+            this.MouseDown();
+    }
+    
+    @Override
+    public void OnMouseUp() {
+        if(IsMouseOver() && !IsMouseOverChild())
+            this.MouseUp();
+    }
 }

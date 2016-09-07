@@ -22,7 +22,7 @@ public class ResourceLoader {
         Internal, External, ClassPath
     }
 
-    public static < T > T Load(String resourcePath, Class<T> type){
+    public static <T> T Load(String resourcePath, Class<T> type){
         return type.cast(ResourceLoaders.get(type).Load(resourcePath));
     }
 

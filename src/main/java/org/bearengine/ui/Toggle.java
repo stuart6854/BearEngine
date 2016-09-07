@@ -20,18 +20,33 @@ public class Toggle extends UIObject{
     }
 
     @Override
-    protected void OnMouseOver() {
+    protected void MouseOver() {
 
     }
 
     @Override
-    protected void OnMouseOverEnd() {
+    protected void MouseOverEnd() {
 
     }
 
     @Override
-    protected void OnMouseClick() {
+    protected void MouseClick() {
 
+    }
+    
+    @Override
+    protected void MouseHeld() {
+        
+    }
+    
+    @Override
+    protected void MouseDown() {
+        
+    }
+    
+    @Override
+    protected void MouseUp() {
+        
     }
 
 }

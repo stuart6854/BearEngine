@@ -13,7 +13,7 @@ public class Panel extends UIObject {
 
     public Panel(){
         super();
-        super.Name = "UI_Panel";
+        super.Name = "UIPanel";
         Image image = new Image("/main/java/resources/textures/ui/panel/white_flat_panel.png");
         texture = new Texture().UploadTexture(image);
         BuildMesh();
@@ -33,18 +33,34 @@ public class Panel extends UIObject {
     }
 
     @Override
-    protected void OnMouseOver() {
+    protected void MouseOver() {
 
     }
 
     @Override
-    protected void OnMouseOverEnd() {
+    protected void MouseOverEnd() {
 
     }
 
     @Override
-    protected void OnMouseClick() {
+    protected void MouseClick() {
 
     }
-
+    
+    @Override
+    protected void MouseHeld() {
+        
+    }
+    
+    
+    @Override
+    protected void MouseDown() {
+        
+    }
+    
+    @Override
+    protected void MouseUp() {
+        
+    }
+    
 }

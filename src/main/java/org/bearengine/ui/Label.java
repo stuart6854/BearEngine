@@ -23,9 +23,14 @@ public class Label extends UIObject {
     private Font font;
     public float LineHeight;
     public float SpaceWidth;
-
+    
     public Label(String text, Font font){
-        super();
+        this(text, font, null);
+    }
+    
+    public Label(String text, Font font, UIObject parent){
+        super(parent);
+        super.Name = "UILabel";
         this.Text = text;
         this.font = font;
 
@@ -193,18 +198,33 @@ public class Label extends UIObject {
     }
 
     @Override
-    protected void OnMouseOver() {
+    protected void MouseOver() {
 
     }
 
     @Override
-    protected void OnMouseOverEnd() {
+    protected void MouseOverEnd() {
 
     }
 
     @Override
-    protected void OnMouseClick() {
+    protected void MouseClick() {
 
+    }
+    
+    @Override
+    protected void MouseHeld() {
+        
+    }
+    
+    @Override
+    protected void MouseDown() {
+        
+    }
+    
+    @Override
+    protected void MouseUp() {
+        
     }
 
 }

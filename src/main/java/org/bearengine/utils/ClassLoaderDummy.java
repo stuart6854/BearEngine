@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.util.zip.*;
+import java.io.File;
 
 public class ClassLoaderDummy {
 

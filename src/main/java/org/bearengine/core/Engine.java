@@ -16,6 +16,7 @@ import main.java.org.joml.Matrix4f;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.Configuration;
 
 import java.util.ArrayList;
@@ -111,7 +112,7 @@ public class Engine implements Runnable{
             double delta = Time.NanToSec(System.nanoTime() - lastTime);
             lastTime = System.nanoTime();
             Keyboard.BeginFrame();
-            Mouse.BeginFrame();
+            Mouse.BeginFrame(delta);
 
             update((float)delta);
             render();
@@ -164,7 +165,7 @@ public class Engine implements Runnable{
         Renderer.RenderObjects();
         Renderer.RenderUI();
         Renderer.RenderDebugMeshes();
-
+        
         Display.mainDisplay.update();
 	}
 

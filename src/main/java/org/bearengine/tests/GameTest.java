@@ -24,12 +24,14 @@ public class GameTest extends Game {
     Texture texture;
     Mesh mesh;
     GameObject object;
-    GameObject textObj;
 
     Canvas canvas;
     Button button;
     Label label;
     InputField inputField;
+    ScrollPane scrollPane;
+    ScrollBar scrollBar;
+    Label scrollLabel;
 
 	public GameTest() {
 		super();
@@ -72,7 +74,7 @@ public class GameTest extends Game {
         panel.SetWidth(512);
         panel.SetHeight(400);
         panel.SetShowDebugMesh(true);
-        canvas.AddChild(panel);
+        panel.SetParent(canvas);
 
         button = new Button("Click Me!", font, panel);
         button.SetPixelOffset(10, 10, 0);
@@ -81,26 +83,45 @@ public class GameTest extends Game {
         button.SetShowDebugMesh(true);
 
         label = new Label("Hello World!\nNew Line Test", font);
-        label.SetPixelOffset(10, 300, 0);
+        label.SetPixelOffset(10, 375, 0);
         label.SetShowDebugMesh(true);
-        panel.AddChild(label);
+        label.SetParent(panel);
 
 //        label = new Label("ABCDEFG", font);
 //        label.SetPixelOffset(10, 10, 0);
 //        label.SetShowDebugMesh(true);
-//        canvas.AddChild(label);
+//        label.SetParent(canvas);
 //
         Label label2 = new Label("Lorem ipsum dolor sit amet, consectetur adipiscing elit.\nMauris nisl diam, feugiat at mollis eget, tincidunt et est. Integer ex.", font);
         label2.SetPixelOffset(32, 500, 0);
         label2.SetShowDebugMesh(true);
-        panel.AddChild(label2);
+        label2.SetParent(canvas);
 
         inputField = new InputField(font, panel);
         inputField.SetPixelOffset(10, 128, 0);
-        inputField.SetWidth(256);
-        inputField.SetHeight(64);
+        inputField.SetWidth(200);
+        inputField.SetHeight(32);
         inputField.SetShowDebugMesh(true);
-
+        
+        scrollBar = new ScrollBar(panel);
+        scrollBar.SetNormalisedPosition(1, 1);
+        scrollBar.SetPixelOffset(-16, -256, 0);
+        scrollBar.SetWidth(16);
+        scrollBar.SetHeight(256);
+        scrollBar.SetShowDebugMesh(true);
+        
+        scrollPane = new ScrollPane(panel);
+        scrollPane.SetNormalisedPosition(1, 1);
+        scrollPane.SetPixelOffset(-256 - 16, -256, 0);
+        scrollPane.SetWidth(256);
+        scrollPane.SetHeight(256);
+        scrollPane.SetShowDebugMesh(true);
+        scrollPane.SetScrollBarVertical(scrollBar);
+        
+        scrollLabel = new Label("Scroll Label.", font);
+        scrollLabel.SetPixelOffset(10, 10, 0);
+        scrollLabel.SetShowDebugMesh(true);
+        scrollLabel.SetParent(scrollPane);
 
         Debug.log("GameTest -> Init End.");
 	}
@@ -109,9 +130,9 @@ public class GameTest extends Game {
 	public void update(float deltaTime) {
 //        object.Rotate(0, 1f * deltaTime, 0);
 
-//        if(button.IsClicked()){
-//            Debug.log("Clicked:" + System.currentTimeMillis());
-//        }
+        if(button.IsClicked()){
+            Debug.log("Clicked:" + System.currentTimeMillis());
+        }
 
         canvas.Update();
 	}

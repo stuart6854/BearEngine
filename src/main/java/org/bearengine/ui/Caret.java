@@ -12,8 +12,12 @@ public class Caret extends UIObject {
 
     public Texture base_texture;
 
-    public Caret() {
-        super();
+    public Caret(){
+        this(null);
+    }
+    
+    public Caret(UIObject parent) {
+        super(parent);
 
         SetWidth(1);
 
@@ -42,18 +46,33 @@ public class Caret extends UIObject {
     }
 
     @Override
-    protected void OnMouseOver() {
+    protected void MouseOver() {
 
     }
 
     @Override
-    protected void OnMouseOverEnd() {
+    protected void MouseOverEnd() {
 
     }
 
     @Override
-    protected void OnMouseClick() {
+    protected void MouseClick() {
 
+    }
+    
+    @Override
+    protected void MouseHeld() {
+        
+    }
+    
+    @Override
+    protected void MouseDown() {
+        
+    }
+    
+    @Override
+    protected void MouseUp() {
+        
     }
 
 }

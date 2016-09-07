@@ -18,7 +18,7 @@ public class Canvas extends UIObject{
 
     public Canvas(RenderSpace renderMode){
         super();
-        super.Name = "UI_Canvas";
+        super.Name = "UICanvas";
         this.Owner_Canvas = this;
         this.Render_Space = renderMode;
         if(renderMode == RenderSpace.SCREEN_SPACE){
@@ -72,6 +72,7 @@ public class Canvas extends UIObject{
 
     @Override
     public boolean equals(Object obj) {
+        if(!(obj instanceof Canvas)) return false;
         Canvas canvas = (Canvas)obj;
 
         if(canvas.Name != this.Name) return false;
@@ -97,18 +98,33 @@ public class Canvas extends UIObject{
     }
 
     @Override
-    protected void OnMouseOver() {
+    protected void MouseOver() {
 
     }
 
     @Override
-    protected void OnMouseOverEnd() {
+    protected void MouseOverEnd() {
 
     }
 
     @Override
-    protected void OnMouseClick() {
+    protected void MouseClick() {
 
+    }
+    
+    @Override
+    protected void MouseHeld() {
+        
+    }
+    
+    @Override
+    protected void MouseDown() {
+        
+    }
+    
+    @Override
+    protected void MouseUp() {
+        
     }
 
 }
