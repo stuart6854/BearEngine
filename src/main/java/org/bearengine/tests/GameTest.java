@@ -102,14 +102,14 @@ public class GameTest extends Game {
         inputField.SetWidth(200);
         inputField.SetHeight(32);
         inputField.SetShowDebugMesh(true);
-        
+
         scrollBar = new ScrollBar(panel);
         scrollBar.SetNormalisedPosition(1, 1);
         scrollBar.SetPixelOffset(-16, -256, 0);
         scrollBar.SetWidth(16);
         scrollBar.SetHeight(256);
         scrollBar.SetShowDebugMesh(true);
-        
+
         scrollPane = new ScrollPane(panel);
         scrollPane.SetNormalisedPosition(1, 1);
         scrollPane.SetPixelOffset(-256 - 16, -256, 0);
@@ -117,7 +117,7 @@ public class GameTest extends Game {
         scrollPane.SetHeight(256);
         scrollPane.SetShowDebugMesh(true);
         scrollPane.SetScrollBarVertical(scrollBar);
-        
+
         scrollLabel = new Label("Scroll Label.", font);
         scrollLabel.SetPixelOffset(10, 10, 0);
         scrollLabel.SetShowDebugMesh(true);

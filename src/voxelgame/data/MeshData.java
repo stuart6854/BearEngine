@@ -2,15 +2,16 @@ package voxelgame.data;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.joml.Vector3f;
+
+import main.java.org.joml.Vector3f;
 
 public class MeshData {
-	
+
 	public List<Float> vertices = new ArrayList<Float>();
     public List<Integer> indices = new ArrayList<Integer>();
     public List<Float> uv = new ArrayList<Float>();
     public List<Float> normals = new ArrayList<Float>();
-    public List<Float> vertexColors = new ArrayList<Float>();  
+    public List<Float> vertexColors = new ArrayList<Float>();
 
     public List<Float> colVertices = new ArrayList<Float>();
     public List<Integer> colTriangles = new ArrayList<Integer>();
@@ -43,9 +44,9 @@ public class MeshData {
         vertices.add(vertex.x);
         vertices.add(vertex.y);
         vertices.add(vertex.z);
-        
+
         float exponentialLightPercentage = (float)Math.pow((1 - 0.2f), 15 - lightLevel);//Light decreases by 20% for each decrease in light level
-        
+
         vertexColors.add(exponentialLightPercentage);
         vertexColors.add(exponentialLightPercentage);
         vertexColors.add(exponentialLightPercentage);

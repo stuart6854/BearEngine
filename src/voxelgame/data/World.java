@@ -4,75 +4,76 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.bearengine.objects.GameObject;
-import org.game.graphics.Material;
-import org.game.graphics.Renderer;
-import org.game.graphics.Texture;
-import org.joml.Vector3f;
-import org.voxelgame.gameassets.blocks.BlockAir;
-import org.voxelgame.generation.TerrainGen;
+
+import voxelgame.generation.TerrainGen;
+import main.java.org.bearengine.graphics.types.Image;
+import main.java.org.bearengine.graphics.types.Material;
+import main.java.org.bearengine.graphics.types.Texture;
+import main.java.org.bearengine.objects.GameObject;
+import main.java.org.bearengine.utils.ResourceLoader;
+import main.java.org.joml.Vector3f;
 
 public class World {
 
 	public String worldName = "world";
 
     public Map<WorldPos, Chunk> chunks = new HashMap<WorldPos, Chunk>();
-    
+
     private TerrainGen terrainGen = new TerrainGen();
-    
+
     private final Texture texture;
-    
+
     public World(String textureFile){
-    	texture = new Texture(textureFile, true);
+    	texture = new Texture().UploadTexture(ResourceLoader.Load(textureFile, Image.class));
     }
-    
+
     public void update(float deltaTime){
     	for(Chunk chunk : chunks.values()){
     		chunk.update(deltaTime);
     	}
     }
-        
-    public void render(Renderer renderer){
-    	List<GameObject> chunkList = new ArrayList<>();
-    	chunkList.addAll(chunks.values());
-    	renderer.render(chunkList);
-    }
-    
+
+//    public void render(Renderer renderer){
+//    	List<GameObject> chunkList = new ArrayList<>();
+//    	chunkList.addAll(chunks.values());
+//    	renderer.render(chunkList);
+//    }
+
     public void CreateChunk(int x, int y, int z) {
     	//Logger.debug("World -> Creating chunk at " + x + ", " + y + ", " + z);
         WorldPos worldPos = new WorldPos(x, y, z);
 
         Chunk newChunk = new Chunk(this, worldPos);
-        newChunk.getTransform().setPosition(new Vector3f(x, y, z));
+        newChunk.SetPosition(x, y, z);
 
         Material material = new Material(texture, 0.0f, true);//NOTE: Use vertex Colors for lighting
-        newChunk.getMesh().setMaterial(material);
+        newChunk.GetMesh().material = material;
 
         chunks.put(worldPos, newChunk);
-        
+
         terrainGen.ChunkGen(chunks.get(worldPos));
         chunks.get(worldPos).isBuilt = true;
         remeshNeighbourChunks(worldPos.x, worldPos.z);
     }
-        
+
     private void remeshNeighbourChunks(int x, int z){
     	Chunk chunk = GetChunk(x + 16, 0, z);
     	if(chunk != null && chunk.isBuilt)
     		chunk.update = true;
-    	
+
     	chunk = GetChunk(x - 16, 0, z);
     	if(chunk != null && chunk.isBuilt)
     		chunk.update = true;
-    	
+
     	chunk = GetChunk(x, 0, z + 16);
     	if(chunk != null && chunk.isBuilt)
     		chunk.update = true;
-    	
+
     	chunk = GetChunk(x, 0, z - 16);
     	if(chunk != null && chunk.isBuilt)
     		chunk.update = true;
     }
-    
+
     public Chunk GetChunk(int x, int y, int z) {
         WorldPos pos = new WorldPos();
         float multipleXZ = Chunk.chunkSizeXZ;
@@ -101,7 +102,7 @@ public class World {
         if(chunk != null) {
             chunk.SetBlock(x - chunk.pos.x, y - chunk.pos.y, z - chunk.pos.z, block);
             chunk.update = true;
-            
+
             UpdateIfEqual(x - chunk.pos.x, 0, new WorldPos(x - 1, y, z));
             UpdateIfEqual(x - chunk.pos.x, Chunk.chunkSizeXZ - 1, new WorldPos(x + 1, y, z));
             UpdateIfEqual(y - chunk.pos.y, 0, new WorldPos(x, y - 1, z));
@@ -110,7 +111,7 @@ public class World {
             UpdateIfEqual(z - chunk.pos.z, Chunk.chunkSizeXZ - 1, new WorldPos(x, y, z + 1));
         }
     }
-    
+
     public void setLightLvl(int x, int y, int z, byte lvl) {
         Chunk chunk = GetChunk(x, y, z);
         if(chunk != null) {
@@ -118,13 +119,13 @@ public class World {
             chunk.update = true;
         }
     }
-    
+
     public void DestroyChunk(int x, int y, int z) {
         Chunk chunk = chunks.get(new WorldPos(x, y, z));
         if(chunk != null) {
             //Serialization.SaveChunk(chunk);
             //Object.destroy(chunk);
-        	chunk.getMesh().cleanup();
+        	chunk.GetMesh().Cleanup();
             chunks.remove(new WorldPos(x, y, z));
         }
     }
@@ -139,7 +140,7 @@ public class World {
             return 1;
         }
     }
-    
+
     void UpdateIfEqual(int value1, int value2, WorldPos pos) {
         if(value1 == value2) {
             Chunk chunk = GetChunk(pos.x, pos.y, pos.z);
@@ -147,11 +148,11 @@ public class World {
                 chunk.update = true;
         }
     }
-	
+
     public void cleanup(){
     	for(Chunk chunk : chunks.values()){
-    		chunk.getMesh().cleanup();
+    		chunk.GetMesh().Cleanup();
     	}
     }
-    
+
 }
