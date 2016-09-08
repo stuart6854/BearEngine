@@ -30,7 +30,9 @@ public class Engine implements Runnable{
 	
 	private static int TARGET_UPS = 25;
 	private static int TARGET_FPS = 30;
-	
+    
+	public static Game Game;
+    
 	private final Game gameScreen;
 	private List<Game> screenOrder = new ArrayList<>();
 	private int screenIndex = 0;
@@ -39,10 +41,11 @@ public class Engine implements Runnable{
 		this(TARGET_UPS, TARGET_FPS, gameScreen);
 	}
 	
-	public Engine(int target_ups, int target_fps, Game gameScreen) {
+	public Engine(int target_ups, int target_fps, Game game) {
 		Engine.TARGET_UPS = target_ups;
 		Engine.TARGET_FPS = target_fps;
-		this.gameScreen = gameScreen;
+        Engine.Game = game;
+		this.gameScreen = game;
 		this.ENGINE_THREAD = new Thread(this, "BearEngine-Main-Thread");
 	}
 
@@ -95,7 +98,7 @@ public class Engine implements Runnable{
         Texture texture = new Texture().UploadTexture(ResourceLoader.Load("/main/java/resources/textures/bearengine_logo.png", Image.class));
 		screenOrder.add(new SplashScreen(0.1f, texture));
 		
-		screenOrder.add(gameScreen);
+		screenOrder.add((Game)gameScreen);
 	}
 
     private void EngineLoop(){

@@ -1,6 +1,7 @@
 package main.java.org.bearengine.graphics.types;
 
 import de.matthiasmann.twl.utils.PNGDecoder;
+import main.java.org.bearengine.core.Engine;
 import main.java.org.bearengine.debug.Debug;
 import main.java.org.bearengine.utils.ResourceLoader;
 import org.lwjgl.BufferUtils;
@@ -34,7 +35,13 @@ public class Image {
     private void LoadImage(){
         Debug.log("Image -> Loading Image: " + ImagePath);
         try {
-            PNGDecoder decoder = new PNGDecoder(getClass().getResourceAsStream(ImagePath));
+            InputStream stream = getClass().getResourceAsStream(ImagePath);
+            if(stream == null){
+                Debug.error("UNABLE TO FIND IMAGE: " + ImagePath);
+                return;
+            }
+            
+            PNGDecoder decoder = new PNGDecoder(stream);
 
             Name = ImagePath;
             Width = decoder.getWidth();
@@ -50,7 +57,7 @@ public class Image {
             Debug.exception("Image -> Exception Loading Image", e);
         }
     }
-
+    
 //    public static Image GetImage(String imagePath, ResourceLoader.FileType fileType){
 //        return GetImage(imagePath, fileType, true);
 //    }

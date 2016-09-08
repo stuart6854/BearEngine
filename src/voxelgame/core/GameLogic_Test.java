@@ -1,19 +1,21 @@
 package voxelgame.core;
 
-import java.awt.Font;
-import java.util.ArrayList;
-import java.util.List;
-
 import main.java.org.bearengine.core.Game;
+import main.java.org.bearengine.debug.Debug;
+import main.java.org.bearengine.graphics.importers.OBJImporter;
+import main.java.org.bearengine.graphics.types.Color;
+import main.java.org.bearengine.graphics.types.Image;
+import main.java.org.bearengine.graphics.types.Mesh;
+import main.java.org.bearengine.graphics.types.Texture;
 import main.java.org.bearengine.input.Keyboard;
 import main.java.org.bearengine.input.Mouse;
 import main.java.org.bearengine.objects.Camera;
 import main.java.org.bearengine.graphics.*;
-import main.java.org.joml.Quaternionf;
+import main.java.org.bearengine.objects.GameObject;
+import main.java.org.bearengine.utils.ResourceLoader;
+import main.java.org.joml.Matrix4f;
+import main.java.org.joml.Vector3d;
 import main.java.org.joml.Vector3f;
-
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL20;
 
 import voxelgame.data.LoadChunks;
 import voxelgame.data.World;
@@ -38,7 +40,9 @@ public class GameLogic_Test extends Game {
 
 	private LoadChunks loadChunks;
 
-//	GameObject testObject, testObject2;
+    OBJImporter objImporter;
+    
+	GameObject testObject, testObject2;
 
 //	private GUICanvas guiCanvas;
 
@@ -60,34 +64,40 @@ public class GameLogic_Test extends Game {
 
 	@Override
 	public void init(){
-		Camera.Main_Camera.SetPosition(-5, 153, 10);
+        Display.mainDisplay.SetClearColor(Color.SKY_BLUE);
+	    
+	    Camera.Main_Camera.SetProjection(new Matrix4f().perspective((float)Math.toRadians(60.0f), Display.mainDisplay.Aspect, 0.1f, 1000.0f));
+        Camera.Main_Camera.SetPosition(0, 2, 1);
+//		Camera.Main_Camera.SetPosition(-5, 153, 10);
 //		skybox = new Skybox(skyboxTextureFiles);
 
 		cameraInc = new Vector3f();
-		world = new World("res/textures/texture.png");
-
-		loadChunks = new LoadChunks(world);
-
-//		Mesh mesh = OBJLoader.loadMesh("res/models/cube.obj").flushToBuffers();
+        
+        Image textureSheetImage = ResourceLoader.Load("/voxelgame/resources/textures/texture.png", Image.class);
+        Texture textureSheet = new Texture().UploadTexture(textureSheetImage);
+//		world = new World(textureSheet);
 //
-//        Texture texture = new Texture("res/textures/grassblock.png", false);
-//        Material material = new Material(texture, 0.0f, false);
-//        //Material material = new Material(new Color(1f, 0f, 0f), 0.0f, false);
-//        mesh.setMaterial(material);
+//		loadChunks = new LoadChunks(world);
+        
+        objImporter = new OBJImporter();
+        
+		Mesh mesh = objImporter.LoadMesh("/main/java/resources/models/textured-cube.obj");
+        
+        Image textureImage = ResourceLoader.Load("/main/java/resources/textures/placeholder_orange_256.png", Image.class);
+        Texture grassTexture = new Texture().UploadTexture(textureImage);
+        mesh.material.SetTexture(grassTexture);
 
-//		testObject = new GameObject();
-//        testObject.setMesh(mesh);
-//        testObject.getTransform().setPosition(new Vector3f(-3f, 150, 0));
-//        testObject.getTransform().setScale(1f);
-//        ObjectManager.addGameObject(testObject);
-//
-//        testObject2 = new GameObject();
-//        testObject2.setMesh(mesh);
-//        testObject2.getTransform().setPosition(new Vector3f(-6f, 150, 0));
-//        testObject2.getTransform().setScale(1f);
-//        ObjectManager.addGameObject(testObject2);
+		testObject = new GameObject();
+        testObject.setMesh(mesh);
+        testObject.SetPosition(0, 0, -5f);
+        testObject.SetScale(1f);
 
-        loadChunks.getTransform().setPosition(new Vector3f(0, 0, 0));
+        testObject2 = new GameObject();
+        testObject2.setMesh(mesh);
+        testObject2.SetPosition(-6f, 150, 0);
+        testObject2.SetScale(1f);
+
+//        loadChunks.SetPosition(0, 0, 0);
 
         //GUI System Testing//
 //        List<GUIElement> guiElements = new ArrayList<GUIElement>();
@@ -154,56 +164,36 @@ public class GameLogic_Test extends Game {
 //		billboard.getMesh().setVertices(vertices);
 //		billboard.getMesh().setIndices(indices);
 //		billboard.getMesh().flushToBuffers();
-//		billboard.getTransform().setPosition(new Vector3f(-2, 154, 0));
+//		billboard.setPosition(new Vector3f(-2, 154, 0));
 //		billboard.getBoundingBox().updateBounds(billboard.getMesh());
 	}
 
-//	@Override
-//	public void input(Window window) {
-//		cameraInc.set(0, 0, 0);
-//		float camSpeed = Keyboard.isDown(Keyboard.KEY_LEFT_SHIFT) ? CAMERA_POS_STEP * 4f : CAMERA_POS_STEP;
-//
-//		if(Keyboard.isDown(Keyboard.KEY_W)){
-//			cameraInc.z = -camSpeed;
-//		}else if(Keyboard.isDown(Keyboard.KEY_S)){
-//			cameraInc.z = camSpeed;
-//		}
-//		if(Keyboard.isDown(Keyboard.KEY_A)){
-//			cameraInc.x = -camSpeed;
-//		}else if(Keyboard.isDown(Keyboard.KEY_D)){
-//			cameraInc.x = camSpeed;
-//		}
-//		if(Keyboard.isDown(Keyboard.KEY_SPACE)){
-//			cameraInc.y = camSpeed;
-//		}else if(Keyboard.isDown(Keyboard.KEY_LEFT_ALT)){
-//			cameraInc.y = -camSpeed;
-//		}
-//	}
-
 	@Override
-	public void update(float deltaTime) {
-		Camera.Main_Camera.MovePosition(cameraInc.x * deltaTime, cameraInc.y * deltaTime, cameraInc.z * deltaTime);
+	public void update(float delta) {
+        
 //		mousePicker.update();
 
 		//Update camera based on mouse
 		if(Mouse.isButtonHeld(Mouse.BUTTON_RIGHT)){
 			Display.mainDisplay.LockMouse(true);
-			Camera.Main_Camera.Rotate((float)Mouse.getDY() * MOUSE_SENSITIVITY * deltaTime, (float)Mouse.getDX() * MOUSE_SENSITIVITY * deltaTime, 0f);
+			Camera.Main_Camera.Rotate((float)Mouse.getDY() * MOUSE_SENSITIVITY * delta, (float)Mouse.getDX() * MOUSE_SENSITIVITY * delta, 0f);
 		}else{
 			Display.mainDisplay.LockMouse(false);
 		}
-
-		//loadChunks.update(deltaTime, camera);
-		//world.update(deltaTime);
+        
+        MoveCamera(delta);
+		
+//		loadChunks.update(deltaTime, Camera.Main_Camera);
+//		world.update(deltaTime);
 
 		//GUI Updates
 //		fpsLabel.setText("FPS: " + Timer.FPS);
 //		upsLabel.setText("UPS: " + Timer.UPS);
 //		memoryLabel.setText("Used Memory: " + SystemInfo.getUsedMemory() + "/" + (SystemInfo.maxMemory / SystemInfo.MB) + "MB");
 //
-//		Vector3f pos = camera.getTransform().getPosition();
+//		Vector3f pos = camera.GetPosition();
 //		camPosLabel.setText("Pos: " + pos.x + ", " + pos.y + ", " + pos.z);
-//		Vector3f rot = camera.getTransform().getRotation().getEulerAnglesXYZ(new Vector3f(1, 0, 1));
+//		Vector3f rot = camera.GetRotation().getEulerAnglesXYZ(new Vector3f(1, 0, 1));
 //		camRotLabel.setText("Rot: " + rot.x + ", " + rot.z);
 //
 //		guiCanvas.update(deltaTime);
@@ -215,7 +205,48 @@ public class GameLogic_Test extends Game {
 
 		//Logger.debug("" + rect.collides(line));//TODO: Fix Collision
 	}
-
+    
+	private void MoveCamera(float delta){
+        float yaw = Camera.Main_Camera.GetEulerRotation().y;
+        float Velocity = Keyboard.isPressed(Keyboard.KEY_LEFT_SHIFT) ? CAMERA_POS_STEP * 4f : CAMERA_POS_STEP;
+        Velocity *= delta;
+        
+        Vector3f movement = new Vector3f();
+        
+        if(Keyboard.isPressed(Keyboard.KEY_W)){
+            movement.z -= Velocity;
+        }
+        if(Keyboard.isPressed(Keyboard.KEY_S)){
+            movement.z += Velocity;
+        }
+        if(Keyboard.isPressed(Keyboard.KEY_A)){
+            movement.x -= Velocity;
+        }
+        if(Keyboard.isPressed(Keyboard.KEY_D)){
+            movement.x += Velocity;
+        }
+        if(Keyboard.isPressed(Keyboard.KEY_SPACE)){
+            movement.y += Velocity;
+        }
+        if(Keyboard.isPressed(Keyboard.KEY_LEFT_ALT)){
+            movement.y -= Velocity;
+        }
+        
+        Vector3f newPos = new Vector3f();
+        
+        if ( movement.z != 0 ) {
+            newPos.x += (float)Math.sin(Math.toRadians(yaw)) * -1.0f * movement.z;
+            newPos.z += (float)Math.cos(Math.toRadians(yaw)) * movement.z;
+        }
+        if ( movement.x != 0) {
+            newPos.x += (float)Math.sin(Math.toRadians(yaw - 90)) * -1.0f * movement.x;
+            newPos.z += (float)Math.cos(Math.toRadians(yaw - 90)) * movement.x;
+        }
+        newPos.y += movement.y;
+        
+        Camera.Main_Camera.MovePosition(newPos);
+    }
+    
 	@Override
 	public void render() {
 //		renderer.render(skybox);
@@ -233,8 +264,8 @@ public class GameLogic_Test extends Game {
 
 	@Override
 	public void cleanup() {
-		loadChunks.cleanup();
-		world.cleanup();
+//		loadChunks.cleanup();
+//		world.cleanup();
 	}
 
 }

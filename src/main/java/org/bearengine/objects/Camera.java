@@ -1,5 +1,6 @@
 package main.java.org.bearengine.objects;
 
+import javafx.geometry.Pos;
 import main.java.org.bearengine.debug.Debug;
 import main.java.org.joml.Matrix4d;
 import main.java.org.joml.Matrix4f;
@@ -55,15 +56,17 @@ public class Camera extends GameObject {
     public void SetRotation(float x, float y, float z){
         if(DevCamera.ENABLED && DevCamera.DEV_CAMERA != this) return;
         Rotation.set(x, y, z);
+        ClampRotation();
         viewIsDirty = true;
     }
 
     @Override
     public void Rotate(float x, float y, float z){
         if(DevCamera.ENABLED && DevCamera.DEV_CAMERA != this) return;
-        Debug.log("Before: " + Rotation);
-//        Rotation.add(x, y, z);
-        Debug.log("After: " + Rotation);
+//        Debug.log("Before: " + Rotation);
+        Rotation.add(x, y, z);
+        ClampRotation();
+//        Debug.log("After: " + Rotation);
         viewIsDirty = true;
     }
 
@@ -99,4 +102,23 @@ public class Camera extends GameObject {
         viewIsDirty = false;
     }
 
+    public Vector3f GetEulerRotation(){
+        return Rotation;
+    }
+    
+    private void ClampRotation(){
+        if(Rotation.x < 0) Rotation.x = 360;
+        if(Rotation.x > 360) Rotation.x = 0;
+        if(Rotation.y < 0) Rotation.y = 360;
+        if(Rotation.y > 360) Rotation.y = 0;
+        if(Rotation.z < 0) Rotation.z = 360;
+        if(Rotation.z > 360) Rotation.z = 0;
+    }
+    
+    public void LookAt(Vector3f point){
+        //TODO: Make sure this works
+        Vector3f dir = new Vector3f((float)Position.x, (float)Position.y, (float)Position.z).sub(point).normalize();
+        SetRotation(dir.x, dir.y, 0);//No Roll
+    }
+    
 }

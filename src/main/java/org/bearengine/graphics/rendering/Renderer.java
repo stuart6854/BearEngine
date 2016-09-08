@@ -164,11 +164,11 @@ public class Renderer {
         if(MeshRenderList.containsKey(obj.GetMesh().Mesh_Name)){
             RenderModel model = MeshRenderList.get(obj.GetMesh().Mesh_Name).renderModel;
             model.AddTransform(obj);
-            Debug.log("Renderer -> Mesh '" + obj.GetMesh().Mesh_Name + "' already registered. Adding transform.");
+            Debug.log("Renderer -> Mesh('" + obj.GetMesh().Mesh_Name + "') already registered. Adding transform.");
         }else{
             obj.GetMesh().renderModel.AddTransform(obj);
             MeshRenderList.put(obj.GetMesh().Mesh_Name, obj.GetMesh());
-            Debug.log("Renderer -> New Mesh. Adding '" + obj.GetMesh().Mesh_Name + "' Mesh to MeshRenderList.");
+            Debug.log("Renderer -> New Mesh. Adding  Mesh('" + obj.GetMesh().Mesh_Name + "')to MeshRenderList.");
         }
     }
 

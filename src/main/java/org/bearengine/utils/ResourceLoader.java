@@ -1,13 +1,6 @@
 package main.java.org.bearengine.utils;
 
-import main.java.org.bearengine.debug.Debug;
 import main.java.org.bearengine.graphics.types.Image;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +8,7 @@ import java.util.Map;
  * Created by Stuart on 03/06/2016.
  */
 public class ResourceLoader {
-
+    
     private static final Map<Class, IResourceLoader> ResourceLoaders = new HashMap<>();
 
     public enum FileType{

@@ -65,24 +65,28 @@ public class GameObject extends Object {
         Rotation.rotate(x, y, z);
         UpdateTransformMatrix(Position, Rotation, Scale);
     }
-
+    
+    public void SetScale(float scale){
+        this.SetScale(scale, scale, scale);
+    }
+    
     public void SetScale(float x, float y, float z){
         Scale.set(x, y, z);
         UpdateTransformMatrix(Position, Rotation, Scale);
     }
 
-    public Vector3d getPosition() {
+    public Vector3d GetPosition() {
         return Position;
     }
 
-    public Quaterniond getRotation() {
+    public Quaterniond GetRotation() {
         return Rotation;
     }
 
-    public Vector3d getScale() {
+    public Vector3d GetScale() {
         return Scale;
     }
-
+    
     public void Destroy(){
         Objects.remove(this);
         Position = null;

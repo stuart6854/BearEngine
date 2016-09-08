@@ -192,15 +192,14 @@ public class Chunk extends GameObject{
 
     //Sends the calculated mesh information
     //to the mesh and collision components
-
     public void updateMesh(MeshData meshData) {
     	//Logger.debug("Updating Chunk Mesh!");
         super.GetMesh().Cleanup();
         
-        super.GetMesh().setVertices(CollectionUtils.ListToArrayFloat(meshData.vertices));
-        super.GetMesh().setTextureCoords(CollectionUtils.ListToArrayFloat(meshData.uv));
-        super.GetMesh().setIndices(CollectionUtils.ListToArrayInt(meshData.indices));
-        super.GetMesh().setVertexColors(CollectionUtils.ListToArrayFloat(meshData.vertexColors));
+        super.GetMesh().SetVertices(meshData.vertices);
+        super.GetMesh().SetUVs(meshData.uv);
+        super.GetMesh().SetIndices(meshData.indices);
+//        super.GetMesh().SetVertexColors(Utils.ToArrayFloat(meshData.vertexColors));//TODO: Add vertex colors to Mesh
 
         super.GetMesh().CreateRenderModel();
 //        getBoundingBox().updateBounds(getMesh());

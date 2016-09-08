@@ -52,7 +52,7 @@ public class Block {
 
         return meshData;
     }
-
+    
     protected MeshData FaceDataUp(Chunk chunk, int x, int y, int z, MeshData meshData, int lightLevel) {
         meshData.addVertex(new Vector3f(x - 0.5f, y + 0.5f, z - 0.5f), lightLevel);
         meshData.addVertex(new Vector3f(x - 0.5f, y + 0.5f, z + 0.5f), lightLevel);

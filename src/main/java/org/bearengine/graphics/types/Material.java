@@ -8,9 +8,9 @@ import main.java.org.bearengine.objects.Camera;
  */
 public class Material {
 
-    public ShaderProgram shaderProgram; //TODO: Make ShaderPrograms-Per-Material Based
+    public ShaderProgram shaderProgram = ShaderProgram.DEFAULT; //TODO: Make ShaderPrograms-Per-Material Based
 
-    public Camera RenderCamera; //Camera used for projection and view matrices
+    public Camera RenderCamera = Camera.Main_Camera; //Camera used for projection and view matrices
 
     public Color Diffuse;
     public Color Specular;

@@ -1,15 +1,13 @@
 package voxelgame.gameassets.blocks;//package org.voxelgame.gameassets.blocks;
-//
-//import org.voxelgame.data.Block;
-//import org.voxelgame.data.Chunk;
-//import org.voxelgame.data.MeshData;
-//
-//public class BlockIronOre extends Block{
-//
-//	public BlockIronOre() {
-//		super();
-//	}
-//	
+
+import voxelgame.data.Block;
+
+public class BlockIronOre extends Block{
+
+	public BlockIronOre() {
+		super();
+	}
+
 //	@Override
 //	public MeshData BlockData(Chunk chunk, int x, int y, int z, MeshData meshData) {
 //        meshData.useRenderDataForCol = true;
@@ -22,13 +20,13 @@ package voxelgame.gameassets.blocks;//package org.voxelgame.gameassets.blocks;
 //
 //        return super.BlockData(chunk, x, y, z, meshData);
 //    }
-//
-//	@Override
-//    public Tile TexturePosition(Direction direction) {
-//        Tile tile = new Tile();
-//        tile.x = 1;
-//        tile.y = 13;
-//        return tile;
-//    }
-//	
-//}
+
+	@Override
+    public Tile TexturePosition(Direction direction) {
+        Tile tile = new Tile();
+        tile.x = 1;
+        tile.y = 13;
+        return tile;
+    }
+
+}

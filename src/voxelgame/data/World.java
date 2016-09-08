@@ -1,17 +1,11 @@
 package voxelgame.data;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+import voxelgame.gameassets.blocks.BlockAir;
 import voxelgame.generation.TerrainGen;
-import main.java.org.bearengine.graphics.types.Image;
-import main.java.org.bearengine.graphics.types.Material;
 import main.java.org.bearengine.graphics.types.Texture;
-import main.java.org.bearengine.objects.GameObject;
-import main.java.org.bearengine.utils.ResourceLoader;
-import main.java.org.joml.Vector3f;
 
 public class World {
 
@@ -21,10 +15,10 @@ public class World {
 
     private TerrainGen terrainGen = new TerrainGen();
 
-    private final Texture texture;
+    private final Texture textureSheet;
 
-    public World(String textureFile){
-    	texture = new Texture().UploadTexture(ResourceLoader.Load(textureFile, Image.class));
+    public World(Texture textureSheet){
+    	this.textureSheet = textureSheet;
     }
 
     public void update(float deltaTime){
@@ -46,8 +40,7 @@ public class World {
         Chunk newChunk = new Chunk(this, worldPos);
         newChunk.SetPosition(x, y, z);
 
-        Material material = new Material(texture, 0.0f, true);//NOTE: Use vertex Colors for lighting
-        newChunk.GetMesh().material = material;
+        newChunk.GetMesh().material.SetTexture(textureSheet);
 
         chunks.put(worldPos, newChunk);
 
