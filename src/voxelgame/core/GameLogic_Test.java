@@ -80,7 +80,7 @@ public class GameLogic_Test extends Game {
         
         objImporter = new OBJImporter();
         
-		Mesh mesh = objImporter.LoadMesh("/voxelgame/resources/models/cube.obj");
+		Mesh mesh = objImporter.LoadMesh("/voxelgame/resources/models/grass-block.obj");
         
         Image textureImage = ResourceLoader.Load("/voxelgame/resources/textures/grassblock.png", Image.class);
         Texture grassTexture = new Texture().UploadTexture(textureImage);

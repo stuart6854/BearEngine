@@ -20,6 +20,8 @@ import static org.lwjgl.opengl.GL30.*;
  * Created by Stuart on 29/05/2016.
  */
 public class RenderModel {
+    
+    //TODO: Create RenderModel no matter what vertex data a mesh has
 
     public static List<RenderModel> Models = new ArrayList<>();
 
