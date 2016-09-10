@@ -1,5 +1,6 @@
 package voxelgame.generation;
 
+import main.java.org.bearengine.debug.Debug;
 import voxelgame.data.Chunk;
 import voxelgame.gameassets.blocks.*;
 
@@ -32,7 +33,7 @@ public class TerrainGen {
             }
         }
 
-        //Logger.debug("Generated chunk!");
+        Debug.log("TerrainGen -> Generated chunk at " + chunk.pos.x + ", " + chunk.pos.z);
         return chunk;
     }
 

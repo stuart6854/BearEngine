@@ -2,6 +2,7 @@ package voxelgame.core;
 
 import main.java.org.bearengine.core.*;
 import main.java.org.bearengine.core.Game;
+import main.java.org.bearengine.utils.ClassLoaderDummy;
 
 public class Main {
 

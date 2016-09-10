@@ -3,6 +3,7 @@ package voxelgame.data;
 import java.util.HashMap;
 import java.util.Map;
 
+import main.java.org.bearengine.debug.Debug;
 import voxelgame.gameassets.blocks.BlockAir;
 import voxelgame.generation.TerrainGen;
 import main.java.org.bearengine.graphics.types.Texture;
@@ -27,14 +28,8 @@ public class World {
     	}
     }
 
-//    public void render(Renderer renderer){
-//    	List<GameObject> chunkList = new ArrayList<>();
-//    	chunkList.addAll(chunks.values());
-//    	renderer.render(chunkList);
-//    }
-
     public void CreateChunk(int x, int y, int z) {
-    	//Logger.debug("World -> Creating chunk at " + x + ", " + y + ", " + z);
+    	Debug.log("World -> Creating chunk at " + x + ", " + y + ", " + z);
         WorldPos worldPos = new WorldPos(x, y, z);
 
         Chunk newChunk = new Chunk(this, worldPos);
@@ -148,4 +143,8 @@ public class World {
     	}
     }
 
+    public Texture getTextureSheet(){
+        return textureSheet;
+    }
+    
 }

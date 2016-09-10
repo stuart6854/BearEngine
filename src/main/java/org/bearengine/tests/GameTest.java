@@ -54,7 +54,7 @@ public class GameTest extends Game {
         mesh.material.RenderCamera = Camera.Main_Camera;
 
         object = new GameObject();
-        object.setMesh(mesh);
+        object.SetMesh(mesh);
         object.SetPosition(0, 0, -5);
 
         Image fontImage = ResourceLoader.Load("/main/java/resources/fonts/OpenSans_61_DF.png", Image.class);

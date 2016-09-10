@@ -2,7 +2,7 @@ package main.java.org.bearengine.graphics.importers;
 
 import main.java.org.bearengine.debug.Debug;
 import main.java.org.bearengine.graphics.types.*;
-import main.java.org.bearengine.utils.ResourceLoader;
+import main.java.org.bearengine.utils.Utils;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -238,7 +238,7 @@ public class OBJImporter extends ModelImporter{
 
         return material;
     }
-
+        
     private class Face{
 
         public int[] indices = new int[3];

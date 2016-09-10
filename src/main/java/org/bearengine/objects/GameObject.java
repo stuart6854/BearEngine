@@ -32,6 +32,8 @@ public class GameObject extends Object {
         this.Position = new Vector3d(0, 0, 0);
         this.Rotation = new Quaterniond();
         this.Scale = new Vector3d(1, 1, 1);
+        
+        this.mesh = new Mesh();
     }
 
     public void SetPosition(Vector3d position){
@@ -107,7 +109,7 @@ public class GameObject extends Object {
         return mesh;
     }
 
-    public void setMesh(Mesh mesh) {
+    public void SetMesh(Mesh mesh) {
         UnRegisterRender();
         if(this.mesh != null)
             this.mesh.Cleanup();

@@ -1,5 +1,6 @@
 package voxelgame.data;
 
+import main.java.org.bearengine.debug.Debug;
 import main.java.org.bearengine.objects.Camera;
 import main.java.org.bearengine.objects.GameObject;
 import main.java.org.joml.Vector3f;
@@ -62,7 +63,7 @@ public class LoadChunks extends GameObject {
 	}
 
 	public void update(float deltaTime, Camera camera) {
-		//getTransform().setPosition(camera.getTransform().GetPosition());
+//		SetPosition(camera.GetPosition());
 		if (DeleteChunks())
             return;
         FindChunksToLoad();
@@ -75,10 +76,10 @@ public class LoadChunks extends GameObject {
                                             (int)Math.floor(GetPosition().y / Chunk.chunkSizeY) * Chunk.chunkSizeY,
                                             -(int)Math.floor(GetPosition().z / Chunk.chunkSizeXZ) * Chunk.chunkSizeXZ);
 
-        //if there arn't already chunks to generate
+        //if there aren't already chunks to generate
         if(updateList.size() == 0) {
             //Cycle through the array of positions
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 1; i++) {
                 WorldPos newChunkPos = new WorldPos(chunkPositions[i].x * Chunk.chunkSizeXZ + playerPos.x,
                                                     0,
                                                     -chunkPositions[i].z * Chunk.chunkSizeXZ + playerPos.z);
@@ -90,12 +91,14 @@ public class LoadChunks extends GameObject {
                 if (newChunk != null && (newChunk.rendered || updateList.contains(newChunkPos)))
                     continue;
 
-                for (int x = newChunkPos.x - Chunk.chunkSizeXZ; x <= newChunkPos.x + Chunk.chunkSizeXZ; x += Chunk.chunkSizeXZ) {
-                    for (int z = newChunkPos.z - Chunk.chunkSizeXZ; z <= newChunkPos.z + Chunk.chunkSizeXZ; z += Chunk.chunkSizeXZ) {
-                        buildList.add(new WorldPos(x, 0, z));
-                    }
-                }
-                //buildList.add(new WorldPos(newChunkPos.x, 0, newChunkPos.z)); //Test Code
+//                for (int x = newChunkPos.x - Chunk.chunkSizeXZ; x <= newChunkPos.x + Chunk.chunkSizeXZ; x += Chunk.chunkSizeXZ) {
+//                    for (int z = newChunkPos.z - Chunk.chunkSizeXZ; z <= newChunkPos.z + Chunk.chunkSizeXZ; z += Chunk.chunkSizeXZ) {
+//                        buildList.add(new WorldPos(x, 0, z));
+//                        Debug.log("LoadChunks -> Found Chunk to Build: " + x + ", " + z);
+//                    }
+//                }
+                
+                buildList.add(new WorldPos(newChunkPos.x, 0, newChunkPos.z)); //Test Code
                 updateList.add(new WorldPos(newChunkPos.x, 0, newChunkPos.z));
 
                 return;
@@ -112,7 +115,7 @@ public class LoadChunks extends GameObject {
     void LoadAndRenderChunks() {
         if (buildList.size() != 0) {
             for (int i = 0; i < buildList.size() && i < 1; i++) {
-//	            Logger.info("Building Chunk: " + buildList.get(0).x + ", " + buildList.get(0).z);
+	            Debug.log("LoadChunks -> Building Chunk: " + buildList.get(0).x + ", " + buildList.get(0).z);
 	            BuildChunk(buildList.get(0));
                 buildList.remove(0);
             }

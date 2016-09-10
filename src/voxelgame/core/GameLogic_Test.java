@@ -1,7 +1,6 @@
 package voxelgame.core;
 
 import main.java.org.bearengine.core.Game;
-import main.java.org.bearengine.debug.Debug;
 import main.java.org.bearengine.graphics.importers.OBJImporter;
 import main.java.org.bearengine.graphics.types.Color;
 import main.java.org.bearengine.graphics.types.Image;
@@ -12,9 +11,9 @@ import main.java.org.bearengine.input.Mouse;
 import main.java.org.bearengine.objects.Camera;
 import main.java.org.bearengine.graphics.*;
 import main.java.org.bearengine.objects.GameObject;
+import main.java.org.bearengine.utils.ClassLoaderDummy;
 import main.java.org.bearengine.utils.ResourceLoader;
 import main.java.org.joml.Matrix4f;
-import main.java.org.joml.Vector3d;
 import main.java.org.joml.Vector3f;
 
 import voxelgame.data.LoadChunks;
@@ -67,37 +66,37 @@ public class GameLogic_Test extends Game {
         Display.mainDisplay.SetClearColor(Color.SKY_BLUE);
 	    
 	    Camera.Main_Camera.SetProjection(new Matrix4f().perspective((float)Math.toRadians(60.0f), Display.mainDisplay.Aspect, 0.1f, 1000.0f));
-        Camera.Main_Camera.SetPosition(0, 2, 1);
-//		Camera.Main_Camera.SetPosition(-5, 153, 10);
+//        Camera.Main_Camera.SetPosition(0, 2, 1);
+		Camera.Main_Camera.SetPosition(-5, 153, 10);
 //		skybox = new Skybox(skyboxTextureFiles);
 
 		cameraInc = new Vector3f();
         
         Image textureSheetImage = ResourceLoader.Load("/voxelgame/resources/textures/texture.png", Image.class);
         Texture textureSheet = new Texture().UploadTexture(textureSheetImage);
-//		world = new World(textureSheet);
-//
-//		loadChunks = new LoadChunks(world);
+		world = new World(textureSheet);
+
+		loadChunks = new LoadChunks(world);
         
         objImporter = new OBJImporter();
         
-		Mesh mesh = objImporter.LoadMesh("/main/java/resources/models/textured-cube.obj");
+		Mesh mesh = objImporter.LoadMesh("/voxelgame/resources/models/cube.obj");
         
-        Image textureImage = ResourceLoader.Load("/main/java/resources/textures/placeholder_orange_256.png", Image.class);
+        Image textureImage = ResourceLoader.Load("/voxelgame/resources/textures/grassblock.png", Image.class);
         Texture grassTexture = new Texture().UploadTexture(textureImage);
         mesh.material.SetTexture(grassTexture);
 
 		testObject = new GameObject();
-        testObject.setMesh(mesh);
+        testObject.SetMesh(mesh);
         testObject.SetPosition(0, 0, -5f);
         testObject.SetScale(1f);
 
         testObject2 = new GameObject();
-        testObject2.setMesh(mesh);
+        testObject2.SetMesh(mesh);
         testObject2.SetPosition(-6f, 150, 0);
         testObject2.SetScale(1f);
 
-//        loadChunks.SetPosition(0, 0, 0);
+        loadChunks.SetPosition(0, 0, 0);
 
         //GUI System Testing//
 //        List<GUIElement> guiElements = new ArrayList<GUIElement>();
@@ -183,8 +182,8 @@ public class GameLogic_Test extends Game {
         
         MoveCamera(delta);
 		
-//		loadChunks.update(deltaTime, Camera.Main_Camera);
-//		world.update(deltaTime);
+		loadChunks.update(delta, Camera.Main_Camera);
+		world.update(delta);
 
 		//GUI Updates
 //		fpsLabel.setText("FPS: " + Timer.FPS);
@@ -200,10 +199,10 @@ public class GameLogic_Test extends Game {
 
 //		RayHitInfo hit = plane.getRayHit(ray);
 //		if(hit != null){
-//			Logger.debug("Hit Dist: " + hit.distance);
+//			Debug.log("Hit Dist: " + hit.distance);
 //		}
 
-		//Logger.debug("" + rect.collides(line));//TODO: Fix Collision
+		//Debug.log("" + rect.collides(line));//TODO: Fix Collision
 	}
     
 	private void MoveCamera(float delta){
@@ -264,8 +263,8 @@ public class GameLogic_Test extends Game {
 
 	@Override
 	public void cleanup() {
-//		loadChunks.cleanup();
-//		world.cleanup();
+		loadChunks.cleanup();
+		world.cleanup();
 	}
 
 }

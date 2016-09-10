@@ -22,7 +22,7 @@ public class Mesh {
     public RenderModel renderModel;
 
     public Mesh(){
-
+        this.material = new Material();
     }
 
     public void SetIndices(List<Integer> indicesList){

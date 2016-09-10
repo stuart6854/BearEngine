@@ -29,4 +29,24 @@ public class Utils {
         return array;
     }
     
+    public static float[] StringArrayToFloat(String[] strings){
+        float[] floats = new float[strings.length];
+        
+        for(int i = 0; i < strings.length; i++){
+            floats[i] = Float.parseFloat(strings[i]);
+        }
+        
+        return floats;
+    }
+    
+    public static int[] StringArrayToInt(String[] strings){
+        int[] ints = new int[strings.length];
+        
+        for(int i = 0; i < strings.length; i++){
+            ints[i] = Integer.parseInt(strings[i]);
+        }
+        
+        return ints;
+    }
+    
 }

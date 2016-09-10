@@ -3,6 +3,8 @@ package voxelgame.data;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import main.java.org.bearengine.debug.Debug;
+import main.java.org.bearengine.graphics.types.Mesh;
 import voxelgame.maths.Vector3i;
 import main.java.org.bearengine.objects.GameObject;
 
@@ -21,12 +23,12 @@ public class Chunk extends GameObject{
 
     private final World world;
     public final WorldPos pos;
-//
+
     public Chunk(World world, WorldPos pos) {
 		super();
 		this.world = world;
 		this.pos = pos;
-		super.Name = "Chunk " + pos.x + ", " + pos.z;
+		super.Name = "Chunk(" + GetPosAsString() + ")";
 	}
 
 	public void update(float deltaTime) {
@@ -98,7 +100,7 @@ public class Chunk extends GameObject{
     	isBusy = true;
     	update = false;
     	rendered = true;
-    	//System.out.println("Updating chunk!");
+    	Debug.log("Chunk(" + GetPosAsString() + ") -> Regenerating Mesh.");
         MeshData meshData = new MeshData();
 
         updateLightMap(blocks);
@@ -111,12 +113,14 @@ public class Chunk extends GameObject{
             }
         }
 
+        Debug.log("Chunk(" + GetPosAsString() + ") -> Mesh Regenerated.");
+        
         updateMesh(meshData);
         isBusy = false;
     }
 
     private void updateLightMap(Block[][][] blocks){
-    	//Logger.info("Updating Voxel Lightmap.");
+    	//Debug.log("Chunk(" + GetPosAsString() + ") -> Updating Voxel Lightmap.");
         long startTimeLoopPoints = System.nanoTime();
 
     	lightMap = new byte[chunkSizeXZ][chunkSizeY][chunkSizeXZ];
@@ -186,25 +190,31 @@ public class Chunk extends GameObject{
         }
 
         long estimatedTimeLoopPoints = System.nanoTime() - startTimeLoopPoints;
-        //Logger.debug("Chunk(" + pos + ") -> updateLightMap -> Loop Points -> Execution Time: " + (estimatedTimeLoopPoints / 1000000) + "ms");
-        //Logger.info("Complete Light Map Algorithm!");
+        //Debug.log("Chunk(" + pos + ") -> updateLightMap -> Loop Points -> Execution Time: " + (estimatedTimeLoopPoints / 1000000) + "ms");
+        //Debug.log("Complete Light Map Algorithm!");
     }
 
     //Sends the calculated mesh information
     //to the mesh and collision components
     public void updateMesh(MeshData meshData) {
-    	//Logger.debug("Updating Chunk Mesh!");
+    	Debug.log("Chunk(" + GetPosAsString() + ") -> Updating Mesh.");
+        
         super.GetMesh().Cleanup();
         
-        super.GetMesh().SetVertices(meshData.vertices);
-        super.GetMesh().SetUVs(meshData.uv);
-        super.GetMesh().SetIndices(meshData.indices);
-//        super.GetMesh().SetVertexColors(Utils.ToArrayFloat(meshData.vertexColors));//TODO: Add vertex colors to Mesh
-
-        super.GetMesh().CreateRenderModel();
-//        getBoundingBox().updateBounds(getMesh());
-
-        //Logger.debug("Mesh Updated!");
+        Mesh mesh = new Mesh();
+        mesh.Mesh_Name = "Chunk(" + GetPosAsString() + ")";
+        
+        mesh.SetVertices(meshData.vertices);
+        mesh.SetUVs(meshData.uv);
+        mesh.SetIndices(meshData.indices);
+//        mesh.SetVertexColors(Utils.ToArrayFloat(meshData.vertexColors));//TODO: Add vertex colors to Mesh
+    
+        mesh.CreateRenderModel();
+        super.SetMesh(mesh);
+        
+//        getBoundingBox().updateBounds(getMesh());//TODO: Add bounding boxes to Engine
+        
+        Debug.log("Chunk(" + GetPosAsString() + ") -> Mesh Updated.");
     }
 
     private boolean neighboursBuilt(int x, int z){
@@ -258,9 +268,13 @@ public class Chunk extends GameObject{
     		lightLvl = tmpLvl;
 
 		long endTime = System.nanoTime() - startTime;
-		//if(endTime / 1000000 > 0) Logger.debug("Chunk(" + pos + ") -> getHighestLightLevel() -> Execution Time: " + (endTime / 1000000) + "ms");
+		//if(endTime / 1000000 > 0) Debug.log("Chunk(" + pos + ") -> getHighestLightLevel() -> Execution Time: " + (endTime / 1000000) + "ms");
 
     	return lightLvl;
     }
-
+    
+    public String GetPosAsString(){
+        return pos.x + ", " + pos.z;
+    }
+    
 }

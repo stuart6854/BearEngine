@@ -29,7 +29,6 @@ public class Object {
 
     protected void UpdateTransformMatrix(Vector3d pos, Quaterniond rot, Vector3d scale){
         m_transform.identity().translate(pos).rotate(rot).scale(scale);
-        Debug.log("");
     }
 
 }
