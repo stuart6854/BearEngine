@@ -27,12 +27,16 @@ public class Image {
     public int Width, Height;
 
     public Image(String pathToImage){
-        this.ImagePath = pathToImage;
-
-        LoadImage();
+        this(pathToImage, true);
     }
 
-    private void LoadImage(){
+    public Image(String pathToImage, boolean flipImage){
+        this.ImagePath = pathToImage;
+
+        LoadImage(flipImage);
+    }
+
+    private void LoadImage(boolean flipImage){
         Debug.log("Image -> Loading Image: " + ImagePath);
         try {
             InputStream stream = getClass().getResourceAsStream(ImagePath);
@@ -48,7 +52,10 @@ public class Image {
             Height = decoder.getHeight();
 
             ImageData = ByteBuffer.allocateDirect(4 * Width * Height);
-            decoder.decode(ImageData, Width * 4, PNGDecoder.Format.RGBA);
+            if(!flipImage)
+                decoder.decode(ImageData, Width * 4, PNGDecoder.Format.RGBA);
+            else
+                decoder.decodeFlipped(ImageData, Width * 4, PNGDecoder.Format.RGBA);
 
             ImageData.flip();
 
@@ -57,7 +64,8 @@ public class Image {
             Debug.exception("Image -> Exception Loading Image", e);
         }
     }
-    
+
+
 //    public static Image GetImage(String imagePath, ResourceLoader.FileType fileType){
 //        return GetImage(imagePath, fileType, true);
 //    }

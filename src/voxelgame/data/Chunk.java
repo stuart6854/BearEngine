@@ -100,7 +100,7 @@ public class Chunk extends GameObject{
     	isBusy = true;
     	update = false;
     	rendered = true;
-    	Debug.log("Chunk(" + GetPosAsString() + ") -> Regenerating Mesh.");
+//    	Debug.log("Chunk(" + GetPosAsString() + ") -> Regenerating Mesh.");
         MeshData meshData = new MeshData();
 
         updateLightMap(blocks);
@@ -113,7 +113,7 @@ public class Chunk extends GameObject{
             }
         }
 
-        Debug.log("Chunk(" + GetPosAsString() + ") -> Mesh Regenerated.");
+//        Debug.log("Chunk(" + GetPosAsString() + ") -> Mesh Regenerated.");
         
         updateMesh(meshData);
         isBusy = false;
@@ -141,7 +141,7 @@ public class Chunk extends GameObject{
                     	lightMap[x][y][z] = (byte)Math.max(lightMap[x][y][z], 0);
                         litPoints.add(new Vector3i(x, y, z));
                     }
-                    lightMap[x][y][z] = 15;
+                    lightMap[x][y][z] = 15; //Lights everything up
                 }
             }
         }
@@ -197,24 +197,25 @@ public class Chunk extends GameObject{
     //Sends the calculated mesh information
     //to the mesh and collision components
     public void updateMesh(MeshData meshData) {
-    	Debug.log("Chunk(" + GetPosAsString() + ") -> Updating Mesh.");
-        
+//    	Debug.log("Chunk(" + GetPosAsString() + ") -> Updating Mesh.");
+
         super.GetMesh().Cleanup();
         
         Mesh mesh = new Mesh();
         mesh.Mesh_Name = "Chunk(" + GetPosAsString() + ")";
+        mesh.material.SetTexture(World.Texture_Sheet);
         
         mesh.SetVertices(meshData.vertices);
         mesh.SetUVs(meshData.uv);
         mesh.SetIndices(meshData.indices);
-//        mesh.SetVertexColors(Utils.ToArrayFloat(meshData.vertexColors));//TODO: Add vertex colors to Mesh
+        mesh.SetColors(meshData.vertexColors);
     
         mesh.CreateRenderModel();
         super.SetMesh(mesh);
         
 //        getBoundingBox().updateBounds(getMesh());//TODO: Add bounding boxes to Engine
         
-        Debug.log("Chunk(" + GetPosAsString() + ") -> Mesh Updated.");
+//        Debug.log("Chunk(" + GetPosAsString() + ") -> Mesh Updated.");
     }
 
     private boolean neighboursBuilt(int x, int z){

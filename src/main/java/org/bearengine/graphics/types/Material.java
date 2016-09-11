@@ -8,13 +8,13 @@ import main.java.org.bearengine.objects.Camera;
  */
 public class Material {
 
-    public ShaderProgram shaderProgram = ShaderProgram.DEFAULT; //TODO: Make ShaderPrograms-Per-Material Based
+    public ShaderProgram shaderProgram = ShaderProgram.DEFAULT;
 
     public Camera RenderCamera = Camera.Main_Camera; //Camera used for projection and view matrices
 
     public Color Diffuse;
-    public Color Specular;
     public Color Ambient;
+    public Color Specular;
 
     private Texture texture;
 
@@ -31,5 +31,19 @@ public class Material {
     public Texture GetTexture(){
         return this.texture;
     }
+
+    public void SetDiffuse(Color diffuse){
+        this.Diffuse = diffuse;
+    }
+
+    public void SetAmbient(Color ambient){
+        this.Ambient = ambient;
+    }
+
+    public void SetSpecular(Color specular){
+        this.Specular = specular;
+    }
+
+
 
 }

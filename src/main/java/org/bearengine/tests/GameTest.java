@@ -48,7 +48,7 @@ public class GameTest extends Game {
         texture = new Texture().UploadTexture(ResourceLoader.Load("/main/java/resources/textures/placeholder_orange_256.png", Image.class));
 
         OBJImporter importer = new OBJImporter();
-        mesh = importer.LoadMesh("/main/java/resources/models/textured-cube.obj");
+        Mesh mesh = importer.LoadMesh("/main/java/resources/models/textured-cube.obj");
         mesh.material.SetTexture(texture);
         mesh.material.shaderProgram = ShaderProgram.DEFAULT;
         mesh.material.RenderCamera = Camera.Main_Camera;
@@ -57,7 +57,7 @@ public class GameTest extends Game {
         object.SetMesh(mesh);
         object.SetPosition(0, 0, -5);
 
-        Image fontImage = ResourceLoader.Load("/main/java/resources/fonts/OpenSans_61_DF.png", Image.class);
+        Image fontImage = ResourceLoader.Load("/main/java/resources/fonts/OpenSans_61_DF.png", Image.class, false);
         Texture texture = new Texture().UploadTexture(fontImage);
         Font font = new Font(0.2f, texture, ResourceLoader.Load("/main/java/resources/fonts/OpenSans_61_DF.fnt", File.class));
 

@@ -22,7 +22,7 @@ public class Shader {
 	public boolean Compiled = false;
 	
 	public Shader(String shaderSourcePath, int shaderType){
-		this.ShaderSourcePath = "/main/java/resources/" + shaderSourcePath;
+		this.ShaderSourcePath = shaderSourcePath;
 		this.ShaderType = shaderType;
 	}
 	

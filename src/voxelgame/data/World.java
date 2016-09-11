@@ -16,10 +16,10 @@ public class World {
 
     private TerrainGen terrainGen = new TerrainGen();
 
-    private final Texture textureSheet;
+    public static Texture Texture_Sheet;
 
     public World(Texture textureSheet){
-    	this.textureSheet = textureSheet;
+    	this.Texture_Sheet = textureSheet;
     }
 
     public void update(float deltaTime){
@@ -34,8 +34,6 @@ public class World {
 
         Chunk newChunk = new Chunk(this, worldPos);
         newChunk.SetPosition(x, y, z);
-
-        newChunk.GetMesh().material.SetTexture(textureSheet);
 
         chunks.put(worldPos, newChunk);
 
@@ -144,7 +142,7 @@ public class World {
     }
 
     public Texture getTextureSheet(){
-        return textureSheet;
+        return Texture_Sheet;
     }
     
 }

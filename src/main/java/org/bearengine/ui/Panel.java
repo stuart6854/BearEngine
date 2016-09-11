@@ -3,6 +3,7 @@ package main.java.org.bearengine.ui;
 import main.java.org.bearengine.graphics.shaders.ShaderProgram;
 import main.java.org.bearengine.graphics.types.Image;
 import main.java.org.bearengine.graphics.types.Texture;
+import main.java.org.bearengine.utils.ResourceLoader;
 
 /**
  * Created by Stuart on 11/06/2016.
@@ -14,7 +15,7 @@ public class Panel extends UIObject {
     public Panel(){
         super();
         super.Name = "UIPanel";
-        Image image = new Image("/main/java/resources/textures/ui/panel/white_flat_panel.png");
+        Image image = ResourceLoader.Load("/main/java/resources/textures/ui/panel/white_flat_panel.png", Image.class, false);
         texture = new Texture().UploadTexture(image);
         BuildMesh();
     }

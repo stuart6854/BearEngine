@@ -2,6 +2,7 @@ package voxelgame.core;
 
 import main.java.org.bearengine.core.Game;
 import main.java.org.bearengine.graphics.importers.OBJImporter;
+import main.java.org.bearengine.graphics.shaders.ShaderProgram;
 import main.java.org.bearengine.graphics.types.Color;
 import main.java.org.bearengine.graphics.types.Image;
 import main.java.org.bearengine.graphics.types.Mesh;
@@ -11,11 +12,11 @@ import main.java.org.bearengine.input.Mouse;
 import main.java.org.bearengine.objects.Camera;
 import main.java.org.bearengine.graphics.*;
 import main.java.org.bearengine.objects.GameObject;
-import main.java.org.bearengine.utils.ClassLoaderDummy;
 import main.java.org.bearengine.utils.ResourceLoader;
 import main.java.org.joml.Matrix4f;
 import main.java.org.joml.Vector3f;
 
+import org.lwjgl.opengl.GL11;
 import voxelgame.data.LoadChunks;
 import voxelgame.data.World;
 
@@ -31,8 +32,7 @@ public class GameLogic_Test extends Game {
 //			"/resources/skyboxes/TropicalSunnyDayFront2048.png"
 //	};
 
-	private Vector3f cameraInc;
-	private final float CAMERA_POS_STEP = 10.0f;
+    private final float CAMERA_POS_STEP = 10.0f;
 	private static final float MOUSE_SENSITIVITY = 6.5f;
 
 	private World world;
@@ -41,7 +41,7 @@ public class GameLogic_Test extends Game {
 
     OBJImporter objImporter;
     
-	GameObject testObject, testObject2;
+	GameObject lightSource, lightReceiver;
 
 //	private GUICanvas guiCanvas;
 
@@ -63,14 +63,16 @@ public class GameLogic_Test extends Game {
 
 	@Override
 	public void init(){
-        Display.mainDisplay.SetClearColor(Color.SKY_BLUE);
-	    
-	    Camera.Main_Camera.SetProjection(new Matrix4f().perspective((float)Math.toRadians(60.0f), Display.mainDisplay.Aspect, 0.1f, 1000.0f));
-//        Camera.Main_Camera.SetPosition(0, 2, 1);
-		Camera.Main_Camera.SetPosition(-5, 153, 10);
-//		skybox = new Skybox(skyboxTextureFiles);
+//        Display.mainDisplay.SetClearColor(Color.SKY_BLUE);
+        Display.mainDisplay.SetClearColor(Color.BLACK);
+        GL11.glCullFace(GL11.GL_BACK);
+        GL11.glEnable(GL11.GL_CULL_FACE);
 
-		cameraInc = new Vector3f();
+        Camera.Main_Camera.SetProjection(new Matrix4f().perspective((float)Math.toRadians(60.0f), Display.mainDisplay.Aspect, 0.1f, 1000.0f));
+		Camera.Main_Camera.SetPosition(-1.5, 152, 6.5);
+		Camera.Main_Camera.SetRotation(15, 20, 0);
+
+//		skybox = new Skybox(skyboxTextureFiles);
         
         Image textureSheetImage = ResourceLoader.Load("/voxelgame/resources/textures/texture.png", Image.class);
         Texture textureSheet = new Texture().UploadTexture(textureSheetImage);
@@ -79,22 +81,21 @@ public class GameLogic_Test extends Game {
 		loadChunks = new LoadChunks(world);
         
         objImporter = new OBJImporter();
-        
-		Mesh mesh = objImporter.LoadMesh("/voxelgame/resources/models/grass-block.obj");
-        
-        Image textureImage = ResourceLoader.Load("/voxelgame/resources/textures/grassblock.png", Image.class);
-        Texture grassTexture = new Texture().UploadTexture(textureImage);
-        mesh.material.SetTexture(grassTexture);
 
-		testObject = new GameObject();
-        testObject.SetMesh(mesh);
-        testObject.SetPosition(0, 0, -5f);
-        testObject.SetScale(1f);
+		Mesh lightSourceMesh = objImporter.LoadMesh("/main/java/resources/models/cube.obj");
+		lightSourceMesh.material.shaderProgram = ShaderProgram.DEFAULT_LIGHTING_SRC;
+		lightSource = new GameObject();
+        lightSource.SetMesh(lightSourceMesh);
+        lightSource.SetPosition(-2f, 152, 0f);
+        lightSource.SetScale(.5f);
 
-        testObject2 = new GameObject();
-        testObject2.SetMesh(mesh);
-        testObject2.SetPosition(-6f, 150, 0);
-        testObject2.SetScale(1f);
+		Mesh testMesh = objImporter.LoadMesh("/main/java/resources/models/cube_normals.obj");
+		testMesh.material.shaderProgram = ShaderProgram.DEFAULT_LIGHTING;
+
+        lightReceiver = new GameObject();
+        lightReceiver.SetMesh(testMesh);
+        lightReceiver.SetPosition(4f, 150, -1f);
+        lightReceiver.SetScale(1f);
 
         loadChunks.SetPosition(0, 0, 0);
 
@@ -169,7 +170,6 @@ public class GameLogic_Test extends Game {
 
 	@Override
 	public void update(float delta) {
-        
 //		mousePicker.update();
 
 		//Update camera based on mouse
@@ -182,7 +182,7 @@ public class GameLogic_Test extends Game {
         
         MoveCamera(delta);
 		
-		loadChunks.update(delta, Camera.Main_Camera);
+//		loadChunks.update(delta, Camera.Main_Camera);
 		world.update(delta);
 
 		//GUI Updates

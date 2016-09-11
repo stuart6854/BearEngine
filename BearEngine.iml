@@ -16,7 +16,30 @@
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="inheritedJdk" />
-    <orderEntry type="library" name="PNGDecoder" level="application" />
-    <orderEntry type="library" name="LWJGL 3.0" level="application" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/PNGDecoder.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/LWJGL 3.0.0_Build90/jar/lwjgl.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$MODULE_DIR$/libs/LWJGL 3.0.0_Build90/doc/javadoc.zip!/" />
+        </JAVADOC>
+        <NATIVE>
+          <root url="file://$MODULE_DIR$/libs/LWJGL 3.0.0_Build90/native" />
+        </NATIVE>
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/libs/LWJGL 3.0.0_Build90/src.zip!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
   </component>
 </module>

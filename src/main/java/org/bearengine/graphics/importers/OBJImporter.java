@@ -2,6 +2,7 @@ package main.java.org.bearengine.graphics.importers;
 
 import main.java.org.bearengine.debug.Debug;
 import main.java.org.bearengine.graphics.types.*;
+import main.java.org.bearengine.utils.ResourceLoader;
 import main.java.org.bearengine.utils.Utils;
 
 import java.io.*;
@@ -12,6 +13,8 @@ import java.util.List;
  * Created by Stuart on 27/05/2016.
  */
 public class OBJImporter extends ModelImporter{
+
+	//TODO: Fix possible problem with importing obj file: See ModelImport_Problem.png in root dir
 
     private enum FaceDefType { VertsOnly, VertsUVs, All, VertsNormals };
 
@@ -162,14 +165,11 @@ public class OBJImporter extends ModelImporter{
                 else
                     group.normalIndex = -1;
 
-                if(verticeGroups.contains(group)){
-                    indices.add(verticeGroups.indexOf(group));
-                }else{
+                if(!verticeGroups.contains(group))
                     verticeGroups.add(group);
-                    indices.add(verticeGroups.indexOf(group));
-                }
-            }
 
+                indices.add(verticeGroups.indexOf(group));
+            }
         }
 
         for(VertexGroup vertexGroup : verticeGroups){
@@ -224,7 +224,7 @@ public class OBJImporter extends ModelImporter{
                     case "map_Kd":
                         String imagePath = path.substring(0, path.lastIndexOf("/") + 1) + tokens[1];
                         Texture texture = new Texture();
-                        texture.UploadTexture(new Image(imagePath));
+                        texture.UploadTexture(ResourceLoader.Load(imagePath, Image.class));
                         material.SetTexture(texture);
                         break;
                     default:

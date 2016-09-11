@@ -1,6 +1,5 @@
 package main.java.org.bearengine.graphics.types;
 
-import javafx.beans.property.FloatProperty;
 import main.java.org.bearengine.debug.Debug;
 import main.java.org.bearengine.objects.Object;
 import org.lwjgl.BufferUtils;
@@ -78,38 +77,60 @@ public class RenderModel {
     private static int[] Current_VBOs = null;
     private static int Current_Index_VBO = -1;
 
-    public static RenderModel Create2DModel(float[] vertices, float[] uvs, int[] indices){
+    public static RenderModel CreateModel(int[] indices, float[] vertices, float[] uvs, float[] normals, float[] colors){
         if(CREATING){
             Debug.error("RenderModel -> Already Creating RenderModel!");
             return null;
         }
+        int ValidDataCount = ValidDataCount(vertices, uvs, normals, colors);
 
-        if(indices == null || vertices == null || uvs == null) return null;
+        CreateModel(ValidDataCount);
 
-        CreateModel(2);
-        SetupAttributeBuffer(0, 3, vertices);
-        SetupAttributeBuffer(1, 2, uvs);
         SetupIndexBuffer(indices);
+        SetupAttributeBuffer(0, 3, vertices);
+        if(uvs != null && uvs.length > 0)
+            SetupAttributeBuffer(1, 2, uvs);
+        if(normals != null && normals.length > 0)
+            SetupAttributeBuffer(2, 3, normals);
+        if(colors != null && colors.length > 0)
+            SetupAttributeBuffer(3, 4, colors);
+
         FinaliseModel();
         return StoreModel();
     }
 
-    public static RenderModel Create3DModel(float[] vertices, float[] uvs, float[] normals, int[] indices){
-        if(CREATING){
-            Debug.error("RenderModel -> Already Creating RenderModel!");
-            return null;
-        }
+//    public static RenderModel Create2DModel(int[] indices, float[] vertices, float[] uvs){
+//        if(CREATING){
+//            Debug.error("RenderModel -> Already Creating RenderModel!");
+//            return null;
+//        }
+//
+//        if(indices == null || vertices == null || uvs == null) return null;
+//
+//        CreateModel(2);
+//        SetupAttributeBuffer(0, 3, vertices);
+//        SetupAttributeBuffer(1, 2, uvs);
+//        SetupIndexBuffer(indices);
+//        FinaliseModel();
+//        return StoreModel();
+//    }
 
-        if(indices == null || vertices == null || uvs == null || normals == null) return null;
-
-        CreateModel(3);
-        SetupAttributeBuffer(0, 3, vertices);
-        SetupAttributeBuffer(1, 2, uvs);
-        SetupAttributeBuffer(2, 3, normals);
-        SetupIndexBuffer(indices);
-        FinaliseModel();
-        return StoreModel();
-    }
+//    public static RenderModel Create3DModel(int[] indices, float[] vertices, float[] uvs, float[] normals){
+//        if(CREATING){
+//            Debug.error("RenderModel -> Already Creating RenderModel!");
+//            return null;
+//        }
+//
+//        if(indices == null || vertices == null || uvs == null || normals == null) return null;
+//
+//        CreateModel(3);
+//        SetupAttributeBuffer(0, 3, vertices);
+//        SetupAttributeBuffer(1, 2, uvs);
+//        SetupAttributeBuffer(2, 3, normals);
+//        SetupIndexBuffer(indices);
+//        FinaliseModel();
+//        return StoreModel();
+//    }
 
     public static RenderModel CreateDebugRenderModel(float[] vertices, int[] indices){
         if(CREATING){
@@ -182,6 +203,21 @@ public class RenderModel {
     private static void ReleaseModels(){
         for(RenderModel model : Models)
             model.ReleaseModel();
+    }
+
+    private static int ValidDataCount(float[] vertices, float[] uvs, float[] normals, float[] colors){
+        int validData = 0;
+
+        if(vertices != null)
+            validData += 1;
+        if(uvs != null)
+            validData += 1;
+        if(normals != null)
+            validData += 1;
+        if(colors != null)
+            validData += 1;
+
+        return validData;
     }
 
 }

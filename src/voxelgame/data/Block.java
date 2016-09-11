@@ -8,6 +8,8 @@ import main.java.org.joml.Vector3f;
 
 public class Block {
 
+    //TODO: Add normal data
+
     public enum Direction { north, east, south, west, up, down }
 
     public class Tile { public int x, y; }
@@ -217,7 +219,7 @@ public class Block {
 
     public List<Float> FaceUVs(Direction direction) {
         Tile tilePos = TexturePosition(direction);
-        List<Float> UVs = new ArrayList<Float>(4 * 2); // 4 coord sets with each being 2d
+        List<Float> UVs = new ArrayList<>(4 * 2); // 4 coord sets with each being 2d
 
         UVs.add(textureTileSize * tilePos.x);
         UVs.add(textureTileSize * tilePos.y + textureTileSize);

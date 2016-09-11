@@ -1,6 +1,6 @@
 package main.java.org.bearengine.graphics.types;
 
-import main.java.org.bearengine.debug.Debug;
+import main.java.org.bearengine.utils.Utils;
 
 import java.util.List;
 
@@ -18,6 +18,7 @@ public class Mesh {
     private float[] vertices;
     private float[] uvs;
     private float[] normals;
+    private float[] colors;
 
     public RenderModel renderModel;
 
@@ -26,21 +27,11 @@ public class Mesh {
     }
 
     public void SetIndices(List<Integer> indicesList){
-        if(indicesList.size() == 0) return;
-        int[] indices = new int[indicesList.size()];
-        for(int i = 0; i < indicesList.size(); i++)
-            indices[i] = indicesList.get(i);
-
-        SetIndices(indices);
+        SetIndices(Utils.ToArrayInt(indicesList));
     }
 
     public void SetVertices(List<Float> verticesList){
-        if(verticesList.size() == 0) return;
-        float[] verts = new float[verticesList.size()];
-        for(int i = 0; i < verticesList.size(); i++)
-            verts[i] = verticesList.get(i);
-
-        SetVertices(verts);
+        SetVertices(Utils.ToArrayFloat(verticesList));
     }
 
     public void SetIndices(int[] indices){
@@ -53,31 +44,51 @@ public class Mesh {
     }
 
     public void SetUVs(List<Float> uvsList){
-        if(uvsList.size() == 0) return;
-        float[] uvs = new float[uvsList.size()];
-        for(int i = 0; i < uvsList.size(); i++)
-            uvs[i] = uvsList.get(i);
+        SetUVs(Utils.ToArrayFloat(uvsList));
+    }
 
+    public void SetUVs(float[] uvs){
         this.uvs = uvs;
     }
 
     public void SetNormals(List<Float> normalsList){
-        if(normalsList.size() == 0) return;
-        float[] normals = new float[normalsList.size()];
-        for(int i = 0; i < normalsList.size(); i++)
-            normals[i] = normalsList.get(i);
+        SetNormals(Utils.ToArrayFloat(normalsList));
+    }
 
+    public void SetNormals(float[] normals){
         this.normals = normals;
     }
 
+    public void SetColors(List<Float> colorsList){
+        SetColors(Utils.ToArrayFloat(colorsList));
+    }
+
+    public void SetColors(float[] colors){
+        this.colors = colors;
+    }
+
     public void CreateRenderModel(){
-        if(normals != null && normals.length > 0) {
-            renderModel = RenderModel.Create3DModel(vertices, uvs, normals, indices);
-//            Debug.log("Mesh -> Creating 3D RenderModel(has Normals).");
-        } else{
-            renderModel = RenderModel.Create2DModel(vertices, uvs, indices);
-//            Debug.log("Mesh -> Creating 2D RenderModel(no Normals).");
-        }
+//	    if(colors == null || colors.length == 0)
+//	    	SetDefaultColors();
+
+        if(uvs != null && uvs.length == 0)
+            uvs = null;
+
+        if(normals != null && normals.length == 0)
+            normals = null;
+
+        renderModel = RenderModel.CreateModel(indices, vertices, uvs, normals, colors);
+//        if(normals != null && normals.length > 0) {
+//            renderModel = RenderModel.Create3DModel(indices, vertices, uvs, normals);
+////            Debug.log("Mesh -> Creating 3D RenderModel(has Normals).");
+//        } else{
+//            renderModel = RenderModel.Create2DModel(indices, vertices, uvs);
+////            Debug.log("Mesh -> Creating 2D RenderModel(no Normals).");
+//        }
+    }
+
+    public int[] GetIndices(){
+        return indices;
     }
 
     public float[] GetVertices(){
@@ -92,9 +103,27 @@ public class Mesh {
         return normals;
     }
 
+    public float[] GetColors(){
+        return colors;
+    }
+
     public void Cleanup(){
         if(renderModel != null)
             renderModel.ReleaseModel();
+    }
+
+    private void SetDefaultColors(){
+	    Color defaultColor = Color.WHITE;
+
+	    int verts = vertices.length / 3;
+		float[] colors = new float[verts * 4];
+	    for(int i = 0; i < colors.length; i += 4){
+		    colors[i] = defaultColor.r;
+		    colors[i + 1] = defaultColor.g;
+		    colors[i + 2] = defaultColor.b;
+		    colors[i + 3] = defaultColor.a;
+	    }
+	    SetColors(colors);
     }
 
 }

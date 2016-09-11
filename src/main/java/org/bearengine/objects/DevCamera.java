@@ -31,7 +31,7 @@ public class DevCamera extends Camera {
     private static float Velocity = 5.0f;
     private static float MouseSensitivity = 7.5f;
 
-    Image fontImage = new Image("/main/java/resources/fonts/OpenSans_8_DF.png");
+    Image fontImage = ResourceLoader.Load("/main/java/resources/fonts/OpenSans_8_DF.png", Image.class, false);
     Texture texture = new Texture().UploadTexture(fontImage);
     Font font = new Font(8, texture, ResourceLoader.Load("/main/java/resources/fonts/OpenSans_8_DF.fnt", File.class));
 

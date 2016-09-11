@@ -23,15 +23,24 @@ public class Color {
     public float r, g, b, a;
 
     public Color(){
-        this(0, 0, 0, 1);
+        set(MAGENTA);
     }
 
     public Color(float r, float g, float b){
-        set(r, g, b, 1);
+        set(r, g, b, 1.0f);
     }
 
     public Color(float r, float g, float b, float a){
         set(r, g, b, a);
+    }
+
+    public Color set(Color color){
+        this.r = color.r;
+        this.g = color.g;
+        this.b = color.b;
+        this.a = color.a;
+
+        return this;
     }
 
     public Color set(float r, float g, float b, float a){
