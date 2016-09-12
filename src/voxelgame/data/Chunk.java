@@ -3,7 +3,6 @@ package voxelgame.data;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import main.java.org.bearengine.debug.Debug;
 import main.java.org.bearengine.graphics.types.Mesh;
 import voxelgame.maths.Vector3i;
 import main.java.org.bearengine.objects.GameObject;
@@ -203,7 +202,7 @@ public class Chunk extends GameObject{
         
         Mesh mesh = new Mesh();
         mesh.Mesh_Name = "Chunk(" + GetPosAsString() + ")";
-        mesh.material.SetTexture(World.Texture_Sheet);
+        mesh.material.SetDiffuseTexture(World.Texture_Sheet);
         
         mesh.SetVertices(meshData.vertices);
         mesh.SetUVs(meshData.uv);

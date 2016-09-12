@@ -3,7 +3,6 @@ package voxelgame.core;
 import main.java.org.bearengine.core.Game;
 import main.java.org.bearengine.debug.Debug;
 import main.java.org.bearengine.graphics.importers.OBJImporter;
-import main.java.org.bearengine.graphics.shaders.Shader;
 import main.java.org.bearengine.graphics.shaders.ShaderProgram;
 import main.java.org.bearengine.graphics.types.Color;
 import main.java.org.bearengine.graphics.types.Image;
@@ -94,13 +93,25 @@ public class GameLogic_Test extends Game {
 		lightSource.SetRotation(0, .9f, 0);
         lightSource.SetScale(.5f);
 
-		Mesh lightRecieverMesh = objImporter.LoadMesh("/main/java/resources/models/cube_normals.obj");
+		Mesh lightRecieverMesh = objImporter.LoadMesh("/main/java/resources/models/textured-cube.obj");
 		lightRecieverMesh.material.shaderProgram = ShaderProgram.DEFAULT_LIGHTING;
 
+        Image crateDiffuseImage = ResourceLoader.Load("/main/java/resources/textures/crate_diffuse.png", Image.class);
+        Texture crateDiffuseTexture = new Texture().UploadTexture(crateDiffuseImage, 0);
+
+        Image crateSpecularImage = ResourceLoader.Load("/main/java/resources/textures/crate_specular.png", Image.class);
+        Texture crateSpecularTexture = new Texture().UploadTexture(crateSpecularImage, 1);
+
+        lightRecieverMesh.material.SetDiffuseTexture(crateDiffuseTexture);
+        lightRecieverMesh.material.SetSpecularTexture(crateSpecularTexture);
         lightReceiver = new GameObject();
         lightReceiver.SetMesh(lightRecieverMesh);
         lightReceiver.SetPosition(4f, 150, -1f);
         lightReceiver.SetScale(1f);
+        lightRecieverMesh.material.SetAmbient(new Color(1.0f, 0.5f, 0.31f));
+        lightRecieverMesh.material.SetDiffuse(new Color(1.0f, 0.5f, 0.31f));
+        lightRecieverMesh.material.SetSpecular(new Color(0.5f, 0.5f, 0.5f));
+        lightRecieverMesh.material.SetShininess(32.0f);
 
         loadChunks.SetPosition(0, 0, 0);
 
@@ -175,7 +186,7 @@ public class GameLogic_Test extends Game {
 
 	@Override
 	public void update(float delta) {
-//		lightReceiver.Rotate(0, 10f * delta, 0);
+		lightReceiver.Rotate(0, 20f * delta, 0);
 //		mousePicker.update();
 
 		//Update camera based on mouse

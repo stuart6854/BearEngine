@@ -1,6 +1,8 @@
 package main.java.org.bearengine.graphics.types;
 
 import main.java.org.bearengine.math.MathUtils;
+import main.java.org.joml.Vector3f;
+import main.java.org.joml.Vector4f;
 
 /**
  * Created by Stuart on 21/05/2016.
@@ -50,6 +52,14 @@ public class Color {
         this.a = MathUtils.Clamp(a, 0, 1);
 
         return this;
+    }
+
+    public Vector3f GetRGB(){
+        return new Vector3f(r, g, b);
+    }
+
+    public Vector4f GetRGBA(){
+        return new Vector4f(r, g, b, a);
     }
 
     @Override

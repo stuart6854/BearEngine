@@ -24,7 +24,7 @@ public class Panel extends UIObject {
     public void BuildMesh() {
         this.setMesh(UIMesh.Square(PixelWidth, PixelHeight));
         this.mesh.material.shaderProgram = ShaderProgram.DEFAULT_UI;
-        this.mesh.material.SetTexture(texture);
+        this.mesh.material.SetDiffuseTexture(texture);
         super.CreateDebugMesh();
     }
 

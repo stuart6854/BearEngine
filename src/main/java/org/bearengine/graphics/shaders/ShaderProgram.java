@@ -2,9 +2,8 @@ package main.java.org.bearengine.graphics.shaders;
 
 import main.java.org.bearengine.debug.Debug;
 import main.java.org.bearengine.graphics.types.Color;
-import main.java.org.joml.Matrix4d;
-import main.java.org.joml.Matrix4f;
-import main.java.org.joml.Vector3f;
+import main.java.org.bearengine.graphics.types.Material;
+import main.java.org.joml.*;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
@@ -161,8 +160,28 @@ public class ShaderProgram {
         SetUniform(GetUniform(location), values);
     }
 
+    public void SetUniform(String name, int value){
+	    SetUniform(name, new int[] { value });
+    }
+
+	public void SetUniform(String name, float value){
+		SetUniform(name, new float[] { value });
+	}
+
     public void SetUniform(String name, Vector3f vector){
 		SetUniform(name, new float[]{ vector.x, vector.y, vector.z });
+    }
+
+	public void SetUniform(String name, Vector3d vector){
+		SetUniform(name, new float[]{ (float)vector.x, (float)vector.y, (float)vector.z });
+	}
+
+    public void SetUniform(String name, Vector4f vector){
+        SetUniform(name, new float[]{ vector.x, vector.y, vector.z, vector.w});
+    }
+
+    public void SetUniform(String name, Vector4d vector){
+        SetUniform(name, new float[]{ (float)vector.x, (float)vector.y, (float)vector.z, (float)vector.w });
     }
 
     public void SetUniform(String name, Matrix4d value){
@@ -179,8 +198,10 @@ public class ShaderProgram {
         glUniformMatrix4fv(GetUniform(name), false, value.get(buffer));
     }
 
-    public void SetUniform(String name, Color color){
-	    SetUniform(name, new float[]{color.r, color.g, color.b, color.a});
+    public void SetUniform(String name, Material material){
+	    SetUniform(name + ".diffuse", material.GetDiffuseTexture().TextureUnit);
+	    SetUniform(name + ".specular", material.GetSpecularTexture().TextureUnit);
+	    SetUniform(name + ".shininess", material.Shininess);
     }
 
     //TODO: Add Setting Vectors, Matrices, Colours, etc. Uniforms

@@ -35,7 +35,7 @@ public class Caret extends UIObject {
     public void BuildMesh() {
         this.setMesh(UIMesh.Square(PixelWidth, PixelHeight));
         this.mesh.material.shaderProgram = ShaderProgram.DEFAULT_UI;
-        this.mesh.material.SetTexture(base_texture);
+        this.mesh.material.SetDiffuseTexture(base_texture);
 
         super.BuildMesh();
     }

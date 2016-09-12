@@ -3,6 +3,8 @@ package main.java.org.bearengine.graphics.types;
 import main.java.org.bearengine.debug.Debug;
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 
 /**
@@ -13,6 +15,8 @@ public class Texture {
     public static Texture CURRENT;
 
     public final int ID;
+
+    public int TextureUnit = 0;
 
     public boolean Disposed = false;
 
@@ -27,10 +31,15 @@ public class Texture {
     }
 
     public Texture UploadTexture(Image image){
+        return UploadTexture(image, 0);
+    }
+
+    public Texture UploadTexture(Image image, int textureUnit){
         if(Disposed) return null; //On the off-chance Cleanup() was called
 
         Debug.log("Texture -> Creating Texture from: " + image.Name);
 
+        this.TextureUnit = textureUnit;
         this.Width = image.Width;
         this.Height = image.Height;
 
@@ -53,6 +62,7 @@ public class Texture {
 
         if(CURRENT == this) return;
 
+        glActiveTexture(GL_TEXTURE0 + TextureUnit);
         glBindTexture(GL_TEXTURE_2D, ID);
         CURRENT = this;
     }

@@ -1,6 +1,5 @@
 package main.java.org.bearengine.ui;
 
-import com.sun.xml.internal.bind.v2.TODO;
 import main.java.org.bearengine.debug.Debug;
 import main.java.org.bearengine.font.Font;
 import main.java.org.bearengine.graphics.shaders.ShaderProgram;
@@ -8,7 +7,6 @@ import main.java.org.bearengine.graphics.types.Image;
 import main.java.org.bearengine.graphics.types.Texture;
 import main.java.org.bearengine.input.ICharacterListener;
 import main.java.org.bearengine.input.Keyboard;
-import main.java.org.bearengine.input.Mouse;
 import main.java.org.bearengine.utils.ResourceLoader;
 
 /**
@@ -55,7 +53,7 @@ public class InputField extends UIObject implements ICharacterListener{
     public void BuildMesh() {
         this.setMesh(UIMesh.Square(PixelWidth, PixelHeight));
         this.mesh.material.shaderProgram = ShaderProgram.DEFAULT_UI;
-        this.mesh.material.SetTexture(base_texture);
+        this.mesh.material.SetDiffuseTexture(base_texture);
 
         super.CreateDebugMesh();
     }

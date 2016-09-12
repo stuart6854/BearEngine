@@ -1,6 +1,5 @@
 package main.java.org.bearengine.ui;
 
-import main.java.org.bearengine.debug.Debug;
 import main.java.org.bearengine.graphics.shaders.ShaderProgram;
 import main.java.org.bearengine.graphics.types.Image;
 import main.java.org.bearengine.graphics.types.Texture;
@@ -44,7 +43,7 @@ public class ScrollBar extends UIObject {
     public void BuildMesh() {
         this.setMesh(UIMesh.Square(PixelWidth, PixelHeight));
         this.mesh.material.shaderProgram = ShaderProgram.DEFAULT_UI;
-        this.mesh.material.SetTexture(base_texture);
+        this.mesh.material.SetDiffuseTexture(base_texture);
         UpdateScrollBarControl();
         
         super.CreateDebugMesh();

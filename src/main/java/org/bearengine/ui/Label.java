@@ -115,7 +115,7 @@ public class Label extends UIObject {
         mesh.CreateRenderModel();
         mesh.material = new Material();
         mesh.material.shaderProgram = ShaderProgram.DEFAULT_UI_SDF;
-        mesh.material.SetTexture(font.FontAtlas);
+        mesh.material.SetDiffuseTexture(font.FontAtlas);
 
         setMesh(mesh);
     }

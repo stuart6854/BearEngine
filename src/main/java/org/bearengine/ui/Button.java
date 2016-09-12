@@ -53,7 +53,7 @@ public class Button extends UIObject{
     public void BuildMesh() {
         this.setMesh(UIMesh.Square(PixelWidth, PixelHeight));
         this.mesh.material.shaderProgram = ShaderProgram.DEFAULT_UI;
-        this.mesh.material.SetTexture(inactive_texture);
+        this.mesh.material.SetDiffuseTexture(inactive_texture);
 
         super.CreateDebugMesh();
     }
@@ -75,13 +75,13 @@ public class Button extends UIObject{
     @Override
     protected void MouseOver() {
         ButtonState = ButtonStates.HOVERED;
-        this.mesh.material.SetTexture(hovered_texture);
+        this.mesh.material.SetDiffuseTexture(hovered_texture);
     }
 
     @Override
     protected void MouseOverEnd() {
         ButtonState = ButtonStates.INACTIVE;
-        this.mesh.material.SetTexture(inactive_texture);
+        this.mesh.material.SetDiffuseTexture(inactive_texture);
     }
 
     @Override
@@ -97,17 +97,17 @@ public class Button extends UIObject{
     @Override
     protected void MouseDown() {
         ButtonState = ButtonStates.ACTIVE;
-        this.mesh.material.SetTexture(active_texture);
+        this.mesh.material.SetDiffuseTexture(active_texture);
     }
     
     @Override
     protected void MouseUp() {
         if(IsMouseOver() && !IsMouseOverChild()) {
             ButtonState = ButtonStates.HOVERED;
-            this.mesh.material.SetTexture(hovered_texture);
+            this.mesh.material.SetDiffuseTexture(hovered_texture);
         }else{
             ButtonState = ButtonStates.INACTIVE;
-            this.mesh.material.SetTexture(inactive_texture);
+            this.mesh.material.SetDiffuseTexture(inactive_texture);
         }
     }
     

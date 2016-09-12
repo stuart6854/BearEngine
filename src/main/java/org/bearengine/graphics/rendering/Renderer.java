@@ -44,8 +44,8 @@ public class Renderer {
         for(Mesh mesh : MeshRenderList.values()){
 	        ShaderProgram shaderProgram = mesh.material.shaderProgram;
             shaderProgram.Bind();
-            if(mesh.material.GetTexture() != null)
-                mesh.material.GetTexture().Bind();
+            if(mesh.material.GetDiffuseTexture() != null)
+                mesh.material.GetDiffuseTexture().Bind();
 
             if(DevCamera.ENABLED) {
                 shaderProgram.SetUniform("projection", DevCamera.DEV_CAMERA.GetProjection());
@@ -57,9 +57,12 @@ public class Renderer {
 
             //Lighting Shader Test
 	        if(shaderProgram.ProgramID == ShaderProgram.DEFAULT_LIGHTING.ProgramID) {
-		        ShaderProgram.DEFAULT_LIGHTING.SetUniform("objectColor", new Color(1.0f, 0.5f, 0.31f));
-		        ShaderProgram.DEFAULT_LIGHTING.SetUniform("lightColor", new Color(1.0f, 1.0f, 1.0f));
-		        ShaderProgram.DEFAULT_LIGHTING.SetUniform("lightPosition", lightPos);
+		        ShaderProgram.DEFAULT_LIGHTING.SetUniform("viewPosition", Camera.Main_Camera.GetPosition());
+		        ShaderProgram.DEFAULT_LIGHTING.SetUniform("light.position", lightPos);
+                ShaderProgram.DEFAULT_LIGHTING.SetUniform("light.ambient", new Color(0.2f, 0.2f, 0.2f).GetRGB());
+                ShaderProgram.DEFAULT_LIGHTING.SetUniform("light.diffuse", new Color(0.5f, 0.5f, 0.5f).GetRGB());
+                ShaderProgram.DEFAULT_LIGHTING.SetUniform("light.specular", new Color(1.0f, 1.0f, 1.0f).GetRGB());
+		        ShaderProgram.DEFAULT_LIGHTING.SetUniform("material", mesh.material);
 	        }
 
             mesh.renderModel.PrepareRender();
@@ -90,8 +93,8 @@ public class Renderer {
             Material material = mesh.material;
             ShaderProgram shaderProgram = material.shaderProgram;
             shaderProgram.Bind();
-            if(material.GetTexture() != null)
-                material.GetTexture().Bind();
+            if(material.GetDiffuseTexture() != null)
+                material.GetDiffuseTexture().Bind();
 
             if(canvas.Render_Space == RenderSpace.SCREEN_SPACE) {
                 shaderProgram.SetUniform("projection", new Matrix4d().ortho2D(0, Display.mainDisplay.getWidth(), Display.mainDisplay.getHeight(), 0));
@@ -172,7 +175,7 @@ public class Renderer {
         Debug.log("Renderer -> Registering GameObject: " + obj.Name);
 	    Mesh mesh = MeshRenderList.get(obj.GetMesh().Mesh_Name + obj.GetMesh().material.shaderProgram.ProgramID);
 
-        if(mesh != null && obj.GetMesh().material.shaderProgram.ProgramID == mesh.material.shaderProgram.ProgramID){
+        if(mesh != null && obj.GetMesh().material.equals(mesh)){
             RenderModel model = MeshRenderList.get(obj.GetMesh().Mesh_Name).renderModel;
             model.AddTransform(obj);
             Debug.log("Renderer -> Mesh('" + obj.GetMesh().Mesh_Name + "') already registered. Adding transform.");

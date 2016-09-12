@@ -3,7 +3,6 @@ package main.java.org.bearengine.graphics.importers;
 import main.java.org.bearengine.debug.Debug;
 import main.java.org.bearengine.graphics.types.*;
 import main.java.org.bearengine.utils.ResourceLoader;
-import main.java.org.bearengine.utils.Utils;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -231,7 +230,7 @@ public class OBJImporter extends ModelImporter{
                         String imagePath = path.substring(0, path.lastIndexOf("/") + 1) + tokens[1];
                         Texture texture = new Texture();
                         texture.UploadTexture(ResourceLoader.Load(imagePath, Image.class));
-                        material.SetTexture(texture);
+                        material.SetDiffuseTexture(texture);
                         break;
                     default:
                         break;

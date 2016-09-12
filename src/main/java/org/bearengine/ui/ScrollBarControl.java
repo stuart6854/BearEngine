@@ -7,9 +7,7 @@ import main.java.org.bearengine.graphics.types.Texture;
 import main.java.org.bearengine.input.Mouse;
 import main.java.org.bearengine.utils.ResourceLoader;
 import main.java.org.joml.Vector2d;
-import main.java.org.joml.Vector2f;
 import main.java.org.joml.Vector3d;
-import main.java.org.joml.Vector3f;
 
 /**
  * Created by Stuart on 15/07/2016.
@@ -46,7 +44,7 @@ public class ScrollBarControl extends UIObject {
     public void BuildMesh() {
         this.setMesh(UIMesh.Square(PixelWidth, PixelHeight));
         this.mesh.material.shaderProgram = ShaderProgram.DEFAULT_UI;
-        this.mesh.material.SetTexture(inactive_texture);
+        this.mesh.material.SetDiffuseTexture(inactive_texture);
         
         super.CreateDebugMesh();
     }
@@ -91,12 +89,12 @@ public class ScrollBarControl extends UIObject {
     
     @Override
     protected void MouseOver() {
-        this.mesh.material.SetTexture(active_texture);
+        this.mesh.material.SetDiffuseTexture(active_texture);
     }
     
     @Override
     protected void MouseOverEnd() {
-        this.mesh.material.SetTexture(inactive_texture);
+        this.mesh.material.SetDiffuseTexture(inactive_texture);
     }
     
     @Override

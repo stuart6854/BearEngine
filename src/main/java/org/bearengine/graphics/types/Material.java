@@ -15,8 +15,10 @@ public class Material {
     public Color Diffuse;
     public Color Ambient;
     public Color Specular;
+    public float Shininess;
 
-    private Texture texture;
+    private Texture DiffuseMap;
+    private Texture SpecularMap;
 
     public Material(){
         this.Diffuse = Color.WHITE;
@@ -24,12 +26,20 @@ public class Material {
         this.Ambient = Color.WHITE;
     }
 
-    public void SetTexture(Texture texture){
-        this.texture = texture;
+    public void SetDiffuseTexture(Texture diffuse){
+        this.DiffuseMap = diffuse;
     }
 
-    public Texture GetTexture(){
-        return this.texture;
+    public Texture GetDiffuseTexture(){
+        return this.DiffuseMap;
+    }
+
+    public void SetSpecularTexture(Texture specular) {
+        SpecularMap = specular;
+    }
+
+    public Texture GetSpecularTexture() {
+        return this.SpecularMap;
     }
 
     public void SetDiffuse(Color diffuse){
@@ -44,6 +54,41 @@ public class Material {
         this.Specular = specular;
     }
 
+	public void SetShininess(float shininess){
+		this.Shininess = shininess;
+	}
 
+	public Color GetDiffuse() {
+		return Diffuse;
+	}
 
+	public Color GetAmbient() {
+		return Ambient;
+	}
+
+	public Color GetSpecular() {
+		return Specular;
+	}
+
+	public float getShininess() {
+		return Shininess;
+	}
+
+    @Override
+    public boolean equals(Object obj) {
+        Material mat = (Material)obj;
+
+        if(mat.shaderProgram.ProgramID != this.shaderProgram.ProgramID)
+            return false;
+        if(mat.Ambient != this.Ambient)
+            return false;
+        if(mat.Diffuse != this.Diffuse)
+            return false;
+        if(mat.Specular != this.Specular)
+            return false;
+        if(mat.Shininess != this.Shininess)
+            return false;
+
+        return true;
+    }
 }
