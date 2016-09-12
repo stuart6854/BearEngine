@@ -20,7 +20,7 @@ public class GameObject extends Object {
     public static List<Object> Objects = new ArrayList<>();
 
     protected Vector3d Position;
-    protected Quaterniond Rotation;
+    protected Vector3f Rotation;
     protected Vector3d Scale;
 
     private Mesh mesh;
@@ -30,7 +30,7 @@ public class GameObject extends Object {
         this.Name = "GameObject";
 
         this.Position = new Vector3d(0, 0, 0);
-        this.Rotation = new Quaterniond();
+        this.Rotation = new Vector3f(0, 0, 0);
         this.Scale = new Vector3d(1, 1, 1);
         
         this.mesh = new Mesh();
@@ -64,7 +64,7 @@ public class GameObject extends Object {
     }
 
     public void Rotate(float x, float y, float z){
-        Rotation.rotate(x, y, z);
+        Rotation.add(x, y, z);
         UpdateTransformMatrix(Position, Rotation, Scale);
     }
     
@@ -81,7 +81,7 @@ public class GameObject extends Object {
         return Position;
     }
 
-    public Quaterniond GetRotation() {
+    public Vector3f GetRotation() {
         return Rotation;
     }
 

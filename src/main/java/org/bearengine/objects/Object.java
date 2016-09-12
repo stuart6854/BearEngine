@@ -4,6 +4,7 @@ import main.java.org.bearengine.debug.Debug;
 import main.java.org.joml.Matrix4d;
 import main.java.org.joml.Quaterniond;
 import main.java.org.joml.Vector3d;
+import main.java.org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +28,13 @@ public class Object {
         return m_transform;
     }
 
-    protected void UpdateTransformMatrix(Vector3d pos, Quaterniond rot, Vector3d scale){
-        m_transform.identity().translate(pos).rotate(rot).scale(scale);
+    protected void UpdateTransformMatrix(Vector3d pos, Vector3f rot, Vector3d scale){
+        m_transform.identity();
+        m_transform.translate(pos);
+        m_transform.rotateX(Math.toRadians(rot.x));
+        m_transform.rotateY(Math.toRadians(rot.y));
+        m_transform.rotateZ(Math.toRadians(rot.z));
+        m_transform.scale(scale);
     }
 
 }

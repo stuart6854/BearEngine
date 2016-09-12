@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class OBJImporter extends ModelImporter{
 
-	//TODO: Fix possible problem with importing obj file: See ModelImport_Problem.png in root dir
+	private String CurrentPath;
 
     private enum FaceDefType { VertsOnly, VertsUVs, All, VertsNormals };
 
@@ -23,6 +23,11 @@ public class OBJImporter extends ModelImporter{
     @Override
     public Mesh LoadMesh(String path) {
         Debug.log("OBJImporter -> Loading Mesh: " + path);
+
+	    NewMesh();
+	    this.faces.clear();
+
+	    this.CurrentPath = path;
 
         Mesh mesh = null;
         Material material = null;
@@ -68,6 +73,7 @@ public class OBJImporter extends ModelImporter{
                             Debug.error("OBJImporter -> Quad Faces NOT Supported!");
                             break;
                         }
+
                         ParseFace(tokens);
                         break;
                     default: break;
@@ -99,7 +105,7 @@ public class OBJImporter extends ModelImporter{
     private void ParseFace(String[] tokens){
         Face face = new Face();
 
-        FaceDefType defType = null;
+        FaceDefType defType;
 
         if(!tokens[1].contains("/")) defType = FaceDefType.VertsOnly;
         else if(tokens[1].contains("//")) defType = FaceDefType.VertsNormals;
@@ -107,13 +113,13 @@ public class OBJImporter extends ModelImporter{
         else defType = FaceDefType.All;
 
         //Do Indices Anyway
-        int v1 = Integer.valueOf(tokens[1].split("/")[0]);
-        int v2 = Integer.valueOf(tokens[2].split("/")[0]);
-        int v3 = Integer.valueOf(tokens[3].split("/")[0]);
+        int v1 = Integer.valueOf(tokens[1].split("/")[0]) - 1;
+        int v2 = Integer.valueOf(tokens[2].split("/")[0]) - 1;
+        int v3 = Integer.valueOf(tokens[3].split("/")[0]) - 1;
 
-        face.indices[0] = v1 - 1;
-        face.indices[1] = v2 - 1;
-        face.indices[2] = v3 - 1;
+        face.indices[0] = v1;
+        face.indices[1] = v2;
+        face.indices[2] = v3;
 
         if(defType == FaceDefType.All || defType == FaceDefType.VertsUVs) {
             int uv1 = Integer.valueOf(tokens[1].split("/")[1]);

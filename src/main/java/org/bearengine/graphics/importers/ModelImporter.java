@@ -17,4 +17,11 @@ public abstract class ModelImporter {
 
     public abstract Mesh LoadMesh(String path);
 
+    protected void NewMesh(){
+        Indices.clear();
+        Vertices.clear();
+        UVs.clear();
+        Normals.clear();
+    }
+
 }

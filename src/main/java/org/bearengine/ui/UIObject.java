@@ -183,11 +183,11 @@ public abstract class UIObject extends Object implements IMouseCallbacks {
     }
 
     protected void UpdateTransformMatrix(){
-        UpdateTransformMatrix(GetRenderPosition(), new Quaterniond(), new Vector3d());
+        UpdateTransformMatrix(GetRenderPosition(), new Vector3f(), new Vector3d());
     }
 
     @Override
-    protected void UpdateTransformMatrix(Vector3d pos, Quaterniond rot, Vector3d scale) {
+    protected void UpdateTransformMatrix(Vector3d pos, Vector3f rot, Vector3d scale) {
         m_transform.identity();
         m_transform.translate(pos.x, pos.y, pos.z);
 

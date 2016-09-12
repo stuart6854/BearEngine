@@ -49,7 +49,7 @@ public class GameTest extends Game {
 
         OBJImporter importer = new OBJImporter();
         Mesh mesh = importer.LoadMesh("/main/java/resources/models/textured-cube.obj");
-        mesh.material.SetTexture(texture);
+//        mesh.material.SetTexture(texture);
         mesh.material.shaderProgram = ShaderProgram.DEFAULT;
         mesh.material.RenderCamera = Camera.Main_Camera;
 

@@ -68,8 +68,8 @@ public class Mesh {
     }
 
     public void CreateRenderModel(){
-//	    if(colors == null || colors.length == 0)
-//	    	SetDefaultColors();
+	    if(colors == null || colors.length == 0)
+	    	SetDefaultColors();
 
         if(uvs != null && uvs.length == 0)
             uvs = null;

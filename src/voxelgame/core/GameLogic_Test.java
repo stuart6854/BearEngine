@@ -1,7 +1,9 @@
 package voxelgame.core;
 
 import main.java.org.bearengine.core.Game;
+import main.java.org.bearengine.debug.Debug;
 import main.java.org.bearengine.graphics.importers.OBJImporter;
+import main.java.org.bearengine.graphics.shaders.Shader;
 import main.java.org.bearengine.graphics.shaders.ShaderProgram;
 import main.java.org.bearengine.graphics.types.Color;
 import main.java.org.bearengine.graphics.types.Image;
@@ -63,6 +65,8 @@ public class GameLogic_Test extends Game {
 
 	@Override
 	public void init(){
+		Debug.log(Float.parseFloat("0.0"));
+
 //        Display.mainDisplay.SetClearColor(Color.SKY_BLUE);
         Display.mainDisplay.SetClearColor(Color.BLACK);
         GL11.glCullFace(GL11.GL_BACK);
@@ -87,13 +91,14 @@ public class GameLogic_Test extends Game {
 		lightSource = new GameObject();
         lightSource.SetMesh(lightSourceMesh);
         lightSource.SetPosition(-2f, 152, 0f);
+		lightSource.SetRotation(0, .9f, 0);
         lightSource.SetScale(.5f);
 
-		Mesh testMesh = objImporter.LoadMesh("/main/java/resources/models/cube_normals.obj");
-		testMesh.material.shaderProgram = ShaderProgram.DEFAULT_LIGHTING;
+		Mesh lightRecieverMesh = objImporter.LoadMesh("/main/java/resources/models/cube_normals.obj");
+		lightRecieverMesh.material.shaderProgram = ShaderProgram.DEFAULT_LIGHTING;
 
         lightReceiver = new GameObject();
-        lightReceiver.SetMesh(testMesh);
+        lightReceiver.SetMesh(lightRecieverMesh);
         lightReceiver.SetPosition(4f, 150, -1f);
         lightReceiver.SetScale(1f);
 
@@ -170,6 +175,7 @@ public class GameLogic_Test extends Game {
 
 	@Override
 	public void update(float delta) {
+//		lightReceiver.Rotate(0, 10f * delta, 0);
 //		mousePicker.update();
 
 		//Update camera based on mouse
