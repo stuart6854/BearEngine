@@ -29,8 +29,10 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Renderer {
 
-    //TODO: Stop Objects, UI, Debug Meshes from Multiple Screens being rendered/put together (possible solution: make class non-static)
-
+    //TODO: Stop Objects, UI and Debug Meshes from Different Scenes being rendered/put together(Possible Solution?: make class non-static)
+    //TODO: Test Directional, Point and Spot Lights(Shaders)
+    //TODO: Keep reference to all lights in Scene here, to pass to lighting shaders
+    
     private static Map<String, Mesh> MeshRenderList = new HashMap<>();
     private static List<Canvas> UIRenderList = new ArrayList<>();
     private static List<DebugMesh> DebugMeshes = new ArrayList<>();

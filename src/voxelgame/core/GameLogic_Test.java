@@ -64,8 +64,6 @@ public class GameLogic_Test extends Game {
 
 	@Override
 	public void init(){
-		Debug.log(Float.parseFloat("0.0"));
-
 //        Display.mainDisplay.SetClearColor(Color.SKY_BLUE);
         Display.mainDisplay.SetClearColor(Color.BLACK);
         GL11.glCullFace(GL11.GL_BACK);

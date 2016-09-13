@@ -1,7 +1,6 @@
 package main.java.org.bearengine.graphics.shaders;
 
 import main.java.org.bearengine.debug.Debug;
-import main.java.org.bearengine.graphics.types.Color;
 import main.java.org.bearengine.graphics.types.Material;
 import main.java.org.joml.*;
 import org.lwjgl.BufferUtils;
@@ -236,10 +235,10 @@ public class ShaderProgram {
         DEFAULT.AttachShader(fragShader);
         DEFAULT.Link();
 
-	    Shader lightingVertShader = new Shader("/main/java/resources/shaders/lighting_vertex.glsl", Shader.VERTEX_SHADER);
+	    Shader lightingVertShader = new Shader("/main/java/resources/shaders/lighting/lighting_vertex.glsl", Shader.VERTEX_SHADER);
 	    lightingVertShader.LoadSourceCode();
 	    lightingVertShader.CompileShader();
-	    Shader lightingFragShader = new Shader("/main/java/resources/shaders/lighting_fragment.glsl", Shader.FRAGMENT_SHADER);
+	    Shader lightingFragShader = new Shader("/main/java/resources/shaders/lighting/lighting_fragment.glsl", Shader.FRAGMENT_SHADER);
 	    lightingFragShader.LoadSourceCode();
 	    lightingFragShader.CompileShader();
 
@@ -249,10 +248,10 @@ public class ShaderProgram {
 	    DEFAULT_LIGHTING.AttachShader(lightingFragShader);
 	    DEFAULT_LIGHTING.Link();
 
-	    Shader lightingSrcVertShader = new Shader("/main/java/resources/shaders/lighting_lightsrc_vertex.glsl", Shader.VERTEX_SHADER);
+	    Shader lightingSrcVertShader = new Shader("/main/java/resources/shaders/lighting/light_vertex.glsl", Shader.VERTEX_SHADER);
 	    lightingSrcVertShader.LoadSourceCode();
 	    lightingSrcVertShader.CompileShader();
-	    Shader lightingSrcFragShader = new Shader("/main/java/resources/shaders/lighting_lightsrc_fragment.glsl", Shader.FRAGMENT_SHADER);
+	    Shader lightingSrcFragShader = new Shader("/main/java/resources/shaders/lighting/light_fragment.glsl", Shader.FRAGMENT_SHADER);
 	    lightingSrcFragShader.LoadSourceCode();
 	    lightingSrcFragShader.CompileShader();
 

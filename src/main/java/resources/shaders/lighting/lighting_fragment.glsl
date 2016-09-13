@@ -46,5 +46,4 @@ void main() {
 
     //Result
     fragColor = vec4(ambient + diffuse + specular, 1.0f);
-//    fragColor = vec4(FragPosition, 1.0f);
 }
