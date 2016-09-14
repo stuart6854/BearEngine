@@ -3,6 +3,7 @@ package voxelgame.core;
 import main.java.org.bearengine.core.Game;
 import main.java.org.bearengine.debug.Debug;
 import main.java.org.bearengine.graphics.importers.OBJImporter;
+import main.java.org.bearengine.graphics.rendering.Renderer;
 import main.java.org.bearengine.graphics.shaders.ShaderProgram;
 import main.java.org.bearengine.graphics.types.Color;
 import main.java.org.bearengine.graphics.types.Image;
@@ -13,6 +14,7 @@ import main.java.org.bearengine.input.Mouse;
 import main.java.org.bearengine.objects.Camera;
 import main.java.org.bearengine.graphics.*;
 import main.java.org.bearengine.objects.GameObject;
+import main.java.org.bearengine.objects.Light;
 import main.java.org.bearengine.utils.ResourceLoader;
 import main.java.org.joml.Matrix4f;
 import main.java.org.joml.Vector3f;
@@ -42,7 +44,8 @@ public class GameLogic_Test extends Game {
 
     OBJImporter objImporter;
     
-	GameObject lightSource, lightReceiver;
+	Light lightSource;
+    GameObject lightReceiver;
 
 //	private GUICanvas guiCanvas;
 
@@ -85,11 +88,16 @@ public class GameLogic_Test extends Game {
 
 		Mesh lightSourceMesh = objImporter.LoadMesh("/main/java/resources/models/cube.obj");
 		lightSourceMesh.material.shaderProgram = ShaderProgram.DEFAULT_LIGHTING_SRC;
-		lightSource = new GameObject();
+		lightSource = new Light();
+        lightSource.Name = "Light Source";
         lightSource.SetMesh(lightSourceMesh);
         lightSource.SetPosition(-2f, 152, 0f);
 		lightSource.SetRotation(0, .9f, 0);
         lightSource.SetScale(.5f);
+        lightSource.Ambient = new Color(0.2f, 0.2f, 0.2f);
+        lightSource.Diffuse = new Color(0.5f, 0.5f, 0.5f);
+        lightSource.Specular = new Color(1.0f, 1.0f, 1.0f);
+        Renderer.LightSource = lightSource;
 
 		Mesh lightRecieverMesh = objImporter.LoadMesh("/main/java/resources/models/textured-cube.obj");
 		lightRecieverMesh.material.shaderProgram = ShaderProgram.DEFAULT_LIGHTING;
@@ -110,7 +118,6 @@ public class GameLogic_Test extends Game {
         lightRecieverMesh.material.SetDiffuse(new Color(1.0f, 0.5f, 0.31f));
         lightRecieverMesh.material.SetSpecular(new Color(0.5f, 0.5f, 0.5f));
         lightRecieverMesh.material.SetShininess(32.0f);
-
         loadChunks.SetPosition(0, 0, 0);
 
         //GUI System Testing//

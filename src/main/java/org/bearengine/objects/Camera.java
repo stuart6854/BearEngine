@@ -1,6 +1,5 @@
 package main.java.org.bearengine.objects;
 
-import javafx.geometry.Pos;
 import main.java.org.bearengine.debug.Debug;
 import main.java.org.joml.Matrix4d;
 import main.java.org.joml.Matrix4f;

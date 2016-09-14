@@ -1,7 +1,9 @@
 package main.java.org.bearengine.graphics.shaders;
 
 import main.java.org.bearengine.debug.Debug;
+import main.java.org.bearengine.graphics.types.Color;
 import main.java.org.bearengine.graphics.types.Material;
+import main.java.org.bearengine.objects.Light;
 import main.java.org.joml.*;
 import org.lwjgl.BufferUtils;
 
@@ -201,6 +203,13 @@ public class ShaderProgram {
 	    SetUniform(name + ".diffuse", material.GetDiffuseTexture().TextureUnit);
 	    SetUniform(name + ".specular", material.GetSpecularTexture().TextureUnit);
 	    SetUniform(name + ".shininess", material.Shininess);
+    }
+
+    public void SetUniform(String name, Light light){
+        SetUniform(name + ".position", light.GetPosition());
+        SetUniform(name + ".ambient", light.Ambient.GetRGB());
+        SetUniform(name + ".diffuse", light.Diffuse.GetRGB());
+        SetUniform(name + ".specular", light.Specular.GetRGB());
     }
 
     //TODO: Add Setting Vectors, Matrices, Colours, etc. Uniforms

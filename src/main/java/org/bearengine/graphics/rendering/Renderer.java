@@ -1,5 +1,6 @@
 package main.java.org.bearengine.graphics.rendering;
 
+import jdk.internal.dynalink.beans.StaticClass;
 import main.java.org.bearengine.debug.Debug;
 import main.java.org.bearengine.debug.DebugMesh;
 import main.java.org.bearengine.graphics.Display;
@@ -39,6 +40,9 @@ public class Renderer {
 
 	private static Vector3f lightPos = new Vector3f(-2f, 152, 0f);
 
+    public static Light LightSource;
+    private static ArrayList<Light> ScenesLights = new ArrayList<>();
+
     public static void RenderObjects(){
 //        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
@@ -60,11 +64,8 @@ public class Renderer {
             //Lighting Shader Test
 	        if(shaderProgram.ProgramID == ShaderProgram.DEFAULT_LIGHTING.ProgramID) {
 		        ShaderProgram.DEFAULT_LIGHTING.SetUniform("viewPosition", Camera.Main_Camera.GetPosition());
-		        ShaderProgram.DEFAULT_LIGHTING.SetUniform("light.position", lightPos);
-                ShaderProgram.DEFAULT_LIGHTING.SetUniform("light.ambient", new Color(0.2f, 0.2f, 0.2f).GetRGB());
-                ShaderProgram.DEFAULT_LIGHTING.SetUniform("light.diffuse", new Color(0.5f, 0.5f, 0.5f).GetRGB());
-                ShaderProgram.DEFAULT_LIGHTING.SetUniform("light.specular", new Color(1.0f, 1.0f, 1.0f).GetRGB());
 		        ShaderProgram.DEFAULT_LIGHTING.SetUniform("material", mesh.material);
+                ShaderProgram.DEFAULT_LIGHTING.SetUniform("light", LightSource);
 	        }
 
             mesh.renderModel.PrepareRender();
@@ -191,7 +192,7 @@ public class Renderer {
     public static void UnregisterGameObject(GameObject obj){
         if(obj.GetMesh() == null) return;
         if(MeshRenderList.containsKey(obj.GetMesh().Mesh_Name)){
-            Debug.log("Renderer -> UnRegistering GameObject: " + obj.Name);
+            Debug.log("Renderer -> Unregistering GameObject: " + obj.Name);
             RenderModel model = MeshRenderList.get(obj.GetMesh().Mesh_Name).renderModel;
             model.RemoveTransform(obj);
             if(model.GetTransforms().size() == 0) MeshRenderList.remove(obj.GetMesh().Mesh_Name);
@@ -226,6 +227,24 @@ public class Renderer {
         if(DebugMeshes.contains(mesh)){
             Debug.log("Renderer -> UnRegistering DebugMesh: " + mesh.Mesh_Name);
             DebugMeshes.remove(mesh);
+        }
+    }
+
+    public static void RegisterLight(Light light){
+        Debug.log("Renderer -> Registering Light: " + light.Name);
+        if(!ScenesLights.contains(light)){
+            ScenesLights.add(light);
+        }else{
+            Debug.log("Renderer -> Light(" + light.Name + ") already registered!");
+        }
+    }
+
+    public static void UnregisterLight(Light light){
+        Debug.log("Renderer -> Unregistering Light: " + light.Name);
+        if(ScenesLights.contains(light)){
+            ScenesLights.remove(light);
+        }else{
+            Debug.log("Renderer -> Light(" + light.Name + ") already Unregistered!");
         }
     }
 

@@ -62,6 +62,10 @@ public class DevCamera extends Camera {
         if(Keyboard.isClicked(Keyboard.KEY_F6)){
             ENABLED = !ENABLED;
 
+            if(ENABLED){
+                DEV_CAMERA.SetPosition(Camera.Main_Camera.Position);
+            }
+
             Display.mainDisplay.LockMouse(ENABLED);
 
             DEV_CAMERA.panel.IsVisible = ENABLED;

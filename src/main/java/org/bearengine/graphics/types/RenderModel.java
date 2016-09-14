@@ -19,8 +19,6 @@ import static org.lwjgl.opengl.GL30.*;
  * Created by Stuart on 29/05/2016.
  */
 public class RenderModel {
-    
-    //TODO: Create RenderModel no matter what vertex data a mesh has
 
     public static List<RenderModel> Models = new ArrayList<>();
 
@@ -98,39 +96,6 @@ public class RenderModel {
         FinaliseModel();
         return StoreModel();
     }
-
-//    public static RenderModel Create2DModel(int[] indices, float[] vertices, float[] uvs){
-//        if(CREATING){
-//            Debug.error("RenderModel -> Already Creating RenderModel!");
-//            return null;
-//        }
-//
-//        if(indices == null || vertices == null || uvs == null) return null;
-//
-//        CreateModel(2);
-//        SetupAttributeBuffer(0, 3, vertices);
-//        SetupAttributeBuffer(1, 2, uvs);
-//        SetupIndexBuffer(indices);
-//        FinaliseModel();
-//        return StoreModel();
-//    }
-
-//    public static RenderModel Create3DModel(int[] indices, float[] vertices, float[] uvs, float[] normals){
-//        if(CREATING){
-//            Debug.error("RenderModel -> Already Creating RenderModel!");
-//            return null;
-//        }
-//
-//        if(indices == null || vertices == null || uvs == null || normals == null) return null;
-//
-//        CreateModel(3);
-//        SetupAttributeBuffer(0, 3, vertices);
-//        SetupAttributeBuffer(1, 2, uvs);
-//        SetupAttributeBuffer(2, 3, normals);
-//        SetupIndexBuffer(indices);
-//        FinaliseModel();
-//        return StoreModel();
-//    }
 
     public static RenderModel CreateDebugRenderModel(float[] vertices, int[] indices){
         if(CREATING){

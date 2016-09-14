@@ -151,7 +151,8 @@ public class Engine implements Runnable{
 			Debug.log("Engine -> Screen Initialised!");
 		}else{
             //Debug.log("Engine -> Screen update!");
-			screen.update(deltaTime);
+			if(!DevCamera.ENABLED)
+				screen.update(deltaTime);
             //Debug.log("Engine -> Screen update END!");
 		}
 
