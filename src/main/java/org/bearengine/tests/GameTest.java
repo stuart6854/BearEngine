@@ -97,10 +97,10 @@ public class GameTest extends Game {
         label2.SetShowDebugMesh(true);
         label2.SetParent(canvas);
 
-        inputField = new InputField(font, panel);
+        inputField = new InputField(font, font, panel);
         inputField.SetPixelOffset(10, 128, 0);
         inputField.SetWidth(200);
-        inputField.SetHeight(32);
+        inputField.SetHeight(40);
         inputField.SetShowDebugMesh(true);
 
         scrollBar = new ScrollBar(panel);

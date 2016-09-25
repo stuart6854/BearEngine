@@ -6,6 +6,8 @@ import main.java.org.bearengine.graphics.types.Texture;
 import main.java.org.bearengine.utils.ResourceLoader;
 import main.java.org.joml.Vector3f;
 
+import static org.lwjgl.opengl.GL11.*;
+
 /**
  * Created by Stuart on 15/07/2016.
  */
@@ -58,6 +60,21 @@ public class ScrollPane extends UIObject {
     
     public ScrollBar GetScrollBarHorizontal() {
         return scrollBarHor;
+    }
+    
+    @Override
+    public void PreRender(){
+        int x = 10;
+        int y = 720 - 400 - 10;
+        int width = 512;
+        int height = 400;
+        glEnable(GL_SCISSOR_TEST);
+        glScissor(x, y, width, height);
+    }
+    
+    @Override
+    public void PostRender(){
+        glDisable(GL_SCISSOR_TEST);
     }
     
     @Override

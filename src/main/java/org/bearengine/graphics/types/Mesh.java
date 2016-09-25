@@ -68,8 +68,8 @@ public class Mesh {
     }
 
     public void CreateRenderModel(){
-	    if(colors == null || colors.length == 0)
-	    	SetDefaultColors();
+//	    if(colors == null || colors.length == 0)
+//	    	SetDefaultColors();
 
         if(uvs != null && uvs.length == 0)
             uvs = null;
@@ -78,13 +78,6 @@ public class Mesh {
             normals = null;
 
         renderModel = RenderModel.CreateModel(indices, vertices, uvs, normals, colors);
-//        if(normals != null && normals.length > 0) {
-//            renderModel = RenderModel.Create3DModel(indices, vertices, uvs, normals);
-////            Debug.log("Mesh -> Creating 3D RenderModel(has Normals).");
-//        } else{
-//            renderModel = RenderModel.Create2DModel(indices, vertices, uvs);
-////            Debug.log("Mesh -> Creating 2D RenderModel(no Normals).");
-//        }
     }
 
     public int[] GetIndices(){
@@ -110,6 +103,13 @@ public class Mesh {
     public void Cleanup(){
         if(renderModel != null)
             renderModel.ReleaseModel();
+        
+        IndicesCount = 0;
+        indices = null;
+        vertices = null;
+        uvs = null;
+        normals = null;
+        colors = null;
     }
 
     private void SetDefaultColors(){

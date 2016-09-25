@@ -5,6 +5,7 @@ import main.java.org.bearengine.font.Character;
 import main.java.org.bearengine.graphics.shaders.ShaderProgram;
 import main.java.org.bearengine.graphics.types.Material;
 import main.java.org.bearengine.graphics.types.Mesh;
+import main.java.org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +34,12 @@ public class Label extends UIObject {
         super.Name = "UILabel";
         this.Text = text;
         this.font = font;
-
-        BuildMesh();
+        
+        mesh.material.shaderProgram = ShaderProgram.DEFAULT_UI_SDF;
+        mesh.material.SetDiffuseTexture(font.FontAtlas);
+        
+        if(!text.isEmpty())
+            BuildMesh();
     }
 
     @Override
@@ -81,7 +86,7 @@ public class Label extends UIObject {
     }
 
     private void BuildMeshFromStructure(List<Line> lines){
-        Mesh mesh = new Mesh();
+        mesh.Cleanup();
 
         float paddingX = font.FontFile.PaddingWidth;
 
@@ -113,11 +118,6 @@ public class Label extends UIObject {
         mesh.SetUVs(uvs);
         mesh.SetIndices(indices);
         mesh.CreateRenderModel();
-        mesh.material = new Material();
-        mesh.material.shaderProgram = ShaderProgram.DEFAULT_UI_SDF;
-        mesh.material.SetDiffuseTexture(font.FontAtlas);
-
-        setMesh(mesh);
     }
 
     private void AddCharacterVertices(float cursorX, float cursorY, Character character, List<Float> vertices){
@@ -188,10 +188,20 @@ public class Label extends UIObject {
         BuildMesh();
     }
 
+    public String GetText(){
+        return Text;
+    }
+    
     public Font GetFont(){
         return font;
     }
 
+    @Override
+    public void PreRender(){
+        Vector3f color = mesh.material.GetDiffuse().GetRGB();
+        mesh.material.shaderProgram.SetUniform("fontColor", color);
+    }
+    
     @Override
     protected void OnUpdate() {
 

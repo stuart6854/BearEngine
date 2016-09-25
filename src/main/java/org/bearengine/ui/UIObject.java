@@ -48,6 +48,7 @@ public abstract class UIObject extends Object implements IMouseCallbacks {
         this.NormalisedPosition = new Vector2f();
         this.PixelOffset = new Vector3f();
         this.Children = new ArrayList<>();
+        this.mesh = new Mesh();
         this.debugMesh = new DebugMesh();
         this.SetParent(parent);
         
@@ -244,6 +245,9 @@ public abstract class UIObject extends Object implements IMouseCallbacks {
         return space;
     }
 
+    public void PreRender(){}
+    public void PostRender(){}
+    
     protected abstract void OnUpdate(); //Allows controls to have custom update logic while still calling this classes update method
     protected abstract void MouseOver();
     protected abstract void MouseOverEnd();

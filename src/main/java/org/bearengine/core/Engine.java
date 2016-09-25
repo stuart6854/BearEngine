@@ -74,7 +74,7 @@ public class Engine implements Runnable{
 		GLFW.glfwInit();
 
 		Display.mainDisplay.createDisplay();
-        Display.mainDisplay.setWidthHeight(1280, 720);
+        Display.mainDisplay.setWidthHeight(1600, 900);
 		Display.mainDisplay.setVSYNC(1);
 		Display.mainDisplay.centreOnScreen();
 		Display.mainDisplay.setCurrent();

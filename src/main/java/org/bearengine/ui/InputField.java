@@ -18,26 +18,25 @@ public class InputField extends UIObject implements ICharacterListener{
     
     public Texture base_texture;
 
-    private String PlaceholderText = "Placeholder Text";
     private String InputText = "";
 
     private Label label;
+    private Label placeholderLabel;
     private Caret caret;
 
     private boolean IsActive = false;
-    private boolean Clicked = false;
     
-    
-    public InputField(Font font){
-        this(font, null);
+    public InputField(Font font, Font placeholderFont){
+        this(font, placeholderFont, null);
     }
     
-    public InputField(Font font, UIObject parent){
+    public InputField(Font font, Font placeholderFont, UIObject parent){
         super(parent);
 
         LoadTextures();
         BuildMesh();
-        CreateLabel(PlaceholderText, font);
+        this.label = CreateLabel(InputText, font);
+        this.placeholderLabel = CreateLabel("InputField", placeholderFont);
         CreateCaret();
 
         Keyboard.RegisterCharacterListener(this);
@@ -58,12 +57,13 @@ public class InputField extends UIObject implements ICharacterListener{
         super.CreateDebugMesh();
     }
 
-    private void CreateLabel(String text, Font font){
+    private Label CreateLabel(String text, Font font){
         Debug.log("InputField -> Creating Label.");
-        label = new Label(text, font, this);
-        label.SetNormalisedPosition(0f, .5f);
-        label.SetPixelOffset(5, -(label.PixelHeight / 2f), 0);
-//        label.SetShowDebugMesh(true);
+        Label lbl = new Label(text, font, this);
+        lbl.SetNormalisedPosition(0f, .5f);
+        lbl.SetPixelOffset(5, -(lbl.PixelHeight / 2f), 0);
+//        lbl.SetShowDebugMesh(true);
+        return lbl;
     }
 
     private void CreateCaret(){
@@ -79,14 +79,15 @@ public class InputField extends UIObject implements ICharacterListener{
 
     private void RefreshLabel(){
         label.SetText(InputText);
+        label.SetPixelOffset(5, -(label.PixelHeight / 2f), 0);
     }
 
     public void SetPlaceholderText(String text){
-        this.PlaceholderText = text;
+        this.placeholderLabel.SetText(text);
     }
 
     public String GetPlaceholderText(){
-        return PlaceholderText;
+        return placeholderLabel.GetText();
     }
 
     @Override
@@ -129,9 +130,8 @@ public class InputField extends UIObject implements ICharacterListener{
         IsActive = true;
         caret.IsVisible = true;
     
-        if(InputText.isEmpty()){
-            label.SetText("");
-        }
+        placeholderLabel.IsVisible = false;
+        label.IsVisible = true;
     }
     
     private void StopEditing(){
@@ -139,7 +139,8 @@ public class InputField extends UIObject implements ICharacterListener{
         caret.IsVisible = false;
     
         if(InputText.isEmpty()){
-            label.SetText(PlaceholderText);
+            placeholderLabel.IsVisible = true;
+            label.IsVisible = false;
         }
     }
 
@@ -172,8 +173,6 @@ public class InputField extends UIObject implements ICharacterListener{
     protected void MouseUp() {
         
     }
-    
-    
     
     @Override
     public void OnMouseClick() {
