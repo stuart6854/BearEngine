@@ -1,10 +1,13 @@
 package main.java.org.bearengine.ui;
 
+import main.java.org.bearengine.graphics.Display;
 import main.java.org.bearengine.graphics.shaders.ShaderProgram;
 import main.java.org.bearengine.graphics.types.Image;
 import main.java.org.bearengine.graphics.types.Texture;
 import main.java.org.bearengine.utils.ResourceLoader;
+import main.java.org.joml.Vector3d;
 import main.java.org.joml.Vector3f;
+import org.lwjgl.system.windows.DISPLAY_DEVICE;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -64,10 +67,12 @@ public class ScrollPane extends UIObject {
     
     @Override
     public void PreRender(){
-        int x = 10;
-        int y = 720 - 400 - 10;
-        int width = 512;
-        int height = 400;
+        //TODO: FIX THIS
+        Vector3d pos = Parent.GetRenderPosition();
+        int x = (int)PixelWidth - (int)(Parent.PixelOffset.x / 2);
+        int y = Display.mainDisplay.getHeight() - (int)Parent.PixelHeight - (int)Parent.PixelOffset.y;
+        int width = (int)PixelWidth;
+        int height = (int)PixelHeight;
         glEnable(GL_SCISSOR_TEST);
         glScissor(x, y, width, height);
     }

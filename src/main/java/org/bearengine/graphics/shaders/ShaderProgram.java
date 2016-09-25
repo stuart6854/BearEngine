@@ -1,7 +1,6 @@
 package main.java.org.bearengine.graphics.shaders;
 
 import main.java.org.bearengine.debug.Debug;
-import main.java.org.bearengine.graphics.types.Color;
 import main.java.org.bearengine.graphics.types.Material;
 import main.java.org.bearengine.objects.Light;
 import main.java.org.joml.*;
@@ -270,10 +269,10 @@ public class ShaderProgram {
 	    DEFAULT_LIGHTING_SRC.AttachShader(lightingSrcFragShader);
 	    DEFAULT_LIGHTING_SRC.Link();
 
-        Shader uiVertShader = new Shader("/main/java/resources/shaders/ui_vertex.glsl", Shader.VERTEX_SHADER);
+        Shader uiVertShader = new Shader("/main/java/resources/shaders/ui/ui_vertex.glsl", Shader.VERTEX_SHADER);
         uiVertShader.LoadSourceCode();
         uiVertShader.CompileShader();
-        Shader uiFragShader = new Shader("/main/java/resources/shaders/ui_fragment.glsl", Shader.FRAGMENT_SHADER);
+        Shader uiFragShader = new Shader("/main/java/resources/shaders/ui/ui_fragment.glsl", Shader.FRAGMENT_SHADER);
         uiFragShader.LoadSourceCode();
         uiFragShader.CompileShader();
 
@@ -283,10 +282,10 @@ public class ShaderProgram {
         DEFAULT_UI.AttachShader(uiFragShader);
         DEFAULT_UI.Link();
 
-        Shader uiSDFVertShader = new Shader("/main/java/resources/shaders/sdf_ui_vertex.glsl", Shader.VERTEX_SHADER);
+        Shader uiSDFVertShader = new Shader("/main/java/resources/shaders/ui/sdf_ui_vertex.glsl", Shader.VERTEX_SHADER);
         uiSDFVertShader.LoadSourceCode();
         uiSDFVertShader.CompileShader();
-        Shader uiSDFFragShader = new Shader("/main/java/resources/shaders/sdf_ui_fragment.glsl", Shader.FRAGMENT_SHADER);
+        Shader uiSDFFragShader = new Shader("/main/java/resources/shaders/ui/sdf_ui_fragment.glsl", Shader.FRAGMENT_SHADER);
         uiSDFFragShader.LoadSourceCode();
         uiSDFFragShader.CompileShader();
 

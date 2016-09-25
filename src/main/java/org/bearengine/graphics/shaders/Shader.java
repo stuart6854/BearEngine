@@ -25,7 +25,10 @@ public class Shader {
 		this.ShaderSourcePath = shaderSourcePath;
 		this.ShaderType = shaderType;
 	}
-	
+    
+    /**
+     * Call me before calling CompileShader()
+     */
 	public void LoadSourceCode(){
         Compiled = false;
 

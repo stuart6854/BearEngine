@@ -15,6 +15,7 @@ import main.java.org.bearengine.objects.Camera;
 import main.java.org.bearengine.graphics.*;
 import main.java.org.bearengine.objects.GameObject;
 import main.java.org.bearengine.objects.Light;
+import main.java.org.bearengine.objects.Skybox;
 import main.java.org.bearengine.utils.ResourceLoader;
 import main.java.org.joml.Matrix4f;
 import main.java.org.joml.Vector3f;
@@ -25,15 +26,15 @@ import voxelgame.data.World;
 
 public class GameLogic_Test extends Game {
 
-//	private Skybox skybox;
-//	private String[] skyboxTextureFiles = {
-//			"/resources/skyboxes/TropicalSunnyDayRight2048.png",
-//			"/resources/skyboxes/TropicalSunnyDayLeft2048.png",
-//			"/resources/skyboxes/TropicalSunnyDayUp2048.png",
-//			"/resources/skyboxes/TropicalSunnyDayDown2048.png",
-//			"/resources/skyboxes/TropicalSunnyDayBack2048.png",
-//			"/resources/skyboxes/TropicalSunnyDayFront2048.png"
-//	};
+	private Skybox skybox;
+	private String[] skyboxTextureFiles = {
+			"/main/java/resources/textures/skybox/tropicalsunnyday/TropicalSunnyDayRight2048.png",
+			"/main/java/resources/textures/skybox/tropicalsunnyday/TropicalSunnyDayLeft2048.png",
+			"/main/java/resources/textures/skybox/tropicalsunnyday/TropicalSunnyDayUp2048.png",
+			"/main/java/resources/textures/skybox/tropicalsunnyday/TropicalSunnyDayDown2048.png",
+			"/main/java/resources/textures/skybox/tropicalsunnyday/TropicalSunnyDayBack2048.png",
+			"/main/java/resources/textures/skybox/tropicalsunnyday/TropicalSunnyDayFront2048.png"
+	};
 
     private final float CAMERA_POS_STEP = 10.0f;
 	private static final float MOUSE_SENSITIVITY = 6.5f;
@@ -76,7 +77,8 @@ public class GameLogic_Test extends Game {
 		Camera.Main_Camera.SetPosition(-1.5, 152, 6.5);
 		Camera.Main_Camera.SetRotation(15, 20, 0);
 
-//		skybox = new Skybox(skyboxTextureFiles);
+		skybox = new Skybox(skyboxTextureFiles);
+        Renderer.SetSkybox(skybox);
         
         Image textureSheetImage = ResourceLoader.Load("/voxelgame/resources/textures/texture.png", Image.class);
         Texture textureSheet = new Texture().UploadTexture(textureSheetImage);

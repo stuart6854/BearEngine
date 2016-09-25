@@ -1,0 +1,125 @@
+#crappy sky/atmosphere/etc format 1.0
+#
+#number of entries
+5
+#
+# *** normal unfancy mode ***
+#
+#name
+normal
+#light:ambient
+0.2 0.2 0.2
+#light:diffuse
+0.8 0.8 0.8
+#light:specular
+0.5 0.5 0.5
+#light:position
+0 0 1
+#fog:enabled (0 or 1 or -1 or whatever)
+0
+#fog:color
+0 0 0
+#fog:density
+0
+#fog:start
+0
+#fog:end
+0
+#skyboxname
+$DISABLED$
+#
+# *** sunset 1 ***
+#
+sunset1
+#light:ambient
+0.1064453125 0.1123046875 0.1337890625
+#light:diffuse
+0.9921 0.9058 0.5450
+#light:specular
+0 0 0
+#light:position
+5 -5 0.6186
+#fog:enabled (0 or 1 or -1 or whatever)
+1
+#fog:color
+0.427 0.423 0.478
+#fog:density
+0.65
+#fog:start
+1
+#fog:end
+2.5
+#skyboxname
+skyboxsun5deg\skyrender
+#
+# *** sunset 2 ***
+#
+sunset2
+#light:ambient
+0.271484375 0.337890625 0.390625
+#light:diffuse
+1 1 0.654901
+#light:specular
+0 0 0
+#light:position
+5 -5 0.6186
+#fog:enabled (0 or 1 or -1 or whatever)
+1
+#fog:color
+0.368 0.368 0.431
+#fog:density
+0.65
+#fog:start
+1
+#fog:end
+2.5
+#skyboxname
+skyboxsun5deg2\skyrender
+#
+# *** sun normal test ***
+#
+sunnormal
+#light:ambient
+0.2109375 0.236328125 0.29296875
+#light:diffuse
+1 0.98823 0.9058
+#light:specular
+0 0 0
+#light:position
+5 -5 2.66
+#fog:enabled (0 or 1 or -1 or whatever)
+1
+#fog:color
+0.8431 0.79607 0.69019
+#fog:density
+0.65
+#fog:start
+1
+#fog:end
+2.5
+#skyboxname
+skyboxsun25degtest\skyrender
+#
+# *** rainy day test ***
+#
+rainyday
+#light:ambient
+0.25 0.25 0.25
+#light:diffuse
+0.9882 0.9764705 0.8980
+#light:specular
+0 0 0
+#light:position
+5 -5 5
+#fog:enabled (0 or 1 or -1 or whatever)
+1
+#fog:color
+0.56862 0.54901 0.50588
+#fog:density
+2.95
+#fog:start
+.5
+#fog:end
+2.5
+#skyboxname
+skyboxsun45deg\skyrender

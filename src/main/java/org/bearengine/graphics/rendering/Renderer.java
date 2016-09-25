@@ -14,6 +14,7 @@ import main.java.org.bearengine.objects.Object;
 import main.java.org.bearengine.ui.Canvas;
 import main.java.org.bearengine.ui.ScrollPane;
 import main.java.org.bearengine.ui.UIObject;
+import main.java.org.joml.Matrix3d;
 import main.java.org.joml.Matrix4d;
 import main.java.org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
@@ -38,6 +39,8 @@ public class Renderer {
     private static List<Canvas> UIRenderList = new ArrayList<>();
     private static List<DebugMesh> DebugMeshes = new ArrayList<>();
 
+    private static Skybox SkyBox;
+    
 	private static Vector3f lightPos = new Vector3f(-2f, 152, 0f);
 
     public static Light LightSource;
@@ -45,6 +48,9 @@ public class Renderer {
 
     public static void RenderObjects(){
 //        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        
+        RenderSkybox();
+        
         GL11.glEnable(GL11.GL_DEPTH_TEST);
 
         for(Mesh mesh : MeshRenderList.values()){
@@ -127,6 +133,38 @@ public class Renderer {
         }
     }
 
+    private static void RenderSkybox(){
+        if(SkyBox == null) return;
+        
+        glDepthFunc(GL_LEQUAL);
+        
+        Mesh mesh = SkyBox.GetMesh();
+        
+        ShaderProgram shaderProgram = mesh.material.shaderProgram;
+        shaderProgram.Bind();
+        
+        SkyBox.GetCubemap().Bind();
+        
+        Matrix3d tempView = new Matrix3d();
+        
+        if(DevCamera.ENABLED) {
+            shaderProgram.SetUniform("projection", DevCamera.DEV_CAMERA.GetProjection());
+            DevCamera.DEV_CAMERA.GetViewMatrix().get3x3(tempView);
+        } else {
+            shaderProgram.SetUniform("projection", mesh.material.RenderCamera.GetProjection());
+            mesh.material.RenderCamera.GetViewMatrix().get3x3(tempView);
+        }
+    
+        Matrix4d view = new Matrix4d(tempView);
+        shaderProgram.SetUniform("view", view);
+        
+        mesh.renderModel.PrepareRender();
+        
+        glDrawElements(GL_TRIANGLES, mesh.IndicesCount, GL_UNSIGNED_INT, 0);
+        
+        glDepthFunc(GL_LESS);
+    }
+    
     public static void RenderDebugMeshes(){
         glEnable(GL11.GL_DEPTH_TEST);
         glEnable(GL_LINE_SMOOTH);
@@ -221,6 +259,11 @@ public class Renderer {
         }
     }
 
+    public static void SetSkybox(Skybox skyBox){
+        Renderer.SkyBox = skyBox;
+        Debug.log("Renderer -> Skybox Set.");
+    }
+    
     public static void RegisterLight(Light light){
         Debug.log("Renderer -> Registering Light: " + light.Name);
         if(!ScenesLights.contains(light)){

@@ -7,6 +7,7 @@ import main.java.org.bearengine.font.Font;
 import main.java.org.bearengine.graphics.Display;
 import main.java.org.bearengine.graphics.importers.OBJImporter;
 import main.java.org.bearengine.graphics.rendering.RenderSpace;
+import main.java.org.bearengine.graphics.rendering.Renderer;
 import main.java.org.bearengine.graphics.shaders.ShaderProgram;
 import main.java.org.bearengine.graphics.types.Color;
 import main.java.org.bearengine.graphics.types.Image;
@@ -14,13 +15,24 @@ import main.java.org.bearengine.graphics.types.Mesh;
 import main.java.org.bearengine.graphics.types.Texture;
 import main.java.org.bearengine.objects.Camera;
 import main.java.org.bearengine.objects.GameObject;
+import main.java.org.bearengine.objects.Skybox;
 import main.java.org.bearengine.ui.*;
 import main.java.org.bearengine.utils.File;
 import main.java.org.bearengine.utils.ResourceLoader;
 import main.java.org.joml.Matrix4f;
 
 public class GameTest extends Game {
-
+    
+    private Skybox skybox;
+    private String[] skyboxTextureFiles = {
+            "/main/java/resources/textures/skybox/tropicalsunnyday/TropicalSunnyDayRight2048.png",
+            "/main/java/resources/textures/skybox/tropicalsunnyday/TropicalSunnyDayLeft2048.png",
+            "/main/java/resources/textures/skybox/tropicalsunnyday/TropicalSunnyDayUp2048.png",
+            "/main/java/resources/textures/skybox/tropicalsunnyday/TropicalSunnyDayDown2048.png",
+            "/main/java/resources/textures/skybox/tropicalsunnyday/TropicalSunnyDayBack2048.png",
+            "/main/java/resources/textures/skybox/tropicalsunnyday/TropicalSunnyDayFront2048.png"
+    };
+    
     Texture texture;
     Mesh mesh;
     GameObject object;
@@ -44,7 +56,10 @@ public class GameTest extends Game {
 
         Camera.Main_Camera.SetProjection(new Matrix4f().perspective((float)Math.toRadians(60.0f), Display.mainDisplay.Aspect, 0.1f, 1000.0f));
         Camera.Main_Camera.SetPosition(0, 2, 1);
-
+        
+        skybox = new Skybox(skyboxTextureFiles);
+        Renderer.SetSkybox(skybox);
+        
         texture = new Texture().UploadTexture(ResourceLoader.Load("/main/java/resources/textures/placeholder_orange_256.png", Image.class), 0);
 
         OBJImporter importer = new OBJImporter();
