@@ -16,6 +16,7 @@ import main.java.org.bearengine.ui.ScrollPane;
 import main.java.org.bearengine.ui.UIObject;
 import main.java.org.joml.Matrix3d;
 import main.java.org.joml.Matrix4d;
+import main.java.org.joml.Matrix4f;
 import main.java.org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 
@@ -203,11 +204,49 @@ public class Renderer {
         glLineWidth(1);
     }
 
+    public static void RenderDebugMeshes(List<DebugMesh> debugMeshes){
+        glEnable(GL11.GL_DEPTH_TEST);
+        glEnable(GL_LINE_SMOOTH);
+        glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+        glLineWidth(2);
+
+        for(DebugMesh mesh : debugMeshes){
+            mesh.material.shaderProgram.Bind();
+
+            ShaderProgram shaderProgram = mesh.material.shaderProgram;
+
+            if(mesh.GetRenderSpace() == RenderSpace.SCREEN_SPACE) {
+                shaderProgram.SetUniform("projection", new Matrix4d().ortho2D(0, Display.mainDisplay.getWidth(), Display.mainDisplay.getHeight(), 0));
+                shaderProgram.SetUniform("view", new Matrix4d());
+            } else {
+                shaderProgram.SetUniform("projection", Camera.Main_Camera.GetProjection());
+
+                if(DevCamera.ENABLED) {
+                    mesh.material.shaderProgram.SetUniform("view", DevCamera.DEV_CAMERA.GetViewMatrix());
+                } else {
+                    mesh.material.shaderProgram.SetUniform("view", Camera.Main_Camera.GetViewMatrix());
+                }
+            }
+
+            Matrix4d transform = mesh.transform.GenerateMatrix();
+            mesh.material.shaderProgram.SetUniform("model", transform);
+
+            mesh.renderModel.PrepareRender();
+
+            glDrawElements(GL_TRIANGLES, mesh.IndicesCount, GL_UNSIGNED_INT, 0);
+        }
+
+        glLineWidth(1);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    }
+
     public static void RegisterGameObject(GameObject obj){
         Debug.log("Renderer -> Registering GameObject: " + obj.Name);
 	    Mesh mesh = MeshRenderList.get(obj.GetMesh().Mesh_Name + obj.GetMesh().material.shaderProgram.ProgramID);
 
-        if(mesh != null && obj.GetMesh().material.equals(mesh)){
+        if(mesh != null && obj.GetMesh().equals(mesh)){
             RenderModel model = MeshRenderList.get(obj.GetMesh().Mesh_Name).renderModel;
             model.AddTransform(obj);
             Debug.log("Renderer -> Mesh('" + obj.GetMesh().Mesh_Name + "') already registered. Adding transform.");

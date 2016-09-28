@@ -157,7 +157,7 @@ public abstract class UIObject extends Object implements IMouseCallbacks {
 
         debugMesh.SetVertices(vertices);
         debugMesh.SetIndices(indices);
-        debugMesh.CreateRenderModel(this);
+//        debugMesh.CreateRenderModel(this);
     }
 
     public void setMesh(Mesh mesh){

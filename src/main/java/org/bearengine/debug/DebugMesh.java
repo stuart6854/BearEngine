@@ -5,6 +5,7 @@ import main.java.org.bearengine.graphics.shaders.Shader;
 import main.java.org.bearengine.graphics.shaders.ShaderProgram;
 import main.java.org.bearengine.graphics.types.Material;
 import main.java.org.bearengine.graphics.types.RenderModel;
+import main.java.org.bearengine.graphics.types.Transform;
 import main.java.org.bearengine.objects.Object;
 
 import java.util.List;
@@ -25,6 +26,8 @@ public class DebugMesh {
     private float[] vertices;
 
     public RenderModel renderModel;
+
+    public Transform transform;
 
     public DebugMesh(){
         this.material = new Material();
@@ -62,10 +65,14 @@ public class DebugMesh {
         this.Render_Space = render_Space;
     }
 
-    public void CreateRenderModel(Object transform){
+    public void CreateRenderModel(Transform transform){
         Cleanup();
         renderModel = RenderModel.CreateDebugRenderModel(vertices, indices);
-        renderModel.AddTransform(transform);
+        this.transform = transform;
+    }
+
+    public int[] GetIndices() {
+        return indices;
     }
 
     public float[] GetVertices(){

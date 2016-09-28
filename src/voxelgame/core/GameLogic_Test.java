@@ -73,7 +73,7 @@ public class GameLogic_Test extends Game {
         GL11.glCullFace(GL11.GL_BACK);
         GL11.glEnable(GL11.GL_CULL_FACE);
 
-        Camera.Main_Camera.SetProjection(new Matrix4f().perspective((float)Math.toRadians(60.0f), Display.mainDisplay.Aspect, 0.1f, 1000.0f));
+        Camera.Main_Camera.SetProjection(new Matrix4f().perspective((float)Math.toRadians(60.0f), Display.mainDisplay.Aspect, 0.1f, 1000.0f), Camera.Projection.Perspective);
 		Camera.Main_Camera.SetPosition(-1.5, 152, 6.5);
 		Camera.Main_Camera.SetRotation(15, 20, 0);
 

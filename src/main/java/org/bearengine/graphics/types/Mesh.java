@@ -68,8 +68,8 @@ public class Mesh {
     }
 
     public void CreateRenderModel(){
-//	    if(colors == null || colors.length == 0)
-//	    	SetDefaultColors();
+	    if(colors == null || colors.length == 0)
+	    	SetDefaultColors();
 
         if(uvs != null && uvs.length == 0)
             uvs = null;
@@ -98,6 +98,24 @@ public class Mesh {
 
     public float[] GetColors(){
         return colors;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        Mesh mesh = (Mesh)obj;
+
+        if(mesh.indices != this.indices)
+            return false;
+        if(mesh.vertices != this.vertices)
+            return false;
+        if(mesh.uvs != this.uvs)
+            return false;
+        if(mesh.normals != this.normals)
+            return false;
+        if(mesh.colors != this.colors)
+            return false;
+
+        return true;
     }
 
     public void Cleanup(){

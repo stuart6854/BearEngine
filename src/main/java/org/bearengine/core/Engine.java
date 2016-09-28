@@ -1,6 +1,7 @@
 package main.java.org.bearengine.core;
 
 import main.java.org.bearengine.debug.Debug;
+import main.java.org.bearengine.debug.DebugDraw;
 import main.java.org.bearengine.graphics.Display;
 import main.java.org.bearengine.graphics.rendering.Renderer;
 import main.java.org.bearengine.graphics.types.Image;
@@ -9,14 +10,12 @@ import main.java.org.bearengine.input.Mouse;
 import main.java.org.bearengine.objects.Camera;
 import main.java.org.bearengine.objects.DevCamera;
 import main.java.org.bearengine.graphics.types.Texture;
-import main.java.org.bearengine.screens.SplashScreen;
 import main.java.org.bearengine.utils.ResourceLoader;
 import main.java.org.bearengine.utils.Time;
 import main.java.org.joml.Matrix4f;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.Configuration;
 
 import java.util.ArrayList;
@@ -83,6 +82,8 @@ public class Engine implements Runnable{
 
 		setupScreensOrder();
 
+        DebugDraw.SetupDebugDraw();
+
         Camera.Main_Camera = new Camera(new Matrix4f().ortho(-1, 1, -1, 1, 1, -1));
         Debug.log("Engine -> Engine Initialised.");
     }
@@ -96,7 +97,7 @@ public class Engine implements Runnable{
 	
 	private void setupScreensOrder(){
         Texture texture = new Texture().UploadTexture(ResourceLoader.Load("/main/java/resources/textures/bearengine_logo.png", Image.class));
-		screenOrder.add(new SplashScreen(0.1f, texture));
+//		screenOrder.add(new SplashScreen(0.1f, texture));
 		
 		screenOrder.add((Game)gameScreen);
 	}
@@ -151,7 +152,7 @@ public class Engine implements Runnable{
 			Debug.log("Engine -> Screen Initialised!");
 		}else{
             //Debug.log("Engine -> Screen update!");
-			if(!DevCamera.ENABLED)
+//			if(!DevCamera.ENABLED)
 				screen.update(deltaTime);
             //Debug.log("Engine -> Screen update END!");
 		}
@@ -165,11 +166,16 @@ public class Engine implements Runnable{
 		Game screen = screenOrder.get(screenIndex);
         if(!screen.isInitialised) return;
 
-//		screen.render();
+        DebugDraw.BeginFrame();
+
+		screen.render();
         Renderer.RenderObjects();
+//        Renderer.RenderDebugMeshes();
+        DebugDraw.EndFrame();
+
         Renderer.RenderUI();
-        Renderer.RenderDebugMeshes();
-        
+
+
         Display.mainDisplay.update();
 	}
 

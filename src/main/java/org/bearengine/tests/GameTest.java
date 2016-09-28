@@ -3,6 +3,7 @@ package main.java.org.bearengine.tests;
 import main.java.org.bearengine.core.Engine;
 import main.java.org.bearengine.core.Game;
 import main.java.org.bearengine.debug.Debug;
+import main.java.org.bearengine.debug.DebugDraw;
 import main.java.org.bearengine.font.Font;
 import main.java.org.bearengine.graphics.Display;
 import main.java.org.bearengine.graphics.importers.OBJImporter;
@@ -20,6 +21,7 @@ import main.java.org.bearengine.ui.*;
 import main.java.org.bearengine.utils.File;
 import main.java.org.bearengine.utils.ResourceLoader;
 import main.java.org.joml.Matrix4f;
+import main.java.org.joml.Vector3f;
 
 public class GameTest extends Game {
     
@@ -36,6 +38,7 @@ public class GameTest extends Game {
     Texture texture;
     Mesh mesh;
     GameObject object;
+    GameObject object2;
 
     Canvas canvas;
     Button button;
@@ -54,7 +57,7 @@ public class GameTest extends Game {
         Debug.log("GameTest -> Init.");
         Display.mainDisplay.SetClearColor(Color.SKY_BLUE);
 
-        Camera.Main_Camera.SetProjection(new Matrix4f().perspective((float)Math.toRadians(60.0f), Display.mainDisplay.Aspect, 0.1f, 1000.0f));
+        Camera.Main_Camera.SetProjection(new Matrix4f().perspective((float)Math.toRadians(60.0f), Display.mainDisplay.Aspect, 0.1f, 1000.0f), Camera.Projection.Perspective);
         Camera.Main_Camera.SetPosition(0, 2, 1);
         
         skybox = new Skybox(skyboxTextureFiles);
@@ -71,6 +74,16 @@ public class GameTest extends Game {
         object = new GameObject();
         object.SetMesh(mesh);
         object.SetPosition(0, 0, -5);
+
+        Mesh mesh2 = importer.LoadMesh("/main/java/resources/models/textured-cube.obj");
+//        mesh.material.SetDiffuseTexture(texture);
+        mesh2.material.shaderProgram = ShaderProgram.DEFAULT;
+        mesh2.material.RenderCamera = Camera.Main_Camera;
+
+        object2 = new GameObject();
+        object2.SetMesh(mesh2);
+        object2.SetPosition(-5, 0, -5);
+
 
         Image fontImage = ResourceLoader.Load("/main/java/resources/fonts/OpenSans_61_DF.png", Image.class, false);
         Texture texture = new Texture().UploadTexture(fontImage, 0);
@@ -143,7 +156,8 @@ public class GameTest extends Game {
 
 	@Override
 	public void update(float deltaTime) {
-        object.Rotate(0, 1f * deltaTime, 0);
+//        object.Rotate(0, 10f * deltaTime, 0);
+        object2.MovePosition(0.1f * deltaTime, 0, 0);
 
         if(button.IsClicked()){
             Debug.log("Clicked:" + System.currentTimeMillis());
@@ -154,7 +168,7 @@ public class GameTest extends Game {
 
 	@Override
 	public void render() {
-
+        DebugDraw.DrawCube(2f, object.GetPosition(), object.GetRotation());
 	}
 
 	@Override

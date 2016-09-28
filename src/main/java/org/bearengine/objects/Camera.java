@@ -10,10 +10,13 @@ import main.java.org.joml.Vector3f;
  */
 public class Camera extends GameObject {
 
+    public enum Projection { Orthographic, Perspective }
+
     public static Camera Main_Camera;
 
     protected Vector3f Rotation;
 
+    protected Projection projectionType;
     protected final Matrix4d m_projection;
     protected final Matrix4d m_view;
 
@@ -76,12 +79,17 @@ public class Camera extends GameObject {
         viewIsDirty = true;
     }
 
+    public Projection GetProjectionType() {
+        return projectionType;
+    }
+
     public Matrix4d GetProjection(){
         return m_projection;
     }
 
-    public void SetProjection(Matrix4f projection){
+    public void SetProjection(Matrix4f projection, Projection projectionType){
         this.m_projection.set(projection);
+        this.projectionType = projectionType;
 
         Debug.log("Camera -> Projection Set.");
     }
