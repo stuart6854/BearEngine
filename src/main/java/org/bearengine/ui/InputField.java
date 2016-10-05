@@ -26,9 +26,9 @@ public class InputField extends UIObject implements ICharacterListener{
 
     private boolean IsActive = false;
     
-    public InputField(Font font, Font placeholderFont){
-        this(font, placeholderFont, null);
-    }
+//    public InputField(Font font, Font placeholderFont){
+//        this(font, placeholderFont, null);
+//    }
     
     public InputField(Font font, Font placeholderFont, UIObject parent){
         super(parent);

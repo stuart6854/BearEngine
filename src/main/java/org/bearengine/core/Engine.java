@@ -1,5 +1,6 @@
 package main.java.org.bearengine.core;
 
+import main.java.org.bearengine.debug.Console;
 import main.java.org.bearengine.debug.Debug;
 import main.java.org.bearengine.debug.DebugDraw;
 import main.java.org.bearengine.graphics.Display;
@@ -81,7 +82,8 @@ public class Engine implements Runnable{
 		printVersions();
 
 		setupScreensOrder();
-
+        
+        Console.Setup();
         DebugDraw.SetupDebugDraw();
 
         Camera.Main_Camera = new Camera(new Matrix4f().ortho(-1, 1, -1, 1, 1, -1));
@@ -156,7 +158,8 @@ public class Engine implements Runnable{
 				screen.update(deltaTime);
             //Debug.log("Engine -> Screen update END!");
 		}
-
+        
+		Console.Update();
         DevCamera.ProcessInput(deltaTime);
 	}
 	

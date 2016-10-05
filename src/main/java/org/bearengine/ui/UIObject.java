@@ -6,6 +6,7 @@ import main.java.org.bearengine.debug.DebugMesh;
 import main.java.org.bearengine.graphics.rendering.RenderSpace;
 import main.java.org.bearengine.graphics.rendering.Renderer;
 import main.java.org.bearengine.graphics.types.Mesh;
+import main.java.org.bearengine.graphics.types.Transform;
 import main.java.org.bearengine.input.IMouseCallbacks;
 import main.java.org.bearengine.input.Mouse;
 import main.java.org.bearengine.objects.Object;
@@ -50,7 +51,8 @@ public abstract class UIObject extends Object implements IMouseCallbacks {
         this.Children = new ArrayList<>();
         this.mesh = new Mesh();
         this.debugMesh = new DebugMesh();
-        this.SetParent(parent);
+        if(parent != null)
+            this.SetParent(parent);
         
         CreateDebugMesh();
     }
@@ -245,7 +247,9 @@ public abstract class UIObject extends Object implements IMouseCallbacks {
         return space;
     }
 
-    public void PreRender(){}
+    public void PreRender(){
+        mesh.material.shaderProgram.SetUniform("uiColor", mesh.material.Diffuse.GetRGBA());
+    }
     public void PostRender(){}
     
     protected abstract void OnUpdate(); //Allows controls to have custom update logic while still calling this classes update method

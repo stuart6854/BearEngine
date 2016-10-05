@@ -87,69 +87,70 @@ public class GameTest extends Game {
 
         Image fontImage = ResourceLoader.Load("/main/java/resources/fonts/OpenSans_61_DF.png", Image.class, false);
         Texture texture = new Texture().UploadTexture(fontImage, 0);
-        Font font = new Font(0.2f, texture, ResourceLoader.Load("/main/java/resources/fonts/OpenSans_61_DF.fnt", File.class));
+        File fontFile = ResourceLoader.Load("/main/java/resources/fonts/OpenSans_61_DF.fnt", File.class);
+        Font font = new Font(0.2f, texture, fontFile);
 
-        canvas = new Canvas(RenderSpace.SCREEN_SPACE);
-//        canvas = new Canvas(RenderSpace.WORLD_SPACE);
-//        canvas.SetPixelOffset(0, 0, -5);//Next 3 lines used for World-Space Canvas
-//        canvas.SetWidth(4);
-//        canvas.SetHeight(4);
-        canvas.SetShowDebugMesh(true);
-
-        Panel panel = new Panel();
-        panel.SetNormalisedPosition(0, 0);
-        panel.SetPixelOffset(10, 10, 0);
-        panel.SetWidth(512);
-        panel.SetHeight(400);
-        panel.SetShowDebugMesh(true);
-        panel.SetParent(canvas);
-
-        button = new Button("Click Me!", font, panel);
-        button.SetPixelOffset(10, 10, 0);
-        button.SetWidth(256);
-        button.SetHeight(64);
-        button.SetShowDebugMesh(true);
-
-        label = new Label("Hello World!\nNew Line Test", font);
-        label.SetPixelOffset(10, 375, 0);
-        label.SetShowDebugMesh(true);
-        label.SetParent(panel);
-
-//        label = new Label("ABCDEFG", font);
-//        label.SetPixelOffset(10, 10, 0);
-//        label.SetShowDebugMesh(true);
-//        label.SetParent(canvas);
+//        canvas = new Canvas(RenderSpace.SCREEN_SPACE);
+////        canvas = new Canvas(RenderSpace.WORLD_SPACE);//Next 3 lines used for World-Space Canvas
+////        canvas.SetPixelOffset(0, 0, -5);
+////        canvas.SetWidth(4);
+////        canvas.SetHeight(4);
+//        canvas.SetShowDebugMesh(true);
 //
-        Label label2 = new Label("Lorem ipsum dolor sit amet, consectetur adipiscing elit.\nMauris nisl diam, feugiat at mollis eget, tincidunt et est. Integer ex.", font);
-        label2.SetPixelOffset(32, 500, 0);
-        label2.SetShowDebugMesh(true);
-        label2.SetParent(canvas);
-
-        inputField = new InputField(font, font, panel);
-        inputField.SetPixelOffset(10, 128, 0);
-        inputField.SetWidth(200);
-        inputField.SetHeight(40);
-        inputField.SetShowDebugMesh(true);
-
-        scrollBar = new ScrollBar(panel);
-        scrollBar.SetNormalisedPosition(1, 1);
-        scrollBar.SetPixelOffset(-16, -256, 0);
-        scrollBar.SetWidth(16);
-        scrollBar.SetHeight(256);
-        scrollBar.SetShowDebugMesh(true);
-
-        scrollPane = new ScrollPane(panel);
-        scrollPane.SetNormalisedPosition(1, 1);
-        scrollPane.SetPixelOffset(-256 - 16, -256, 0);
-        scrollPane.SetWidth(256);
-        scrollPane.SetHeight(256);
-        scrollPane.SetShowDebugMesh(true);
-        scrollPane.SetScrollBarVertical(scrollBar);
-
-        scrollLabel = new Label("Scroll Label.", font);
-        scrollLabel.SetPixelOffset(10, 10, 0);
-        scrollLabel.SetShowDebugMesh(true);
-        scrollLabel.SetParent(scrollPane);
+//        Panel panel = new Panel();
+//        panel.SetNormalisedPosition(0, 0);
+//        panel.SetPixelOffset(10, 10, 0);
+//        panel.SetWidth(512);
+//        panel.SetHeight(400);
+//        panel.SetShowDebugMesh(true);
+//        panel.SetParent(canvas);
+//
+//        button = new Button("Click Me!", font, panel);
+//        button.SetPixelOffset(10, 10, 0);
+//        button.SetWidth(256);
+//        button.SetHeight(64);
+//        button.SetShowDebugMesh(true);
+//
+//        label = new Label("Hello World!\nNew Line Test", font);
+//        label.SetPixelOffset(10, 375, 0);
+//        label.SetShowDebugMesh(true);
+//        label.SetParent(panel);
+//
+////        label = new Label("ABCDEFG", font);
+////        label.SetPixelOffset(10, 10, 0);
+////        label.SetShowDebugMesh(true);
+////        label.SetParent(canvas);
+////
+//        Label label2 = new Label("Lorem ipsum dolor sit amet, consectetur adipiscing elit.\nMauris nisl diam, feugiat at mollis eget, tincidunt et est. Integer ex.", font);
+//        label2.SetPixelOffset(32, 500, 0);
+//        label2.SetShowDebugMesh(true);
+//        label2.SetParent(canvas);
+//
+//        inputField = new InputField(font, font, panel);
+//        inputField.SetPixelOffset(10, 128, 0);
+//        inputField.SetWidth(200);
+//        inputField.SetHeight(40);
+//        inputField.SetShowDebugMesh(true);
+//
+//        scrollBar = new ScrollBar(panel);
+//        scrollBar.SetNormalisedPosition(1, 1);
+//        scrollBar.SetPixelOffset(-16, -256, 0);
+//        scrollBar.SetWidth(16);
+//        scrollBar.SetHeight(256);
+//        scrollBar.SetShowDebugMesh(true);
+//
+//        scrollPane = new ScrollPane(panel);
+//        scrollPane.SetNormalisedPosition(1, 1);
+//        scrollPane.SetPixelOffset(-256 - 16, -256, 0);
+//        scrollPane.SetWidth(256);
+//        scrollPane.SetHeight(256);
+//        scrollPane.SetShowDebugMesh(true);
+//        scrollPane.SetScrollBarVertical(scrollBar);
+//
+//        scrollLabel = new Label("Scroll Label.", font);
+//        scrollLabel.SetPixelOffset(10, 10, 0);
+//        scrollLabel.SetShowDebugMesh(true);
+//        scrollLabel.SetParent(scrollPane);
 
         Debug.log("GameTest -> Init End.");
 	}
@@ -159,11 +160,11 @@ public class GameTest extends Game {
 //        object.Rotate(0, 10f * deltaTime, 0);
         object2.MovePosition(0.1f * deltaTime, 0, 0);
 
-        if(button.IsClicked()){
-            Debug.log("Clicked:" + System.currentTimeMillis());
-        }
+//        if(button.IsClicked()){
+//            Debug.log("Clicked:" + System.currentTimeMillis());
+//        }
 
-        canvas.Update();
+//        canvas.Update();
 	}
 
 	@Override
