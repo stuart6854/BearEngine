@@ -27,7 +27,9 @@ public class Engine implements Runnable{
     //TODO: FPS isn't being capped!
 
 	private final Thread ENGINE_THREAD;
-	
+
+	public static Engine Instance;
+
 	private static int TARGET_UPS = 25;
 	private static int TARGET_FPS = 30;
     
@@ -47,6 +49,8 @@ public class Engine implements Runnable{
         Engine.Game = game;
 		this.gameScreen = game;
 		this.ENGINE_THREAD = new Thread(this, "BearEngine-Main-Thread");
+
+        Engine.Instance = this;
 	}
 
 	public void start(){
@@ -195,9 +199,9 @@ public class Engine implements Runnable{
 			display.destroy();
 		}
 	}
-	
-	private void Exit(){
-		cleanup();
+
+	public void Exit(){
+        cleanup();
         Debug.log("Engine -> Exiting.");
 		System.exit(0);
 	}

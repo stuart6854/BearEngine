@@ -37,4 +37,19 @@ public class Object {
         m_transform.scale(scale);
     }
 
+    public static Object FindObject(String name){
+        for(Object obj : Objects){
+            if(obj.Name.equals(name))
+                return obj;
+        }
+
+        return null;
+    }
+
+    @Override
+    public String toString() {
+        return Name + "(" + m_transform.toString() + ")";
+    }
 }
+
+

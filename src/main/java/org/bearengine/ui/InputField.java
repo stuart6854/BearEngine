@@ -80,6 +80,25 @@ public class InputField extends UIObject implements ICharacterListener{
     private void RefreshLabel(){
         label.SetText(InputText);
         label.SetPixelOffset(5, -(label.PixelHeight / 2f), 0);
+        UpdateCaretPosition();
+    }
+
+    public void Clear(){
+        SetInputText("");
+    }
+
+    public void setActive(boolean active){
+        if(active) StartEditing();
+        else StopEditing();
+    }
+
+    public void SetInputText(String text){
+        InputText = text;
+        RefreshLabel();
+    }
+
+    public String GetInputText(){
+        return InputText;
     }
 
     public void SetPlaceholderText(String text){
@@ -88,6 +107,14 @@ public class InputField extends UIObject implements ICharacterListener{
 
     public String GetPlaceholderText(){
         return placeholderLabel.GetText();
+    }
+
+    public boolean IsActive(){
+        return IsActive;
+    }
+
+    public boolean IsEmpty(){
+        return label.GetText().isEmpty();
     }
 
     @Override
@@ -120,9 +147,9 @@ public class InputField extends UIObject implements ICharacterListener{
                 UpdateCaretPosition();
             }
             
-            if(Keyboard.isClicked(Keyboard.KEY_ENTER)){
-                StopEditing();
-            }
+//            if(Keyboard.isClicked(Keyboard.KEY_ENTER)){
+//                StopEditing();
+//            }
         }
     }
     

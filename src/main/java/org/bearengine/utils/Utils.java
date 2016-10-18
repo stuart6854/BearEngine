@@ -48,5 +48,17 @@ public class Utils {
         
         return ints;
     }
-    
+
+    public static String ArrayToString(String[] array){
+        if(array == null)
+            return "NULL";
+
+        String s = "";
+        for(String string : array){
+            s += string + ", ";
+        }
+
+        return s.substring(0, s.lastIndexOf(","));
+    }
+
 }

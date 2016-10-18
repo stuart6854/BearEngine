@@ -113,6 +113,8 @@ public class Display {
         windowSizeCallback.free();
         framebufferSizeCallback.free();
         keyCallback.free();
+
+		glfwTerminate();
 	}
 	
 	private void setHints(){

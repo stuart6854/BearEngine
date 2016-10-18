@@ -2,8 +2,6 @@ package main.java.org.bearengine.objects;
 
 import main.java.org.bearengine.graphics.rendering.Renderer;
 import main.java.org.bearengine.graphics.types.Mesh;
-import main.java.org.joml.Matrix4d;
-import main.java.org.joml.Quaterniond;
 import main.java.org.joml.Vector3d;
 import main.java.org.joml.Vector3f;
 
@@ -17,7 +15,7 @@ public class GameObject extends Object {
 
     public String Name = "Object";
 
-    public static List<Object> Objects = new ArrayList<>();
+    public static List<GameObject> GameObjects = new ArrayList<>();
 
     protected Vector3d Position;
     protected Vector3f Rotation;
@@ -34,6 +32,8 @@ public class GameObject extends Object {
         this.Scale = new Vector3d(1, 1, 1);
         
         this.mesh = new Mesh();
+
+        GameObjects.add(this);
     }
 
     public void SetPosition(Vector3d position){
@@ -90,7 +90,7 @@ public class GameObject extends Object {
     }
     
     public void Destroy(){
-        Objects.remove(this);
+        GameObjects.remove(this);
         Position = null;
         Rotation = null;
         Scale = null;
@@ -116,6 +116,20 @@ public class GameObject extends Object {
 
         this.mesh = mesh;
         RegisterRender();
+    }
+
+    public static GameObject FindGameObject(String name){
+        for(GameObject obj : GameObjects){
+            if(obj.Name.equals(name))
+                return obj;
+        }
+
+        return null;
+    }
+
+    @Override
+    public String toString() {
+        return Name + "( Pos: " + Position.toString() + " | Rot: " + Rotation.toString() + " | Scale: " + Scale.toString() + ")";
     }
 
 }

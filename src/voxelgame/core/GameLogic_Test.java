@@ -57,7 +57,7 @@ public class GameLogic_Test extends Game {
 
 	//private Billboard billboard;
 
-	//Statistics Gui Objects
+	//Statistics Gui GameObjects
 //	private GUILabel fpsLabel, upsLabel;
 //	private GUILabel osLabel, gpuInfoLabel, memoryLabel;
 //	private GUILabel openglShaderVersionLabel;

@@ -72,6 +72,7 @@ public class GameTest extends Game {
         mesh.material.RenderCamera = Camera.Main_Camera;
 
         object = new GameObject();
+        object.Name = "Dank_Meme";
         object.SetMesh(mesh);
         object.SetPosition(0, 0, -5);
 
@@ -81,6 +82,7 @@ public class GameTest extends Game {
         mesh2.material.RenderCamera = Camera.Main_Camera;
 
         object2 = new GameObject();
+        object2.Name = "John_Cena";
         object2.SetMesh(mesh2);
         object2.SetPosition(-5, 0, -5);
 

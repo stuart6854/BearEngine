@@ -5,7 +5,7 @@ import main.java.org.joml.*;
 /**
  * Created by Stuart on 29/05/2016.
  *
- * Holds Position, Rotation and Scale of Objects using a Certain Mesh
+ * Holds Position, Rotation and Scale of GameObjects using a Certain Mesh
  */
 public class Transform {
 

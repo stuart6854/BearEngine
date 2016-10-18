@@ -32,7 +32,7 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Renderer {
 
-    //TODO: Stop Objects, UI and Debug Meshes from Different Scenes being rendered/put together(Possible Solution?: make class non-static)
+    //TODO: Stop GameObjects, UI and Debug Meshes from Different Scenes being rendered/put together(Possible Solution?: make class non-static)
     //TODO: Test Directional, Point and Spot Lights(Shaders)
     //TODO: Keep reference to all lights in Scene here, to pass to lighting shaders
     
